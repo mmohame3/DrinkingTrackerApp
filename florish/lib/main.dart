@@ -62,16 +62,39 @@ class MyApp extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Image.asset(
-            'assets/images/soloCup.png',
-            height: 71,
-            width: 71,
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Image.asset(
+                'assets/images/soloCup.png',
+                height: 71,
+                width: 71,
+              ),
+              Text(
+                '0', // TODO: make incrementable variable
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ],
           ),
           Spacer(),
-          Image.asset(
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Image.asset(
             'assets/images/waterCup.png',
             height: 71,
             width: 71,
+          ),
+              Text(
+                '0', // TODO: make incrementable variable
+                style: TextStyle(
+                  fontSize: 20,
+                  
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -84,16 +107,14 @@ class MyApp extends StatelessWidget {
           'assets/images/plantSetting.png',
           height: 344,
           width: 375,
-//          fit: BoxFit.cover,
-          ),
+        ),
         Image.asset(
-            'assets/images/plant1Healthy.png',
-            height: 174,
-            width: 180,
-  //          fit: BoxFit.cover,
-          ),
-        ],
-      );
+          'assets/images/plant1Healthy.png',
+          height: 174,
+          width: 180,
+        ),
+      ],
+    );
 
     return MaterialApp(
         title: 'Plant Nanny',
