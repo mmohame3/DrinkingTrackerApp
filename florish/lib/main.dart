@@ -13,12 +13,7 @@ class MyApp extends StatelessWidget {
     Widget bacHeader = Container(
       padding: const EdgeInsets.all(32),
       child: Row(
-        children: [
-          // menu bars
-          Icon(
-            Icons.menu,
-            color: Colors.white,
-          ),
+        children: (
 //           room  between
           Spacer(
             flex: 2,
@@ -119,6 +114,72 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Plant Nanny',
         home: Scaffold(
+          appBar: AppBar(
+            title : Text("FLORISH"),
+            backgroundColor: Colors.green[700],
+          ),
+          drawer: Drawer(
+            child: Container(color: Colors.green[700],
+              child: ListView(
+                children: <Widget>[
+                  ListTile(
+                    title: Text("My Plant",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white),
+                    ),
+                    trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                  ),
+                  ListTile(
+                    title: Text("Our Mission",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white),),
+                    trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),),
+                  ListTile(
+                    title: Text("History",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white),),
+                    trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),),
+                  ListTile(
+                    title: Text("Personal Information",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white),),
+                    trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),),
+                  ListTile(
+                    title: Text('A "Standard Drink"',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white),),
+                    trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                  ),
+                  ListTile(
+                    title: Text("Alcohol Facts",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white),),
+                    trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                  ),
+                  ListTile(
+                    title: Text("Help & Resources",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white),),
+                    trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                  ),
+                  ListTile(
+                    title: Text("Terms & Conditions",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white),),
+                    trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
           backgroundColor: Colors.grey[600],
             body: ListView(
                 children: [
