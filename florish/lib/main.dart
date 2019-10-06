@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 
 void main() => runApp(MyApp());
@@ -198,9 +201,7 @@ class DrinkButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        print('DrinkButton was tapped!');
-      },
+      onTap: _incrementCounter,
       child: Image.asset(
         'assets/images/soloCup.png',
         height: 71,
@@ -209,3 +210,12 @@ class DrinkButton extends StatelessWidget {
     );
   }
 }
+
+
+_incrementCounter() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  int counter = (prefs.getInt('counter') ?? 0) + 1;
+  await prefs.setInt('counter', counter);
+}
+
+
