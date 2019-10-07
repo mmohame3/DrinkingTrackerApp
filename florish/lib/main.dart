@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
+
 import './history.dart';
 import './personalInfo.dart';
 import './standardDrink.dart';
@@ -302,13 +302,6 @@ class MyApp extends StatelessWidget {
 //  }
 //}
 
-//class DrawerMenu extends StatelessWidget
-//
-//
-//_incrementCounter() async {
-//  SharedPreferences prefs = await SharedPreferences.getInstance();
-//  int counter = (prefs.getInt('counter') ?? 0) + 1;
-//  await prefs.setInt('counter', counter);
-//}
+
 
 
