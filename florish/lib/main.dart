@@ -11,11 +11,6 @@ import './ourMission.dart';
 import './resources.dart';
 import './termsConditions.dart';
 
-
-
-
-
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -39,17 +34,17 @@ class MyApp extends StatelessWidget {
                   child: Text(
                     'BAC:',
                     style: TextStyle(
-                        color: Colors.white,
+                      color: Colors.white,
                     ),
                   ),
                 ),
                 // BAC variable
                 Text(
                   '0.00', // TODO: substitute for BAC Variable
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),
@@ -68,41 +63,10 @@ class MyApp extends StatelessWidget {
       padding: const EdgeInsets.all(32),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Image.asset(
-                'assets/images/soloCup.png',
-                height: 71,
-                width: 71,
-              ),
-              Text(
-                '0', // TODO: make incrementable variable
-                style: TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-            ],
-          ),
+        children: <Widget>[
+          new DrinkButton(),
           Spacer(),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Image.asset(
-            'assets/images/waterCup.png',
-            height: 71,
-            width: 71,
-          ),
-              Text(
-                '0', // TODO: make incrementable variable
-                style: TextStyle(
-                  fontSize: 20,
-                  
-                ),
-              ),
-            ],
-          ),
+          new WaterButton(),
         ],
       ),
     );
@@ -124,14 +88,14 @@ class MyApp extends StatelessWidget {
     );
 
     Widget menu = Drawer(
-      child: Container(color: Colors.green[700],
+      child: Container(
+        color: Color(0xFFA8C935),
         child: ListView(
           children: <Widget>[
             ListTile(
-              title: Text("My Plant",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white),
+              title: Text(
+                "My Plant",
+                style: TextStyle(fontSize: 20, color: Colors.white),
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -139,111 +103,106 @@ class MyApp extends StatelessWidget {
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
-              title: Text("History",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white),),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                    builder: (BuildContext context) => new HistoryPage()
-                  )
-                );
-              },
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),),
-            ListTile(
-              title: Text("Personal Information",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white),),
+              title: Text(
+                "History",
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.push(
                     context,
                     new MaterialPageRoute(
-                        builder: (BuildContext context) => new PersonalInfoPage()
-                    )
-                );
-              },
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),),
-            ListTile(
-              title: Text('A "Standard Drink"',
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white),),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (BuildContext context) => new StandardDrinkPage()
-                    )
-                );
+                        builder: (BuildContext context) => new HistoryPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
-              title: Text("Alcohol Facts",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white),),
+              title: Text(
+                "Personal Information",
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.push(
                     context,
                     new MaterialPageRoute(
-                        builder: (BuildContext context) => new AlcoholInfoPage()
-                    )
-                );
+                        builder: (BuildContext context) =>
+                            new PersonalInfoPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
-              title: Text("Help & Resources",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white),),
+              title: Text(
+                'A "Standard Drink"',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.push(
                     context,
                     new MaterialPageRoute(
-                        builder: (BuildContext context) => new ResourcesPage()
-                    )
-                );
+                        builder: (BuildContext context) =>
+                            new StandardDrinkPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
-              title: Text("Our Mission",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white),),
+              title: Text(
+                "Alcohol Facts",
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.push(
                     context,
                     new MaterialPageRoute(
-                        builder: (BuildContext context) => new OurMissionPage()
-                    )
-                );
+                        builder: (BuildContext context) =>
+                            new AlcoholInfoPage()));
               },
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),),
+              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+            ),
             ListTile(
-              title: Text("Terms & Conditions",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white),),
+              title: Text(
+                "Help & Resources",
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.push(
                     context,
                     new MaterialPageRoute(
-                        builder: (BuildContext context) => new TermsConditionsPage()
-                    )
-                );
+                        builder: (BuildContext context) =>
+                            new ResourcesPage()));
+              },
+              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+            ),
+            ListTile(
+              title: Text(
+                "Our Mission",
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            new OurMissionPage()));
+              },
+              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+            ),
+            ListTile(
+              title: Text(
+                "Terms & Conditions",
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            new TermsConditionsPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -252,28 +211,108 @@ class MyApp extends StatelessWidget {
       ),
     );
 
-
     return MaterialApp(
-        title: 'Plant Nanny',
-        home: Scaffold(
-          appBar: AppBar(
-            title : Text("FLORISH"),
-            backgroundColor: Colors.green[700],
-          ),
-          drawer: menu,
-          backgroundColor: Colors.grey[600],
-            body: ListView(
-                children: [
-                  bacHeader,
-                  plant,
-                  drinkEntryButtons,
-                ],
-            ),
+      title: 'Plant Nanny',
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("FLORISH"),
+          backgroundColor: Colors.green[700],
         ),
+        drawer: menu,
+        backgroundColor: Colors.grey[600],
+        body: ListView(
+          children: [
+            bacHeader,
+            plant,
+            drinkEntryButtons,
+          ],
+        ),
+      ),
     );
   }
 }
 
+class DrinkButton extends StatefulWidget {
+  @override
+  _DrinkButtonState createState() => new _DrinkButtonState();
+}
+
+class _DrinkButtonState extends State<DrinkButton> {
+  int _drinkCount = 0;
+
+  @override
+  Widget build(context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _drinkCount++;
+            });
+          },
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Image.asset(
+                'assets/images/soloCup.png',
+                height: 71,
+                width: 71,
+              ),
+              Text(
+                '$_drinkCount',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class WaterButton extends StatefulWidget {
+  @override
+  _WaterButtonState createState() => new _WaterButtonState();
+}
+
+class _WaterButtonState extends State<WaterButton> {
+  int _waterCount = 0;
+
+  @override
+  Widget build(context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _waterCount++;
+            });
+          },
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Image.asset(
+                'assets/images/waterCup.png',
+                height: 71,
+                width: 71,
+              ),
+              Text(
+                '$_waterCount',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 //class HistoryPage extends StatelessWidget {
 //  @override
@@ -301,7 +340,3 @@ class MyApp extends StatelessWidget {
 //    );
 //  }
 //}
-
-
-
-
