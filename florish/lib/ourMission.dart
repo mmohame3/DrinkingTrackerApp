@@ -10,7 +10,8 @@ class _OurMissionPageState extends State<OurMissionPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-          title: new Text('Our Mission')
+          title: new Text('Our Mission'),
+        backgroundColor: Color(0xFFA8C935),
       ),
     );
   }

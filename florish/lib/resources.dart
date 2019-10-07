@@ -10,7 +10,8 @@ class _ResourcesPageState extends State<ResourcesPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-          title: new Text('Help & Resources')
+          title: new Text('Help & Resources'),
+        backgroundColor: Color(0xFFA8C935),
       ),
     );
   }

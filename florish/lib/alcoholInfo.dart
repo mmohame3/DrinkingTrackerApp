@@ -10,7 +10,8 @@ class _AlcoholInfoPageState extends State<AlcoholInfoPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-          title: new Text('Alcohol Facts and Information')
+          title: new Text('Alcohol Facts and Information'),
+        backgroundColor: Color(0xFFA8C935),
       ),
     );
   }

@@ -10,7 +10,8 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-          title: new Text('What is a "Standard Drink"')
+          title: new Text('What is a "Standard Drink"'),
+        backgroundColor: Color(0xFFA8C935),
       ),
     );
   }

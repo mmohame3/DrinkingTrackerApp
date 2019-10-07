@@ -16,6 +16,16 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'Plant Nanny',
+        home: AppHome()
+    );
+  }
+}
+
+class AppHome extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     // top row
     Widget bacHeader = Container(
       padding: const EdgeInsets.all(32),
@@ -80,7 +90,7 @@ class MyApp extends StatelessWidget {
           width: 375,
         ),
         Image.asset(
-          'assets/images/plant1Healthy.png',
+          'assets/images/plants/drink0water0.png',
           height: 174,
           width: 180,
         ),
@@ -210,27 +220,25 @@ class MyApp extends StatelessWidget {
         ),
       ),
     );
-
-    return MaterialApp(
-      title: 'Plant Nanny',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("FLORISH"),
-          backgroundColor: Colors.green[700],
-        ),
-        drawer: menu,
-        backgroundColor: Colors.grey[600],
-        body: ListView(
-          children: [
-            bacHeader,
-            plant,
-            drinkEntryButtons,
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("FLORISH"),
+        backgroundColor: Colors.green[700],
+      ),
+      drawer: menu,
+      backgroundColor: Colors.grey[600],
+      body: ListView(
+        children: [
+          bacHeader,
+          plant,
+          drinkEntryButtons,
+        ],
       ),
     );
   }
 }
+
+
 
 class DrinkButton extends StatefulWidget {
   @override

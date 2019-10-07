@@ -10,7 +10,8 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text('Your Drinking History')
+        title: new Text('Your Drinking History'),
+            backgroundColor: Color(0xFFA8C935),
       ),
     );
   }

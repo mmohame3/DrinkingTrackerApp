@@ -10,7 +10,8 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-          title: new Text('Terms & Conditions')
+          title: new Text('Terms & Conditions'),
+        backgroundColor: Color(0xFFA8C935),
       ),
     );
   }
