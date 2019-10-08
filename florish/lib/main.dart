@@ -83,6 +83,12 @@ class AppHome extends StatelessWidget {
       ),
     );
 
+    Widget plantImage = Image.asset(
+        'assets/images/plants/drink' + globals.drinkCount.toString()
+            + 'water' + globals.waterCount.toString() + '.png',
+        height: 174,
+        width: 180);
+
     Widget plant = Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -91,13 +97,11 @@ class AppHome extends StatelessWidget {
           height: 344,
           width: 375,
         ),
-        Image.asset(
-          'assets/images/plants/drink0water0.png',
-          height: 174,
-          width: 180,
-        ),
+        plantImage
       ],
     );
+
+
 
     Widget menu = Drawer(
       child: Container(
@@ -259,7 +263,6 @@ class _DrinkButtonState extends State<DrinkButton> {
           onTap: () {
             setState(() {
               globals.drinkCount++;
-              print(globals.drinkCount);
             });
           },
           child: Stack(
@@ -273,7 +276,8 @@ class _DrinkButtonState extends State<DrinkButton> {
               Text(
                 globals.drinkCount.toString(),
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 25,
+                  color: Colors.black,
                 ),
               ),
             ],
@@ -314,7 +318,8 @@ class _WaterButtonState extends State<WaterButton> {
               Text(
                 globals.waterCount.toString(),
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 25,
+                    color: Colors.black,
                 ),
               ),
             ],
@@ -325,38 +330,24 @@ class _WaterButtonState extends State<WaterButton> {
   }
 }
 
-//class PlantImage extends StatefulWidget {
-//  @override
-//  _PlantImageState createState() => new _PlantImageState();
-//}
-//
-//class _PlantImageState extends State<PlantImage> {
-//  $_drinkCount
-//}
 
-//class HistoryPage extends StatelessWidget {
-//  @override
-//  Widget build(BuildContext context) {
-//    reutrn Scaffold(
-//    appBar: AppBar(
-//      title: Text('History'),
-//      backgroundColor: Colors.grey[600],
+
+
+
+//Widget plant = Stack(
+//  alignment: Alignment.bottomCenter,
+//  children: [
+//    Image.asset(
+//      'assets/images/plantSetting.png',
+//      height: 344,
+//      width: 375,
 //    ),
-//    body:
-//    )
-//  }
-//}
+//    Image.asset(
+//      'assets/images/plants/drink0water0.png',
+//      height: 174,
+//      width: 180,
+//    ),
+//  ],
+//);
 
-//class DrinkButton extends StatelessWidget {
-//  @override
-//  Widget build(BuildContext context) {
-//    return GestureDetector(
-//      onTap: _incrementCounter,
-//      child: Image.asset(
-//        'assets/images/soloCup.png',
-//        height: 71,
-//        width: 71,
-//      ),
-//    );
-//  }
-//}
+
