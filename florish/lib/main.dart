@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'globals.dart' as globals;
+
 import './history.dart';
 import './personalInfo.dart';
 import './standardDrink.dart';
@@ -246,7 +248,7 @@ class DrinkButton extends StatefulWidget {
 }
 
 class _DrinkButtonState extends State<DrinkButton> {
-  int _drinkCount = 0;
+
 
   @override
   Widget build(context) {
@@ -256,7 +258,8 @@ class _DrinkButtonState extends State<DrinkButton> {
         GestureDetector(
           onTap: () {
             setState(() {
-              _drinkCount++;
+              globals.drinkCount++;
+              print(globals.drinkCount);
             });
           },
           child: Stack(
@@ -268,7 +271,7 @@ class _DrinkButtonState extends State<DrinkButton> {
                 width: 71,
               ),
               Text(
-                '$_drinkCount',
+                globals.drinkCount.toString(),
                 style: TextStyle(
                   fontSize: 20,
                 ),
@@ -281,13 +284,13 @@ class _DrinkButtonState extends State<DrinkButton> {
   }
 }
 
+
 class WaterButton extends StatefulWidget {
   @override
   _WaterButtonState createState() => new _WaterButtonState();
 }
 
 class _WaterButtonState extends State<WaterButton> {
-  int _waterCount = 0;
 
   @override
   Widget build(context) {
@@ -297,7 +300,7 @@ class _WaterButtonState extends State<WaterButton> {
         GestureDetector(
           onTap: () {
             setState(() {
-              _waterCount++;
+              globals.waterCount++;
             });
           },
           child: Stack(
@@ -309,7 +312,7 @@ class _WaterButtonState extends State<WaterButton> {
                 width: 71,
               ),
               Text(
-                '$_waterCount',
+                globals.waterCount.toString(),
                 style: TextStyle(
                   fontSize: 20,
                 ),
@@ -321,6 +324,15 @@ class _WaterButtonState extends State<WaterButton> {
     );
   }
 }
+
+//class PlantImage extends StatefulWidget {
+//  @override
+//  _PlantImageState createState() => new _PlantImageState();
+//}
+//
+//class _PlantImageState extends State<PlantImage> {
+//  $_drinkCount
+//}
 
 //class HistoryPage extends StatelessWidget {
 //  @override
