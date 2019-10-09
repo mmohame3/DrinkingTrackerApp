@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'UrlResource.dart';
+
 
 class ResourcesPage extends StatefulWidget {
   @override
@@ -13,6 +17,12 @@ class _ResourcesPageState extends State<ResourcesPage> {
           title: new Text('Help & Resources'),
         backgroundColor: Color(0xFFA8C935),
       ),
+      body: new UrlResource(),
+//      new Text("Here are some information about alcohol abuse and ways to"
+//          "to get help."),
+
     );
+
   }
+
 }

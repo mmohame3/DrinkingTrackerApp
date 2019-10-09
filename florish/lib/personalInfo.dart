@@ -13,6 +13,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           title: new Text('Your Personal Information'),
         backgroundColor: Color(0xFFA8C935),
       ),
+//    body: new PersonalEntryData(),
     );
   }
 }

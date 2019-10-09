@@ -13,6 +13,11 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
           title: new Text('What is a "Standard Drink"'),
         backgroundColor: Color(0xFFA8C935),
       ),
+      body: new Text("In the United States, one 'standard drink contains approximately"
+          "14 grams of pure alcohol, which is found in:"
+          " 12 OZ regular beer (5% alcohol),"
+          " 5 OZ wine (12% alcohol),"
+          " 1.5 OZ liquor(40% alcohol"),
     );
   }
 }
