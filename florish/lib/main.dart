@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Plant Nanny',
+        theme: ThemeData(fontFamily: 'Montserrat'),
         home: AppHome()
     );
   }
@@ -84,11 +85,7 @@ class AppHome extends StatelessWidget {
       ),
     );
 
-    Widget plantImage = Image.asset(
-        'assets/images/plants/drink' + globals.drinkCount.toString()
-            + 'water' + globals.waterCount.toString() + '.png',
-        height: 174,
-        width: 180);
+
 
     Widget plant = Stack(
       alignment: Alignment.bottomCenter,
@@ -98,10 +95,9 @@ class AppHome extends StatelessWidget {
           height: 344,
           width: 375,
         ),
-        plantImage
+        new Plant()
       ],
     );
-
 
 
     Widget menu = Drawer(
@@ -245,6 +241,30 @@ class AppHome extends StatelessWidget {
   }
 }
 
+class Plant extends StatefulWidget {
+  @override
+  _PlantState createState() => new _PlantState();
+}
+
+class _PlantState extends State<Plant> {
+
+  void _handleDrinkCounted(int drinkCount) {
+    setState(() {
+      globals.drinkCount = drinkCount;
+    });
+  }
+
+  @override
+  Widget build(context) {
+    return Image.asset(
+        'assets/images/plants/drink${globals.drinkCount}water${globals
+            .waterCount}.png',
+        width: 180
+    );
+  }
+}
+
+
 
 
 class DrinkButton extends StatefulWidget {
@@ -253,8 +273,6 @@ class DrinkButton extends StatefulWidget {
 }
 
 class _DrinkButtonState extends State<DrinkButton> {
-
-
   @override
   Widget build(context) {
     return Stack(
@@ -324,7 +342,8 @@ class _WaterButtonState extends State<WaterButton> {
                 globals.waterCount.toString(),
                 style: TextStyle(
                   fontSize: 25,
-                    color: Colors.black,
+                  color: Colors.black,
+                  fontFamily: 'Montserrat',
                 ),
               ),
             ],

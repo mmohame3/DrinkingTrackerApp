@@ -22,10 +22,14 @@ class _HistoryPageState extends State<HistoryPage> {
         displayMode: DisplayMode.MONTHS,
         selectedDate: DateTime.now(),
         startDate: DateUtils.getFirstDayOfCurrentMonth(),
-        endDate: DateUtils.getLastDayOfCurrentMonth(),
+        endDate: DateUtils.getLastDayOfNextMonth(),
       ),
     );
   }
+
+
 }
+
+
 
 
