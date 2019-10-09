@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'PersonalEntryData.dart';
+
 class PersonalInfoPage extends StatefulWidget {
   @override
   _PersonalInfoPageState createState() => new _PersonalInfoPageState();
@@ -13,7 +15,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
           title: new Text('Your Personal Information'),
         backgroundColor: Color(0xFFA8C935),
       ),
-//    body: new PersonalEntryData(),
+
+    body: new PersonalEntryData(),
+
     );
+
   }
 }
