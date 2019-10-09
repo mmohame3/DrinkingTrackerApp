@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class AppHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -263,6 +264,10 @@ class _DrinkButtonState extends State<DrinkButton> {
           onTap: () {
             setState(() {
               globals.drinkCount++;
+              // Create variable for grams of alcohol, ontap multiply the number printed on the drink button * 14=g's
+              // [g's/(Weight*r)]
+              // r is gender based, .55 women, .68 men, start with an average to test functionality down the road we could adapt to take gender input
+              // Print text on BAC variable, link events
             });
           },
           child: Stack(
