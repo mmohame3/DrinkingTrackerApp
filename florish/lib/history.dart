@@ -1,4 +1,6 @@
+import 'package:calendarro/date_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:calendarro/calendarro.dart';
 
 class HistoryPage extends StatefulWidget {
   @override
@@ -11,7 +13,16 @@ class _HistoryPageState extends State<HistoryPage> {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('Your Drinking History'),
-            backgroundColor: Color(0xFFA8C935),
+        backgroundColor: Color(0xFFA8C935),
+          
+
+
+      ),
+      body: Calendarro(
+        displayMode: DisplayMode.MONTHS,
+        selectedDate: DateTime.now(),
+        startDate: DateUtils.getFirstDayOfCurrentMonth(),
+        endDate: DateUtils.getLastDayOfCurrentMonth(),
       ),
     );
   }
