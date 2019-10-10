@@ -21,11 +21,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Plant Nanny',
         theme: ThemeData(fontFamily: 'Montserrat'),
-        home: AppHome()
-    );
+        home: AppHome());
   }
 }
-
 
 class AppHome extends StatelessWidget {
   @override
@@ -54,7 +52,7 @@ class AppHome extends StatelessWidget {
                 ),
                 // BAC variable
                 Text(
-                  '0.00', // TODO: substitute for BAC Variable
+                  globals.bac.toString(),
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,
@@ -73,32 +71,18 @@ class AppHome extends StatelessWidget {
       ),
     );
 
-    Widget drinkEntryButtons = Container(
-      padding: const EdgeInsets.all(32),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          new DrinkButton(),
-          Spacer(),
-          new WaterButton(),
-        ],
-      ),
-    );
-
-
-
     Widget plant = Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        Image.asset(
-          'assets/images/plantSetting.png',
-          height: 344,
-          width: 375,
+        Container(
+          padding: const EdgeInsets.only(bottom: 100),
+          child: Image.asset(
+            'assets/images/plantSetting.png',
+          ),
         ),
-        new Plant()
+        new Plant(),
       ],
     );
-
 
     Widget menu = Drawer(
       child: Container(
@@ -234,7 +218,6 @@ class AppHome extends StatelessWidget {
         children: [
           bacHeader,
           plant,
-          drinkEntryButtons,
         ],
       ),
     );
@@ -247,27 +230,52 @@ class Plant extends StatefulWidget {
 }
 
 class _PlantState extends State<Plant> {
+  String imageName = 'assets/images/plants/drink0water0.png';
 
-  void _handleDrinkCounted(int drinkCount) {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  _updateImageName(String path) {
     setState(() {
-      globals.drinkCount = drinkCount;
+      imageName = path;
+      print(imageName);
     });
   }
 
   @override
   Widget build(context) {
-    return Image.asset(
-        'assets/images/plants/drink${globals.drinkCount}water${globals
-            .waterCount}.png',
-        width: 180
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.only(bottom: 50),
+          child: Image.asset(imageName, width: 180),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: new DrinkButton(
+                parentAction: _updateImageName,
+              ),
+            ),
+            Expanded(
+              child: new WaterButton(
+                parentAction: _updateImageName,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
 
-
-
-
 class DrinkButton extends StatefulWidget {
+  final ValueChanged<String> parentAction;
+  const DrinkButton({Key key, this.parentAction}) : super(key: key);
+
   @override
   _DrinkButtonState createState() => new _DrinkButtonState();
 }
@@ -275,59 +283,59 @@ class DrinkButton extends StatefulWidget {
 class _DrinkButtonState extends State<DrinkButton> {
   @override
   Widget build(context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              globals.drinkCount++;
-              // Create variable for grams of alcohol, ontap multiply the number printed on the drink button * 14=g's
-              // [g's/(Weight*r)]
-              // r is gender based, .55 women, .68 men, start with an average to test functionality down the road we could adapt to take gender input
-              // Print text on BAC variable, link events
-            });
-          },
-          child: Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              Image.asset(
-                'assets/images/soloCup.png',
-                height: 71,
-                width: 71,
-              ),
-              Text(
-                globals.drinkCount.toString(),
-                style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.black,
-                ),
-              ),
-            ],
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (globals.drinkCount < 4) {
+            globals.drinkCount++;
+          }
+          widget.parentAction(
+              'assets/images/plants/drink${globals.drinkCount}water${globals
+                  .waterCount}.png');
+        });
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
+          Image.asset(
+            'assets/images/soloCup.png',
+            height: 71,
+            width: 71,
           ),
-        ),
-      ],
+          Text(
+            globals.drinkCount.toString(),
+            style: TextStyle(
+              fontSize: 25,
+              color: Colors.black,
+              fontFamily: 'Montserrat',
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-
 class WaterButton extends StatefulWidget {
+  final ValueChanged<String> parentAction;
+  const WaterButton({Key key, this.parentAction}) : super(key: key);
+
   @override
   _WaterButtonState createState() => new _WaterButtonState();
 }
 
 class _WaterButtonState extends State<WaterButton> {
-
   @override
   Widget build(context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        GestureDetector(
+    return GestureDetector(
           onTap: () {
             setState(() {
-              globals.waterCount++;
+              if (globals.waterCount < 2) {
+                globals.waterCount++;
+              }
+              widget.parentAction(
+                  'assets/images/plants/drink${globals.drinkCount}water${globals
+                      .waterCount}.png');
             });
           },
           child: Stack(
@@ -348,15 +356,9 @@ class _WaterButtonState extends State<WaterButton> {
               ),
             ],
           ),
-        ),
-      ],
     );
   }
 }
-
-
-
-
 
 //Widget plant = Stack(
 //  alignment: Alignment.bottomCenter,
@@ -373,5 +375,3 @@ class _WaterButtonState extends State<WaterButton> {
 //    ),
 //  ],
 //);
-
-
