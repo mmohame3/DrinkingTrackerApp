@@ -16,8 +16,6 @@ class _PersonalEntryDataState extends State<PersonalEntryData> {
           color: Colors.white,
           child: new Column(
               children: [
-                new Padding(padding: EdgeInsets.only(top: 140.0)),
-                new Padding(padding: EdgeInsets.only(top: 50.0)),
                 new TextFormField(
                   decoration: new InputDecoration(
                     labelText: "Enter Your Age:",
@@ -41,6 +39,58 @@ class _PersonalEntryDataState extends State<PersonalEntryData> {
                     fontFamily: "Poppins",
                   ),
                 ),
+                SizedBox(height: 25.0,),
+
+                new TextFormField(
+                  decoration: new InputDecoration(
+                    labelText: "Enter Your height in cm:",
+                    fillColor: Colors.white,
+                    border: new OutlineInputBorder(
+                      borderRadius: new BorderRadius.circular(25.0),
+                      borderSide: new BorderSide(
+                      ),
+                    ),
+                    //fillColor: Colors.green
+                  ),
+                  validator: (val) {
+                    if (val.length == 0) {
+                      return "height cannot be empty";
+                    } else {
+                      return null;
+                    }
+                  },
+                  keyboardType: TextInputType.number,
+                  style: new TextStyle(
+                    fontFamily: "Poppins",
+                  ),
+                ),
+                SizedBox(height: 25.0,),
+
+                new TextFormField(
+                  decoration: new InputDecoration(
+                    labelText: "Enter Your weight in pounds:",
+                    fillColor: Colors.white,
+                    border: new OutlineInputBorder(
+                      borderRadius: new BorderRadius.circular(25.0),
+                      borderSide: new BorderSide(
+                      ),
+                    ),
+                    //fillColor: Colors.green
+                  ),
+                  validator: (val) {
+                    if (val.length == 0) {
+                      return "Your weight cannot be empty";
+                    } else {
+                      return null;
+                    }
+                  },
+                  keyboardType: TextInputType.number,
+                  style: new TextStyle(
+                    fontFamily: "Poppins",
+                  ),
+                ),
+
+
               ]
           )
       ),
