@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:florish/personalInfo.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 
@@ -12,6 +13,7 @@ import './alcoholInfo.dart';
 import './ourMission.dart';
 import './resources.dart';
 import './termsConditions.dart';
+import './alternatePersonalInformation.dart';
 
 void main() => runApp(MyApp());
 
@@ -125,6 +127,7 @@ class AppHome extends StatelessWidget {
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
                         new PersonalInfoPage()));
+                        //new altPersonalInfoPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
