@@ -11,7 +11,7 @@ class _OurMissionPageState extends State<OurMissionPage> {
     return new Scaffold(
       appBar: new AppBar (
           title: new Text('Our Mission'),
-        backgroundColor: Color(0xFFA8C935),
+        backgroundColor: Color(0xFF97B633),
       ),
       backgroundColor: Colors.grey[600],
       body: Container(

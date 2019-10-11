@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_tagging/flutter_tagging.dart';
 
-
-
 class PersonalEntryData extends StatefulWidget {
   @override
   _PersonalEntryDataState createState() => new _PersonalEntryDataState();
 }
-
 
 class _PersonalEntryDataState extends State<PersonalEntryData> {
   final _formKey = GlobalKey<FormState>();
@@ -20,92 +17,89 @@ class _PersonalEntryDataState extends State<PersonalEntryData> {
     // TODO: implement build
     return new Material(
       child: new Container(
-        key: this._formKey,
+          key: this._formKey,
           padding: const EdgeInsets.all(30.0),
           color: Colors.white,
-          child: new Column(
-              children: [
-                new TextFormField(
-                  decoration: new InputDecoration(
-                    labelText: "Enter Your Height:",
-                    fillColor: Colors.white,
-                    border: new OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(25.0),
-                      borderSide: new BorderSide(
-                      ),
-                    ),
-                    //fillColor: Colors.green
-                  ),
-                  onSaved: (val) => this._height,
-                  validator: (val) {
-                    if (val.isEmpty) {
-                      return "Height cannot be empty";
-                    } else {
-                      return null;
-                    }
-
-                  },
-                  keyboardType: TextInputType.number,
-                  style: new TextStyle(
-                    fontFamily: "Poppins",
-                  ),
+          child: new Column(children: [
+            new TextFormField(
+              decoration: new InputDecoration(
+                labelText: "Enter your height:",
+                fillColor: Colors.white,
+                border: new OutlineInputBorder(
+                  borderRadius: new BorderRadius.circular(25.0),
+                  borderSide: new BorderSide(),
                 ),
-                SizedBox(height: 25.0,),
+                //fillColor: Colors.green
+              ),
+              onSaved: (val) => this._height,
+              validator: (val) {
+                if (val.isEmpty) {
+                  return "Height cannot be empty";
+                } else {
+                  return null;
+                }
+              },
+              keyboardType: TextInputType.number,
+              style: new TextStyle(
+                fontFamily: "Poppins",
+              ),
+            ),
+            SizedBox(
+              height: 25.0,
+            ),
 
-                new TextFormField(
-                  decoration: new InputDecoration(
-                    labelText: "Enter Your weight:",
-                    fillColor: Colors.white,
-                    border: new OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(25.0),
-                      borderSide: new BorderSide(
-                      ),
-                    ),
-                    //fillColor: Colors.green
-                  ),
-                  onSaved: (value)=>this. _weight,
-                  validator: (val) {
-                    if (val.length == 0) {
-                      return "weight cannot be empty";
-                    } else {
-                      return null;
-                    }
-                  },
-                  keyboardType: TextInputType.number,
-                  style: new TextStyle(
-                    fontFamily: "Poppins",
-                  ),
+            new TextFormField(
+              decoration: new InputDecoration(
+                labelText: "Enter your weight:",
+                fillColor: Colors.white,
+                border: new OutlineInputBorder(
+                  borderRadius: new BorderRadius.circular(25.0),
+                  borderSide: new BorderSide(),
                 ),
-                SizedBox(height: 25.0,),
+                //fillColor: Colors.green
+              ),
+              onSaved: (value) => this._weight,
+              validator: (val) {
+                if (val.length == 0) {
+                  return "weight cannot be empty";
+                } else {
+                  return null;
+                }
+              },
+              keyboardType: TextInputType.number,
+              style: new TextStyle(
+                fontFamily: "Poppins",
+              ),
+            ),
+            SizedBox(
+              height: 25.0,
+            ),
 
-                new TextFormField(
-
-                  decoration: new InputDecoration(
-                    labelText: "Gender:",
-                    fillColor: Colors.white,
-                    border: new OutlineInputBorder(
-                      borderRadius: new BorderRadius.circular(25.0),
-                      borderSide: new BorderSide(
-                      ),
-                    ),
-                    //fillColor: Colors.green
-
-
+            new TextFormField(
+              decoration: new InputDecoration(
+                labelText: "Gender:",
+                fillColor: Colors.white,
+                border: new OutlineInputBorder(
+                  borderRadius: new BorderRadius.circular(25.0),
+                  borderSide: new BorderSide(),
                 ),
-
-                  validator: (val) {
-                    if (val.length == 0) {
-                      return "Your weight cannot be empty";
-                    } else {
-                      return null;
-                    }
-                  },
-                  keyboardType: TextInputType.number,
-                  style: new TextStyle(
-                    fontFamily: "Poppins",
-                  ),
-                ),
-                SizedBox(height: 25.0,),
+                //fillColor: Colors.green
+              ),
+              validator: (val) {
+                if (val.length == 0) {
+                  return "Your weight cannot be empty";
+                } else {
+                  return null;
+                }
+              },
+              keyboardType: TextInputType.number,
+              style: new TextStyle(
+                fontFamily: "Poppins",
+              ),
+            ),
+            SizedBox(
+              height: 25.0,
+            ),
 //                FlutterTagging(
 //                  textFieldDecoration: InputDecoration(
 //                      border: OutlineInputBorder(),
@@ -129,44 +123,35 @@ class _PersonalEntryDataState extends State<PersonalEntryData> {
 //                  },
 //                ),
 
-          DropdownButton(
-            items: _dropDownItem(),
-            onChanged: null,
-            hint: Text('Select Gender'),
+            DropdownButton(
+              items: _dropDownItem(),
+              onChanged: null,
+              hint: Text('Select Gender'),
+            ),
 
-          ),
-
-          RaisedButton(
-            child: Text('Submit'),
-            onPressed: (){
-              if(this._formKey.currentState.validate())
-                setState(() {
-                  this._formKey.currentState.save();
-                });
-            },
-          )
+            RaisedButton(
+              child: Text('Submit'),
+              onPressed: () {
+                if (this._formKey.currentState.validate())
+                  setState(() {
+                    this._formKey.currentState.save();
+                  });
+              },
+            )
 //          DropdownButton(
 //              items: _dropDownItem(),
 //              onChanged: null)
-
-              ]
-          )
-      ),
+          ])),
     );
   }
-  List<DropdownMenuItem<String>>_dropDownItem(){
-    List<String> ddl =["Male","Female", "Others"];
-    return ddl.map(
-        (value)=>DropdownMenuItem(
-          value: value,
-          child: Text(value),
-        )
-    ).toList();
+
+  List<DropdownMenuItem<String>> _dropDownItem() {
+    List<String> ddl = ["Male", "Female", "Others"];
+    return ddl
+        .map((value) => DropdownMenuItem(
+              value: value,
+              child: Text(value),
+            ))
+        .toList();
   }
-
-  }
-
-
-
-
-
+}

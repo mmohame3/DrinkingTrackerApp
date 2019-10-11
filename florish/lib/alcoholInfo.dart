@@ -11,7 +11,7 @@ class _AlcoholInfoPageState extends State<AlcoholInfoPage> {
     return new Scaffold(
       appBar: new AppBar(
           title: new Text('Alcohol Facts and Information'),
-        backgroundColor: Color(0xFFA8C935),
+        backgroundColor: Color(0xFF97B633),
       ),
     );
   }

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:florish/personalInfo.dart' as prefix0;
+//import 'package:florish/personalInfo.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 
@@ -13,7 +13,7 @@ import './alcoholInfo.dart';
 import './ourMission.dart';
 import './resources.dart';
 import './termsConditions.dart';
-import './alternatePersonalInformation.dart';
+//import './alternatePersonalInformation.dart';
 
 void main() => runApp(MyApp());
 
@@ -49,6 +49,7 @@ class AppHome extends StatelessWidget {
                     'BAC:',
                     style: TextStyle(
                       color: Colors.white,
+                      fontSize: 12
                     ),
                   ),
                 ),
@@ -88,13 +89,14 @@ class AppHome extends StatelessWidget {
 
     Widget menu = Drawer(
       child: Container(
-        color: Color(0xFFA8C935),
+        padding: EdgeInsets.only(left: 10),
+        color: Color(0xFF97B633),
         child: ListView(
           children: <Widget>[
             ListTile(
               title: Text(
-                "My Plant",
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                "MY PLANT",
+                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -103,8 +105,8 @@ class AppHome extends StatelessWidget {
             ),
             ListTile(
               title: Text(
-                "History",
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                "HISTORY",
+                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -117,8 +119,8 @@ class AppHome extends StatelessWidget {
             ),
             ListTile(
               title: Text(
-                "Personal Information",
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                "PERSONAL INFORMATION",
+                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -133,8 +135,8 @@ class AppHome extends StatelessWidget {
             ),
             ListTile(
               title: Text(
-                'A "Standard Drink"',
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                'A "STANDARD DRINK"',
+                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -142,14 +144,14 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                        new StandardDrinkPage()));
+                            new StandardDrinkPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
               title: Text(
-                "Alcohol Facts",
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                "ALCOHOL FACTS",
+                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -157,14 +159,14 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                        new AlcoholInfoPage()));
+                            new AlcoholInfoPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
               title: Text(
-                "Help & Resources",
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                "HELP & RESOURCES",
+                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -172,14 +174,14 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                        new ResourcesPage()));
+                            new ResourcesPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
               title: Text(
-                "Our Mission",
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                "OUR MISSION",
+                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -187,14 +189,14 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                        new OurMissionPage()));
+                            new OurMissionPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
               title: Text(
-                "Terms & Conditions",
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                "TERMS & CONDITIONS",
+                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -202,7 +204,7 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                        new TermsConditionsPage()));
+                            new TermsConditionsPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -212,8 +214,14 @@ class AppHome extends StatelessWidget {
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text("FLORISH"),
-        backgroundColor: Colors.green[700],
+        title: Text(
+          "FLORISH",
+          style: TextStyle(
+            fontFamily: 'Montserrat',
+            letterSpacing: 3,
+          ),
+        ),
+        backgroundColor: Color(0xFF97B633),
       ),
       drawer: menu,
       backgroundColor: Colors.grey[600],
@@ -243,7 +251,6 @@ class _PlantState extends State<Plant> {
   _updateImageName(String path) {
     setState(() {
       imageName = path;
-      print(imageName);
     });
   }
 

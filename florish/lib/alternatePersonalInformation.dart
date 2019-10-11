@@ -37,7 +37,7 @@ class _altPersonalInfoPageState extends State<altPersonalInfoPage> {
     return new Scaffold(
         appBar: new AppBar(
           title: new Text('Your Personal Information'),
-          backgroundColor: Color(0xFFA8C935),
+          backgroundColor: Color(0xFF97B633),
         ),
 
         body: Scaffold(

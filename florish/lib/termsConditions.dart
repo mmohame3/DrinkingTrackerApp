@@ -11,20 +11,19 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
     return new Scaffold(
       appBar: new AppBar(
           title: new Text('Terms & Conditions'),
-        backgroundColor: Color(0xFFA8C935),
+        backgroundColor: Color(0xFF97B633),
       ),
         backgroundColor: Colors.grey[600],
         body: Container(
           margin: EdgeInsets.all(30.0),
-          padding: EdgeInsets.all(10.0),
+          padding: EdgeInsets.all(15.0),
           alignment: Alignment.center,
-          width: 800,
           height: 200,
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: Color(0xFFA8C935), width: 7.0),
           ),
-          child: Text("\t Florish is an app to help people keep track of their drinking. "
+          child: Text("Florish is an app to help people keep track of their drinking. "
               "It is not a scientific or precise way to monitor your BAC.",
               style: TextStyle(fontSize: 20, color: Colors.black)),
         )
