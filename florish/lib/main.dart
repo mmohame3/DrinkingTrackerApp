@@ -20,11 +20,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Plant Nanny',
-        home: AppHome()
-    );
+        theme: ThemeData(fontFamily: 'Montserrat'),
+        home: AppHome());
   }
 }
-
 
 class AppHome extends StatelessWidget {
   @override
@@ -53,7 +52,7 @@ class AppHome extends StatelessWidget {
                 ),
                 // BAC variable
                 Text(
-                  '0.00', // TODO: substitute for BAC Variable
+                  globals.bac.toString(),
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,
@@ -72,37 +71,18 @@ class AppHome extends StatelessWidget {
       ),
     );
 
-    Widget drinkEntryButtons = Container(
-      padding: const EdgeInsets.all(32),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          new DrinkButton(),
-          Spacer(),
-          new WaterButton(),
-        ],
-      ),
-    );
-
-    Widget plantImage = Image.asset(
-        'assets/images/plants/drink' + globals.drinkCount.toString()
-            + 'water' + globals.waterCount.toString() + '.png',
-        height: 174,
-        width: 180);
-
     Widget plant = Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        Image.asset(
-          'assets/images/plantSetting.png',
-          height: 344,
-          width: 375,
+        Container(
+          padding: const EdgeInsets.only(bottom: 100),
+          child: Image.asset(
+            'assets/images/plantSetting.png',
+          ),
         ),
-        plantImage
+        new Plant(),
       ],
     );
-
-
 
     Widget menu = Drawer(
       child: Container(
@@ -144,7 +124,7 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            new PersonalInfoPage()));
+                        new PersonalInfoPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -159,7 +139,7 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            new StandardDrinkPage()));
+                        new StandardDrinkPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -174,7 +154,7 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            new AlcoholInfoPage()));
+                        new AlcoholInfoPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -189,7 +169,7 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            new ResourcesPage()));
+                        new ResourcesPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -204,7 +184,7 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            new OurMissionPage()));
+                        new OurMissionPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -219,7 +199,7 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            new TermsConditionsPage()));
+                        new TermsConditionsPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -238,121 +218,142 @@ class AppHome extends StatelessWidget {
         children: [
           bacHeader,
           plant,
-          drinkEntryButtons,
         ],
       ),
     );
   }
 }
 
+class Plant extends StatefulWidget {
+  @override
+  _PlantState createState() => new _PlantState();
+}
 
+class _PlantState extends State<Plant> {
+  String imageName = 'assets/images/plants/drink0water0.png';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  _updateImageName(String path) {
+    setState(() {
+      imageName = path;
+      print(imageName);
+    });
+  }
+
+  @override
+  Widget build(context) {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.only(bottom: 50),
+          child: Image.asset(imageName, width: 180),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: new DrinkButton(
+                parentAction: _updateImageName,
+              ),
+            ),
+            Expanded(
+              child: new WaterButton(
+                parentAction: _updateImageName,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
 
 class DrinkButton extends StatefulWidget {
+  final ValueChanged<String> parentAction;
+  const DrinkButton({Key key, this.parentAction}) : super(key: key);
+
   @override
   _DrinkButtonState createState() => new _DrinkButtonState();
 }
 
 class _DrinkButtonState extends State<DrinkButton> {
-
-
   @override
   Widget build(context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              globals.drinkCount++;
-              // Create variable for grams of alcohol, ontap multiply the number printed on the drink button * 14=g's
-              // [g's/(Weight*r)]
-              // r is gender based, .55 women, .68 men, start with an average to test functionality down the road we could adapt to take gender input
-              // Print text on BAC variable, link events
-            });
-          },
-          child: Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              Image.asset(
-                'assets/images/soloCup.png',
-                height: 71,
-                width: 71,
-              ),
-              Text(
-                globals.drinkCount.toString(),
-                style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.black,
-                ),
-              ),
-            ],
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (globals.drinkCount < 4) {
+            globals.drinkCount++;
+          }
+          widget.parentAction(
+              'assets/images/plants/drink${globals.drinkCount}water${globals.waterCount}.png');
+        });
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
+          Image.asset(
+            'assets/images/soloCup.png',
+            height: 71,
+            width: 71,
           ),
-        ),
-      ],
+          Text(
+            globals.drinkCount.toString(),
+            style: TextStyle(
+              fontSize: 25,
+              color: Colors.black,
+              fontFamily: 'Montserrat',
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-
 class WaterButton extends StatefulWidget {
+  final ValueChanged<String> parentAction;
+  const WaterButton({Key key, this.parentAction}) : super(key: key);
+
   @override
   _WaterButtonState createState() => new _WaterButtonState();
 }
 
 class _WaterButtonState extends State<WaterButton> {
-
   @override
   Widget build(context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              globals.waterCount++;
-            });
-          },
-          child: Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              Image.asset(
-                'assets/images/waterCup.png',
-                height: 71,
-                width: 71,
-              ),
-              Text(
-                globals.waterCount.toString(),
-                style: TextStyle(
-                  fontSize: 25,
-                    color: Colors.black,
-                ),
-              ),
-            ],
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (globals.waterCount < 2) {
+            globals.waterCount++;
+          }
+          widget.parentAction(
+              'assets/images/plants/drink${globals.drinkCount}water${globals.waterCount}.png');
+        });
+      },
+      child: Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
+          Image.asset(
+            'assets/images/waterCup.png',
+            height: 71,
+            width: 71,
           ),
-        ),
-      ],
+          Text(
+            globals.waterCount.toString(),
+            style: TextStyle(
+              fontSize: 25,
+              color: Colors.black,
+              fontFamily: 'Montserrat',
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
-
-
-
-
-
-//Widget plant = Stack(
-//  alignment: Alignment.bottomCenter,
-//  children: [
-//    Image.asset(
-//      'assets/images/plantSetting.png',
-//      height: 344,
-//      width: 375,
-//    ),
-//    Image.asset(
-//      'assets/images/plants/drink0water0.png',
-//      height: 174,
-//      width: 180,
-//    ),
-//  ],
-//);
-
-
