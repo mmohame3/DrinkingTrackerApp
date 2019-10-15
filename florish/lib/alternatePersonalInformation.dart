@@ -1,51 +1,39 @@
 import 'package:Florish/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'globals.dart';
+import 'globals.dart' as globals;
 import 'PersonalEntryData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 
-const List<String> weights = const <String>[
-  '100', '105', '110', '115', '120', '125', '130', '135', '140', '145',
-  '150', '155', '160', '165', '170', '175','180', '185', '190', '195',
-  '200','205', '210', '215', '220', '225', '230', '235', '240', '245',
-  '250', '255', '260', '265', '270', '275','280', '285', '290', '295',
-  '300', '305', '310', '315', '320', '325', '330', '335', '340', '345',
-  '350', '355', '360', '365', '370', '375','380', '385', '390', '395',
-  '400',
-];
 
-const List<String> genders = const <String> [
-  "Female", "Male", "Other"
-];
 
 
 
 class altPersonalInfoPage extends StatefulWidget {
   @override
-  _altPersonalInfoPageState createState() => new _altPersonalInfoPageState();
+  altPersonalInfoPageState createState() => new altPersonalInfoPageState();
 }
 
-class _altPersonalInfoPageState extends State<altPersonalInfoPage> {
+class altPersonalInfoPageState extends State<altPersonalInfoPage> {
   final _controller = new TextEditingController();
   var _formKey = GlobalKey<FormState>();
 
-  int selectedFeet = 0;
-  int selectedInches = 0;
-  int totalSelectedFeet = 0;
-
-  int selectedWeight = 0;
-  String selectedGender = '';
+//  int selectedFeet = ;
+//  int selectedInches = 0;
+//  int totalSelectedFeet = 0;
+//
+//  int selectedWeight = 0;
+//  String selectedGender = '';
 
 
   addIntToSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('weight', selectedWeight);
-    prefs.setInt('feet', selectedFeet);
-    prefs.setInt('inches', selectedInches);
-    prefs.setString(AppConstants.PREF_GENDER, selectedGender);
+    prefs.setInt('weight', globals.selectedWeight);
+    prefs.setInt('feet', globals.selectedFeet);
+    prefs.setInt('inches', globals.selectedInches);
+    prefs.setString(AppConstants.PREF_GENDER, globals.selectedGender);
 
   }
 
@@ -88,8 +76,6 @@ class _altPersonalInfoPageState extends State<altPersonalInfoPage> {
                               child: Text(
                                 "Height",
                                 style: TextStyle(fontSize: 18, color: Colors.black),
-
-
                               ),
                               onPressed: () {
                                 showModalBottomSheet(
@@ -104,13 +90,13 @@ class _altPersonalInfoPageState extends State<altPersonalInfoPage> {
                                               child: CupertinoPicker(
                                                   scrollController:
                                                   new FixedExtentScrollController(
-                                                    initialItem: selectedFeet,
+                                                    initialItem: globals.selectedFeet,
                                                   ),
                                                   itemExtent: 32.0,
                                                   backgroundColor: Colors.white,
                                                   onSelectedItemChanged: (int index) {
                                                     setState(() {
-                                                      selectedFeet = index;
+                                                      globals.selectedFeet = index;
 
                                                     });
 
@@ -127,13 +113,13 @@ class _altPersonalInfoPageState extends State<altPersonalInfoPage> {
                                               child: CupertinoPicker(
                                                   scrollController:
                                                   new FixedExtentScrollController(
-                                                    initialItem: selectedInches,
+                                                    initialItem: globals.selectedInches,
                                                   ),
                                                   itemExtent: 32.0,
                                                   backgroundColor: Colors.white,
                                                   onSelectedItemChanged: (int index) {
                                                     setState(() {
-                                                      selectedInches = index;
+                                                      globals.selectedInches = index;
 
                                                     });
 
@@ -151,7 +137,7 @@ class _altPersonalInfoPageState extends State<altPersonalInfoPage> {
                                       );
                                     });
                               }),
-                          Text( '${selectedFeet} feet, ${selectedInches} inches',
+                          Text( '${globals.selectedFeet} feet, ${globals.selectedInches} inches',
                             style: TextStyle(fontSize: 16),
                           )
 
@@ -170,19 +156,19 @@ class _altPersonalInfoPageState extends State<altPersonalInfoPage> {
                                       child: CupertinoPicker(
                                           scrollController:
                                           new FixedExtentScrollController(
-                                            initialItem: selectedWeight,
+                                            initialItem: globals.selectedWeight,
                                           ),
                                           itemExtent: 32.0,
                                           backgroundColor: Colors.white,
                                           onSelectedItemChanged: (int index) {
                                             setState(() {
-                                              selectedWeight = int.parse(weights[index]);
+                                              globals.selectedWeight = int.parse(globals.weights[index]);
                                             });
 
                                           },
-                                          children: new List<Widget>.generate(weights.length, (int index) {
+                                          children: new List<Widget>.generate(globals.weights.length, (int index) {
                                             return new Center(
-                                              child: Text(weights[index]),
+                                              child: Text(globals.weights[index]),
                                             );
                                           }))
                                   );
@@ -190,7 +176,7 @@ class _altPersonalInfoPageState extends State<altPersonalInfoPage> {
                             );
                           },
                         ),
-                        Text('${selectedWeight} pounds',
+                        Text('${globals.selectedWeight} pounds',
                           style: TextStyle(fontSize: 16),
                         ),
                       ],
@@ -210,18 +196,18 @@ class _altPersonalInfoPageState extends State<altPersonalInfoPage> {
                                       child: CupertinoPicker(
                                           scrollController:
                                           new FixedExtentScrollController(
-                                            initialItem: genders.indexOf(selectedGender),
+                                            initialItem: globals.genders.indexOf(globals.selectedGender),
                                           ),
                                           itemExtent: 32.0,
                                           backgroundColor: Colors.white,
                                           onSelectedItemChanged: (int index) {
                                             setState(() {
-                                              selectedGender = genders[index];
+                                              globals.selectedGender = globals.genders[index];
                                             });
                                           },
-                                          children: new List<Widget>.generate(genders.length, (int index) {
+                                          children: new List<Widget>.generate(globals.genders.length, (int index) {
                                             return new Center(
-                                              child: Text(genders[index]),
+                                              child: Text(globals.genders[index]),
                                             );
                                           }))
                                   );
@@ -229,7 +215,7 @@ class _altPersonalInfoPageState extends State<altPersonalInfoPage> {
                             );
                           },
                         ),
-                        Text(selectedGender,
+                        Text(globals.selectedGender,
                           style: TextStyle(fontSize: 16),
                         ),
                         Spacer(
