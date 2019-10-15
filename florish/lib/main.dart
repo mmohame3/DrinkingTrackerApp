@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 //import 'package:florish/personalInfo.dart' as prefix0;
+import 'package:Florish/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart' as globals;
 
 import './history.dart';
@@ -13,7 +15,7 @@ import './alcoholInfo.dart';
 import './ourMission.dart';
 import './resources.dart';
 import './termsConditions.dart';
-//import './alternatePersonalInformation.dart';
+import './alternatePersonalInformation.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,11 +25,26 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Plant Nanny',
         theme: ThemeData(fontFamily: 'Montserrat'),
-        home: AppHome());
+        home: AppHomeScreen(),
+    );
   }
 }
 
-class AppHome extends StatelessWidget {
+class AppHomeScreen extends StatefulWidget {
+  @override
+  _AppHomeScreenState createState() => _AppHomeScreenState();
+}
+
+class _AppHomeScreenState extends State<AppHomeScreen> {
+  String bacValue = "0.0";
+
+  @override
+  void initState() {
+    super.initState();
+    calBac();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     // top row
@@ -48,14 +65,15 @@ class AppHome extends StatelessWidget {
                   child: Text(
                     'BAC:',
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12
+                        color: Colors.white,
+                        fontSize: 12
                     ),
                   ),
                 ),
                 // BAC variable
                 Text(
-                  globals.bac.toString(),
+                  //globals.bac.toString(),
+                  bacValue,
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,
@@ -128,8 +146,8 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                        new PersonalInfoPage()));
-                        //new altPersonalInfoPage()));
+//                        new PersonalInfoPage()));
+                        new altPersonalInfoPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -144,7 +162,7 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            new StandardDrinkPage()));
+                        new StandardDrinkPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -159,7 +177,7 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            new AlcoholInfoPage()));
+                        new AlcoholInfoPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -174,7 +192,7 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            new ResourcesPage()));
+                        new ResourcesPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -189,7 +207,7 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            new OurMissionPage()));
+                        new OurMissionPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -204,7 +222,7 @@ class AppHome extends StatelessWidget {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            new TermsConditionsPage()));
+                        new TermsConditionsPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -233,7 +251,41 @@ class AppHome extends StatelessWidget {
       ),
     );
   }
+  calBac(){
+    getBac().then((data) {
+
+        setState(() {
+          bacValue = data;
+        });
+
+    }, onError: (e) {
+      print(e);
+    });
+
+  }
+  Future <String> getBac()  async {
+    SharedPreferences pref =  await SharedPreferences.getInstance();
+    int selectedFeet = pref.getInt('feet');
+    int selectedInches = pref.getInt('inches');
+    String selectedGender = pref.getString(AppConstants.PREF_GENDER);
+    int selectedWeight = pref.getInt('weight');
+    double c ;
+
+    if(selectedGender.toLowerCase() == 'Male'.toLowerCase()){
+      c = 0.68;
+    }else{
+      c= 0.55;
+    }
+
+    int SelectedHeight = selectedFeet + (selectedInches*0.0833333.floor());
+    int usStandardDrink = 14;
+
+    int bacCal =(((globals.drinkCount*14)/selectedWeight*c)*100).floor();
+    return bacCal.toString();
+  }
 }
+
+
 
 class Plant extends StatefulWidget {
   @override
