@@ -269,18 +269,18 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
     int selectedInches = pref.getInt('inches');
     String selectedGender = pref.getString(AppConstants.PREF_GENDER);
     int selectedWeight = pref.getInt('weight');
-    double c ;
+    double r ;
 
     if(selectedGender.toLowerCase() == 'Male'.toLowerCase()){
-      c = 0.68;
+      r = 0.68;
     }else{
-      c= 0.55;
+      r= 0.55;
     }
 
     int SelectedHeight = selectedFeet + (selectedInches*0.0833333.floor());
     int usStandardDrink = 14;
 
-    int bacCal =(((globals.drinkCount*14)/selectedWeight*c)*100).floor();
+    int bacCal =(((globals.drinkCount*14)/selectedWeight*r)*100).floor();
     return bacCal.toString();
   }
 }

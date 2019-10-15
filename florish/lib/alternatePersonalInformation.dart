@@ -237,7 +237,7 @@ class _altPersonalInfoPageState extends State<altPersonalInfoPage> {
                         ),
                         RaisedButton(
 
-                          child: Text("Submit"),
+                          child: Text("Save"),
                           onPressed:(){
 
                            // print("Data are: " + selectedGender + "- " + selectedWeight.toString() + "- " + selectedFeet.toString());
