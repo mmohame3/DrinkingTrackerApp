@@ -17,8 +17,8 @@ class altPersonalInfoPage extends StatefulWidget {
 }
 
 class altPersonalInfoPageState extends State<altPersonalInfoPage> {
-  final _controller = new TextEditingController();
-  var _formKey = GlobalKey<FormState>();
+//  final _controller = new TextEditingController();
+//  var _formKey = GlobalKey<FormState>();
 
 //  int selectedFeet = ;
 //  int selectedInches = 0;
@@ -26,17 +26,23 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
 //
 //  int selectedWeight = 0;
 //  String selectedGender = '';
-
-
-  addIntToSF() async {
+//
+//
+//  addIntToSF() async {
+//    SharedPreferences prefs = await SharedPreferences.getInstance();
+//    prefs.setInt('weight', globals.selectedWeight);
+//    prefs.setInt('feet', globals.selectedFeet);
+//    prefs.setInt('inches', globals.selectedInches);
+//    prefs.setString(AppConstants.PREF_GENDER, globals.selectedGender);
+//
+//  }
+  _getValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('weight', globals.selectedWeight);
-    prefs.setInt('feet', globals.selectedFeet);
-    prefs.setInt('inches', globals.selectedInches);
-    prefs.setString(AppConstants.PREF_GENDER, globals.selectedGender);
-
+    int feet = prefs.getInt('feet');
+    int inches = prefs.getInt('inches');
+    int weight = prefs.getInt('weight');
+    String gender = prefs.getString('gender');
   }
-
 
 
   @override
@@ -47,11 +53,22 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
         appBar: new AppBar(
           title: new Text('Your Personal Information'),
           backgroundColor: Color(0xFF97B633),
+//          actions: [
+//            FutureBuilder<List>(
+//              future: SharedPreferencesHelper.getList(),
+//              initialData: [],
+//              builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+//
+//              },
+//
+//
+//            )
+//          ],
         ),
 
         body: Scaffold(
 
-          key: this._formKey,
+//          key: this._formKey,
             backgroundColor: Colors.grey[600],
 
 
@@ -60,7 +77,7 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
                 padding: EdgeInsets.all(10.0),
                 alignment: Alignment.center,
                 width: 800,
-                height: 200,
+                height: 250,
 
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -73,14 +90,13 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
 
                         children: <Widget> [
                           CupertinoButton(
-                              child: Text(
-                                "Height",
-                                style: TextStyle(fontSize: 18, color: Colors.black),
-                              ),
+                              child: Text( 'Height:   ${globals.selectedFeet} feet, ${globals.selectedInches} inches',
+                              style: TextStyle(fontSize: 18),
+                                ),
                               onPressed: () {
                                 showModalBottomSheet(
                                     context: context,
-                                    builder: (BuildContext context) {
+                                    builder: (BuildContext context){
                                       return Container(
                                         height: 200.0,
                                         color: Colors.white,
@@ -94,7 +110,7 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
                                                   ),
                                                   itemExtent: 32.0,
                                                   backgroundColor: Colors.white,
-                                                  onSelectedItemChanged: (int index) {
+                                                  onSelectedItemChanged: (int index)  {
                                                     setState(() {
                                                       globals.selectedFeet = index;
 
@@ -137,16 +153,16 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
                                       );
                                     });
                               }),
-                          Text( '${globals.selectedFeet} feet, ${globals.selectedInches} inches',
-                            style: TextStyle(fontSize: 16),
-                          )
+//
 
                         ]
                     ),
                     Row (
                       children: <Widget>[
                         CupertinoButton(
-                          child: Text("Weight:", style: TextStyle(fontSize: 18, color: Colors.black)),
+                          child: Text('Weight:   ${globals.selectedWeight} pounds',
+                            style: TextStyle(fontSize: 18),
+                          ),
                           onPressed: (){
                             showModalBottomSheet(
                                 context: context,
@@ -176,9 +192,7 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
                             );
                           },
                         ),
-                        Text('${globals.selectedWeight} pounds',
-                          style: TextStyle(fontSize: 16),
-                        ),
+
                       ],
 
 
@@ -186,7 +200,7 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
                     Row (
                       children: <Widget>[
                         CupertinoButton(
-                          child: Text("Gender:", style: TextStyle(fontSize: 18, color: Colors.black)),
+                          child: Text("Gender:   ${globals.selectedGender}", style: TextStyle(fontSize: 18)),
                           onPressed: (){
                             showModalBottomSheet(
                                 context: context,
@@ -215,31 +229,28 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
                             );
                           },
                         ),
-                        Text(globals.selectedGender,
-                          style: TextStyle(fontSize: 16),
+                      ],
                         ),
                         Spacer(
                           flex: 1,
                         ),
-                        RaisedButton(
-
-                          child: Text("Save"),
-                          onPressed:(){
-
-                           // print("Data are: " + selectedGender + "- " + selectedWeight.toString() + "- " + selectedFeet.toString());
-                            addIntToSF();
-                            if(this._formKey.currentState.validate())
-                              setState(() {
-                                this._formKey.currentState.save();
-                              });
+                        Column (
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                              RaisedButton(
+                                child: Text("Save"),
+                                  onPressed:(){
+                                      _save();
+                             // print("Data are: " + selectedGender + "- " + selectedWeight.toString() + "- " + selectedFeet.toString());
+//                                  addIntToSF();
+//                                  if(this._formKey.currentState.validate())
+//                                  setState(() {
+//                                  this._formKey.currentState.save();
+//                                  });
                           },
                         ),
-                      ],
-
-
-
-                    ),
-
+                        ],
+                        ),
 
                   ],
 
@@ -257,4 +268,51 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
 
 
   }
+
+  _save() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt("feet", globals.selectedFeet);
+    prefs.setInt("inches", globals.selectedInches);
+    prefs.setInt("weight", globals.selectedWeight);
+    prefs.setString("gender", globals.selectedGender);
+
+  }
+
+
 }
+
+//class SharedPreferencesHelper {
+//  static final List<String> prefList = [];
+//
+//  static Future<List> getList() async {
+//    final SharedPreferences prefs = await SharedPreferences.getInstance();
+//    return prefs.getStringList("pref list");
+//  }
+//
+//  static Future<bool> setFeet(int feet) async {
+//    final SharedPreferences prefs = await SharedPreferences.getInstance();
+//    return prefs.setString(prefList[0], feet.toString());
+//  }
+//
+//  static Future<String> getFeet() async {
+//    final SharedPreferences prefs = await SharedPreferences.getInstance();
+//    return prefs.getString(prefList[0]);
+//  }
+//
+//  static Future<bool> setInches(int inches) async {
+//    final SharedPreferences prefs = await SharedPreferences.getInstance();
+//    return prefs.setString(prefList[1], inches.toString());
+//  }
+//
+//  static Future<bool> setWeight(int weight) async {
+//    final SharedPreferences prefs = await SharedPreferences.getInstance();
+//    return prefs.setString(prefList[2], weight.toString());
+//  }
+//
+//  static Future<bool> setGender(String gender) async {
+//    final SharedPreferences prefs = await SharedPreferences.getInstance();
+//    return prefs.setString(prefList[3], gender);
+//  }
+
+//}
+

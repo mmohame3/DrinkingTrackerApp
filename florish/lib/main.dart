@@ -296,7 +296,7 @@ class _PlantState extends State<Plant> {
 
   @override
   Widget build(context) {
-    return ListView(
+    return Column(
       children: [
           Container(
             padding: const EdgeInsets.all(32),

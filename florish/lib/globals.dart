@@ -1,9 +1,11 @@
 library globals;
 
 int waterCount = 0;
-int drinkCount = 1;
+int drinkCount = 0;
 
 double bac = 0.00;
+double maxBAC = 0.00;
+
 
 String selectedGender = '';
 int selectedHeight = 0;
@@ -31,5 +33,4 @@ var genders = [
 ];
 
 
-var date1 = DateTime.now();
-var date2 = DateTime.now();
+
