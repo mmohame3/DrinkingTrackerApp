@@ -5,6 +5,8 @@
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 import 'database_helpers.dart';
+import 'package:sqflite/sqflite.dart';
+
 
 import './history.dart';
 import './standardDrink.dart';
@@ -319,7 +321,6 @@ class _PlantState extends State<Plant> {
       //print(elapsedTime);
       bac += ((14 / (globals.weightGrams * r)) * 100) -
           ((elapsedTime.inSeconds / 3600) * .015);
-      print(bac);
     }
     return bac;
   }
@@ -448,9 +449,8 @@ class _DrinkButtonState extends State<DrinkButton> {
 
     globals.allDrinkTimes.add(currentTime);
     globals.drinkTypes.add(1);
-
     var dayRow = Day(
-        date: DateTime.now(),
+        date: currentTime,
         timeList: globals.allDrinkTimes,
         typeList: globals.drinkTypes,
         totalDrinks: globals.drinkCount,
@@ -492,6 +492,7 @@ class _WaterButtonState extends State<WaterButton> {
               'assets/images/plants/drink${globals.drinkCount}water${globals
                   .waterCount}.png');
           waterButtonTap();
+          printDrinkCounts();
         });
       },
       child: Stack(
@@ -535,4 +536,26 @@ class _WaterButtonState extends State<WaterButton> {
     await dbHelper.updateDay(dayRow);
   }
 }
+
+//  printDrinkCounts() async {
+//  Database db = await DatabaseHelper.instance.database;
+//
+//  List<String> columnsToSelect = [
+//    DatabaseHelper.columnDrinkCount,
+//    DatabaseHelper.columnWaterCount,
+//  ];
+//
+//  String whereString = '${DatabaseHelper.columnDay} = ?';
+//  List<dynamic> whereArguments = [17];
+//
+//  List<Map> result = await db.query(
+//    DatabaseHelper.tableDays,
+//    columns: columnsToSelect,
+//    where: whereString,
+//    whereArgs: whereArguments);
+//
+//  result.forEach((row) => print(row));
+//
+//
+//}
 

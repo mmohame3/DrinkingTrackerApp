@@ -36,6 +36,8 @@ class Day {
     totalWaters = map[waterCount];
   }
 
+  DateTime get date1 => date;
+
   Map<String, dynamic> toMap() {
     var map = <String, dynamic> {
       columnDay: date,
@@ -63,14 +65,14 @@ class DatabaseHelper {
   static final _databaseName = "CalendarDatabase.db";
   static final _databaseVersion = 1;
 
-  final String tableDays = "days";
-  final String columnDay = "day";
-  final String columnTimeList = 'time list';
-  final String columnTypeList = 'type list';
-  final String columnMaxBAC = 'maxBAC';
-  final String columnMBWater = 'Water at maxBAC';
-  final String columnDrinkCount = "total drink count";
-  final String columnWaterCount = "total water count";
+  static final String tableDays = "days";
+  static final String columnDay = "day";
+  static final String columnTimeList = 'time list';
+  static final String columnTypeList = 'type list';
+  static final String columnMaxBAC = 'maxBAC';
+  static final String columnMBWater = 'Water at maxBAC';
+  static final String columnDrinkCount = "total drink count";
+  static final String columnWaterCount = "total water count";
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -124,9 +126,5 @@ class DatabaseHelper {
   }
 
 }
-
-var d = Day(
-  date: DateTime.now()
-);
 
 
