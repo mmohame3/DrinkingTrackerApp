@@ -2,15 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-//import 'package:florish/personalInfo.dart' as prefix0;
-import 'package:Florish/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart' as globals;
 
-
 import './history.dart';
-import './personalInfo.dart';
 import './standardDrink.dart';
 import './alcoholInfo.dart';
 import './ourMission.dart';
@@ -24,9 +19,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Plant Nanny',
-        theme: ThemeData(fontFamily: 'Montserrat'),
-        home: AppHomeScreen(),
+      title: 'Plant Nanny',
+      theme: ThemeData(fontFamily: 'Montserrat'),
+      home: AppHomeScreen(),
     );
   }
 }
@@ -47,12 +42,11 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     Widget plant = Stack(
       alignment: Alignment.bottomCenter,
       children: [
         Container(
-          padding: const EdgeInsets.only(bottom: 100),
+          padding: const EdgeInsets.only(bottom: 140),
           child: Image.asset(
             'assets/images/plantSetting.png',
           ),
@@ -70,7 +64,11 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
             ListTile(
               title: Text(
                 "MY PLANT",
-                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -80,7 +78,11 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
             ListTile(
               title: Text(
                 "HISTORY",
-                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -94,7 +96,11 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
             ListTile(
               title: Text(
                 "PERSONAL INFORMATION",
-                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -103,14 +109,18 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
 //                        new PersonalInfoPage()));
-                        new altPersonalInfoPage()));
+                            new altPersonalInfoPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
               title: Text(
                 'A "STANDARD DRINK"',
-                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -118,14 +128,18 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                        new StandardDrinkPage()));
+                            new StandardDrinkPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
               title: Text(
                 "ALCOHOL FACTS",
-                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -133,14 +147,18 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                        new AlcoholInfoPage()));
+                            new AlcoholInfoPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
               title: Text(
                 "HELP & RESOURCES",
-                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -148,14 +166,18 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                        new ResourcesPage()));
+                            new ResourcesPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
               title: Text(
                 "OUR MISSION",
-                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -163,14 +185,18 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                        new OurMissionPage()));
+                            new OurMissionPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
               title: Text(
                 "TERMS & CONDITIONS",
-                style: TextStyle(fontSize: 16, color: Colors.white, fontFamily: 'Montserrat', letterSpacing: 1),
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    letterSpacing: 1),
               ),
               onTap: () {
                 Navigator.of(context).pop();
@@ -178,7 +204,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                        new TermsConditionsPage()));
+                            new TermsConditionsPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -241,8 +267,6 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
 //  }
 }
 
-
-
 class Plant extends StatefulWidget {
   @override
   _PlantState createState() => new _PlantState();
@@ -257,7 +281,6 @@ class _PlantState extends State<Plant> {
     super.initState();
   }
 
-
   _updateImageName(String path) {
     setState(() {
       imageName = path;
@@ -266,8 +289,8 @@ class _PlantState extends State<Plant> {
 
   _updateBAC(currentTime) {
     setState(() {
-        globals.drinkTimes.add(currentTime);
-        bac = _bacMath(currentTime, globals.drinkTimes);
+      globals.drinkTimes.add(currentTime);
+      bac = _bacMath(currentTime, globals.drinkTimes);
     });
   }
 
@@ -275,20 +298,19 @@ class _PlantState extends State<Plant> {
     bac = 0;
     double r;
     Duration elapsedTime;
-    if(globals.selectedGender == 'Male'){
+    if (globals.selectedGender == 'Male') {
       r = 0.68;
-    }
-    else if (globals.selectedGender == 'Female'){
-      r= 0.55;
-    }
-    else {
+    } else if (globals.selectedGender == 'Female') {
+      r = 0.55;
+    } else {
       r = 0.615;
     }
     for (int i = 0; i < drinkTimeList.length; i++) {
       //print(drinkTimeList);
       elapsedTime = currentTime.difference(drinkTimeList[i]);
       //print(elapsedTime);
-      bac += ((14/(globals.weightGrams*r))*100) - ((elapsedTime.inSeconds / 3600) *.015);
+      bac += ((14 / (globals.weightGrams * r)) * 100) -
+          ((elapsedTime.inSeconds / 3600) * .015);
       print(bac);
     }
     return bac;
@@ -298,74 +320,71 @@ class _PlantState extends State<Plant> {
   Widget build(context) {
     return Column(
       children: [
-          Container(
-            padding: const EdgeInsets.all(32),
-              child: Row(
-                children: [
-//           room  between
-                Spacer(
+        Container(
+          padding: const EdgeInsets.all(32),
+          child: Row(
+            children: [
+              Spacer(
                 flex: 2,
-                    ),
-//          text column with BAC label and variable
-                Expanded(
-                  child: Column(
-                    children: [
+              ),
+              Expanded(
+                child: Column(
+                  children: [
                     Container(
-    // BAC label
                       child: Text(
-                      'BAC:',
-                      style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12
+                        'BAC:',
+                        style: TextStyle(color: Colors.white, fontSize: 12),
                       ),
                     ),
-                  ),
-    // BAC variable
                     Text(
-    //globals.bac.toString(),
-                    bac.toStringAsFixed(2),
-                    style: TextStyle(
-                    fontSize: 20,
-                      color: Colors.white,
+                      bac.toStringAsFixed(2),
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
                   ],
-                  ),
-               ),
-    // blood drop
-                Image.asset(
+                ),
+              ),
+              Image.asset(
                 'assets/images/bacDrop.png',
                 height: 42,
-                 width: 28,
+                width: 28,
+              ),
+            ],
+          ),
+        ),
+        Spacer(
+          flex: 4,
+        ),
+        Column(
+//          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              padding: EdgeInsets.only(bottom: 50),
+              child: Image.asset(imageName, width: 180),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Expanded(
+                  child: new DrinkButton(
+                      parentAction: _updateImageName,
+                      parentActionBAC: _updateBAC),
+                ),
+                Expanded(
+                  child: new WaterButton(
+                    parentAction: _updateImageName,
+                  ),
                 ),
               ],
             ),
-          ),
-        Column(
-          children: [
-            Container(
-          padding: EdgeInsets.only(bottom: 50),
-          child: Image.asset(imageName, width: 180),
-        ),
-            Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: new DrinkButton(
-                parentAction: _updateImageName,
-                parentActionBAC: _updateBAC
-              ),
-            ),
-            Expanded(
-              child: new WaterButton(
-                parentAction: _updateImageName,
-              ),
-            ),
           ],
         ),
+        Container(
+          padding: EdgeInsets.all(20)
+        )
       ],
-    ),
-    ],
     );
   }
 }
@@ -373,8 +392,8 @@ class _PlantState extends State<Plant> {
 class DrinkButton extends StatefulWidget {
   final ValueChanged<String> parentAction;
   final ValueChanged<DateTime> parentActionBAC;
-  const DrinkButton({Key key, this.parentAction, this.parentActionBAC}) : super(key: key);
-
+  const DrinkButton({Key key, this.parentAction, this.parentActionBAC})
+      : super(key: key);
 
   @override
   _DrinkButtonState createState() => new _DrinkButtonState();
@@ -391,8 +410,7 @@ class _DrinkButtonState extends State<DrinkButton> {
           }
           widget.parentAction(
               'assets/images/plants/drink${globals.drinkCount}water${globals.waterCount}.png');
-          widget.parentActionBAC(
-            DateTime.now());
+          widget.parentActionBAC(DateTime.now());
         });
       },
       child: Stack(
@@ -431,7 +449,7 @@ class _WaterButtonState extends State<WaterButton> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          if (globals.waterCount < 2) {
+          if (globals.waterCount < 5) {
             globals.waterCount++;
           }
           widget.parentAction(

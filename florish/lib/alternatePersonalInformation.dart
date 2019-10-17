@@ -2,7 +2,6 @@ import 'package:Florish/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
-import 'PersonalEntryData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
