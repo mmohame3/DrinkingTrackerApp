@@ -49,6 +49,13 @@ class Day {
     return map;
   }
 
+  @override
+  String toString() {
+    return 'Day {date: $date, timeList: $timeList, typeList: $typeList, '
+        'maxBAC: $maxBAC, waterAtMaxBAC: $waterAtMaxBAC,'
+        'totalDrinks: $totalDrinks, totalWaters: $totalWaters}';
+  }
+
 }
 
 class DatabaseHelper {
