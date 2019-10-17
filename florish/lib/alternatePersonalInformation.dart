@@ -171,7 +171,7 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
                                       child: CupertinoPicker(
                                           scrollController:
                                           new FixedExtentScrollController(
-                                            initialItem: globals.selectedWeight,
+                                            initialItem: globals.weights.indexOf(globals.selectedWeight.toString()),
                                           ),
                                           itemExtent: 32.0,
                                           backgroundColor: Colors.white,

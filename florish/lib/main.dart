@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
+import 'database_helpers.dart';
 
 import './history.dart';
 import './standardDrink.dart';
@@ -16,6 +17,7 @@ import './alternatePersonalInformation.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,6 +29,7 @@ class MyApp extends StatelessWidget {
 }
 
 class AppHomeScreen extends StatefulWidget {
+
   @override
   _AppHomeScreenState createState() => _AppHomeScreenState();
 }
@@ -291,6 +294,11 @@ class _PlantState extends State<Plant> {
     setState(() {
       globals.drinkTimes.add(currentTime);
       bac = _bacMath(currentTime, globals.drinkTimes);
+      if (bac >= globals.maxBAC) {
+        globals.maxBAC = bac;
+        globals.waterAtMaxBAC = globals.waterCount;
+      }
+
     });
   }
 
@@ -400,17 +408,20 @@ class DrinkButton extends StatefulWidget {
 }
 
 class _DrinkButtonState extends State<DrinkButton> {
+  final dbHelper = DatabaseHelper.instance;
   @override
   Widget build(context) {
     return GestureDetector(
       onTap: () {
         setState(() {
+          DateTime currentTime = DateTime.now();
           if (globals.drinkCount < 4) {
             globals.drinkCount++;
           }
           widget.parentAction(
               'assets/images/plants/drink${globals.drinkCount}water${globals.waterCount}.png');
-          widget.parentActionBAC(DateTime.now());
+          widget.parentActionBAC(currentTime);
+          drinkButtonTap(currentTime);
         });
       },
       child: Stack(
@@ -433,6 +444,29 @@ class _DrinkButtonState extends State<DrinkButton> {
       ),
     );
   }
+  void drinkButtonTap(DateTime currentTime) async {
+
+    globals.allDrinkTimes.add(currentTime);
+    globals.drinkTypes.add(1);
+
+    var dayRow = Day(
+        date: DateTime.now(),
+        timeList: globals.allDrinkTimes,
+        typeList: globals.drinkTypes,
+        totalDrinks: globals.drinkCount,
+        maxBAC: globals.maxBAC,
+        waterAtMaxBAC: globals.waterAtMaxBAC
+    );
+
+    // if no instance of day --> insert dayRow
+    //await dbHelper.insert(dayRow);
+
+    //if day is already in there --> update
+    await dbHelper.updateDay(dayRow);
+
+
+  }
+
 }
 
 class WaterButton extends StatefulWidget {
@@ -444,6 +478,8 @@ class WaterButton extends StatefulWidget {
 }
 
 class _WaterButtonState extends State<WaterButton> {
+  final dbHelper = DatabaseHelper.instance;
+
   @override
   Widget build(context) {
     return GestureDetector(
@@ -453,7 +489,9 @@ class _WaterButtonState extends State<WaterButton> {
             globals.waterCount++;
           }
           widget.parentAction(
-              'assets/images/plants/drink${globals.drinkCount}water${globals.waterCount}.png');
+              'assets/images/plants/drink${globals.drinkCount}water${globals
+                  .waterCount}.png');
+          waterButtonTap();
         });
       },
       child: Stack(
@@ -476,4 +514,25 @@ class _WaterButtonState extends State<WaterButton> {
       ),
     );
   }
+
+
+  void waterButtonTap() async {
+    DateTime currentTime = DateTime.now();
+    globals.allDrinkTimes.add(currentTime);
+    globals.drinkTypes.add(0);
+
+    var dayRow = Day(
+        date: DateTime.now(),
+        timeList: globals.allDrinkTimes,
+        typeList: globals.drinkTypes,
+        totalWaters: globals.waterCount
+    );
+
+    // if no instance of day --> insert dayRow
+    //await dbHelper.insert(dayRow);
+
+    // if day is already in there --> update
+    await dbHelper.updateDay(dayRow);
+  }
 }
+

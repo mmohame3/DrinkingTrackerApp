@@ -23,7 +23,8 @@ class Day {
   int totalDrinks;
   int totalWaters;
 
-  Day();
+  Day({this.date, this.timeList, this.typeList, this.maxBAC,
+  this.waterAtMaxBAC, this.totalDrinks, this.totalWaters});
 
   Day.fromMap(Map<String, dynamic> map) {
     date = map[columnDay];
@@ -59,8 +60,17 @@ class Day {
 }
 
 class DatabaseHelper {
-  static final _databaseName = "CalDatabase.db";
+  static final _databaseName = "CalendarDatabase.db";
   static final _databaseVersion = 1;
+
+  final String tableDays = "days";
+  final String columnDay = "day";
+  final String columnTimeList = 'time list';
+  final String columnTypeList = 'type list';
+  final String columnMaxBAC = 'maxBAC';
+  final String columnMBWater = 'Water at maxBAC';
+  final String columnDrinkCount = "total drink count";
+  final String columnWaterCount = "total water count";
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -108,4 +118,15 @@ class DatabaseHelper {
     whereArgs: [day.date]);
   }
 
+  Future<List> getTimeList(DateTime day) async{
+    Database db = await database;
+    db.query(tableDays, columns: [columnDay, columnTimeList,]);
+  }
+
 }
+
+var d = Day(
+  date: DateTime.now()
+);
+
+

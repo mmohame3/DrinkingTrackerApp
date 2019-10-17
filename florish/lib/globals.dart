@@ -6,6 +6,7 @@ int drinkCount = 0;
 double bac = 0.00;
 double maxBAC = 0.00;
 
+int waterAtMaxBAC = 0;
 
 String selectedGender = '';
 int selectedHeight = 0;
@@ -17,6 +18,9 @@ double weightGrams = selectedWeight * 453.592;
 int heightInches = 0;
 
 var drinkTimes = new List();
+
+var allDrinkTimes = new List();
+var drinkTypes = new List();
 
 var weights = [
   '100', '105', '110', '115', '120', '125', '130', '135', '140', '145',
@@ -31,6 +35,5 @@ var weights = [
 var genders = [
   "Female", "Male", "Other"
 ];
-
 
 
