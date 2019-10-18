@@ -1,14 +1,14 @@
 library globals;
 
 int waterCount = 0;
-int drinkCount = 0;
+int drinkCount = 2;
 
 double bac = 0.00;
 double maxBAC = 0.00;
 
 int waterAtMaxBAC = 0;
 
-String selectedGender = '';
+String selectedSex = '';
 int selectedHeight = 0;
 int selectedFeet = 0;
 int selectedInches = 0;
@@ -32,7 +32,7 @@ var weights = [
   '400',
 ];
 
-var genders = [
+var sexes = [
   "Female", "Male", "Other"
 ];
 

@@ -36,8 +36,6 @@ class Day {
     totalWaters = map[waterCount];
   }
 
-  DateTime get date1 => date;
-
   Map<String, dynamic> toMap() {
     var map = <String, dynamic> {
       columnDay: date,

@@ -7,7 +7,6 @@ import 'globals.dart' as globals;
 import 'database_helpers.dart';
 import 'package:sqflite/sqflite.dart';
 
-
 import './history.dart';
 import './standardDrink.dart';
 import './alcoholInfo.dart';
@@ -19,7 +18,6 @@ import './alternatePersonalInformation.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,7 +29,6 @@ class MyApp extends StatelessWidget {
 }
 
 class AppHomeScreen extends StatefulWidget {
-
   @override
   _AppHomeScreenState createState() => _AppHomeScreenState();
 }
@@ -231,34 +228,18 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
       drawer: menu,
       backgroundColor: Colors.grey[600],
       body: plant,
-//      ListView(
-//        children: [
-//          plant,
-//        ],
-//      ),
     );
   }
-//  calBac(){
-//    getBac().then((data) {
-//
-//        setState(() {
-//          bacValue = data;
-//        });
-//
-//    }, onError: (e) {
-//      print(e);
-//    });
-//
-//  }
+
 //  Future <String> getBac()  async {
 //    SharedPreferences pref =  await SharedPreferences.getInstance();
 //    int selectedFeet = pref.getInt('feet');
 //    int selectedInches = pref.getInt('inches');
-//    String selectedGender = pref.getString(AppConstants.PREF_GENDER);
+//    String selectedSex = pref.getString(AppConstants.PREF_SEX);
 //    int selectedWeight = pref.getInt('weight');
 //    double r ;
 //
-//    if(selectedGender.toLowerCase() == 'Male'.toLowerCase()){
+//    if(selectedSex.toLowerCase() == 'Male'.toLowerCase()){
 //      r = 0.68;
 //    }else{
 //      r= 0.55;
@@ -300,7 +281,6 @@ class _PlantState extends State<Plant> {
         globals.maxBAC = bac;
         globals.waterAtMaxBAC = globals.waterCount;
       }
-
     });
   }
 
@@ -308,17 +288,15 @@ class _PlantState extends State<Plant> {
     bac = 0;
     double r;
     Duration elapsedTime;
-    if (globals.selectedGender == 'Male') {
+    if (globals.selectedSex == 'Male') {
       r = 0.68;
-    } else if (globals.selectedGender == 'Female') {
+    } else if (globals.selectedSex == 'Female') {
       r = 0.55;
     } else {
       r = 0.615;
     }
     for (int i = 0; i < drinkTimeList.length; i++) {
-      //print(drinkTimeList);
       elapsedTime = currentTime.difference(drinkTimeList[i]);
-      //print(elapsedTime);
       bac += ((14 / (globals.weightGrams * r)) * 100) -
           ((elapsedTime.inSeconds / 3600) * .015);
     }
@@ -367,7 +345,6 @@ class _PlantState extends State<Plant> {
           flex: 4,
         ),
         Column(
-//          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
               padding: EdgeInsets.only(bottom: 50),
@@ -390,9 +367,7 @@ class _PlantState extends State<Plant> {
             ),
           ],
         ),
-        Container(
-          padding: EdgeInsets.all(20)
-        )
+        Container(padding: EdgeInsets.all(20))
       ],
     );
   }
@@ -445,8 +420,8 @@ class _DrinkButtonState extends State<DrinkButton> {
       ),
     );
   }
-  void drinkButtonTap(DateTime currentTime) async {
 
+  void drinkButtonTap(DateTime currentTime) async {
     globals.allDrinkTimes.add(currentTime);
     globals.drinkTypes.add(1);
     var dayRow = Day(
@@ -455,18 +430,14 @@ class _DrinkButtonState extends State<DrinkButton> {
         typeList: globals.drinkTypes,
         totalDrinks: globals.drinkCount,
         maxBAC: globals.maxBAC,
-        waterAtMaxBAC: globals.waterAtMaxBAC
-    );
+        waterAtMaxBAC: globals.waterAtMaxBAC);
 
     // if no instance of day --> insert dayRow
     //await dbHelper.insert(dayRow);
 
     //if day is already in there --> update
     await dbHelper.updateDay(dayRow);
-
-
   }
-
 }
 
 class WaterButton extends StatefulWidget {
@@ -489,8 +460,7 @@ class _WaterButtonState extends State<WaterButton> {
             globals.waterCount++;
           }
           widget.parentAction(
-              'assets/images/plants/drink${globals.drinkCount}water${globals
-                  .waterCount}.png');
+              'assets/images/plants/drink${globals.drinkCount}water${globals.waterCount}.png');
           waterButtonTap();
           //printDrinkCounts();
         });
@@ -516,7 +486,6 @@ class _WaterButtonState extends State<WaterButton> {
     );
   }
 
-
   void waterButtonTap() async {
     DateTime currentTime = DateTime.now();
     globals.allDrinkTimes.add(currentTime);
@@ -526,8 +495,7 @@ class _WaterButtonState extends State<WaterButton> {
         date: DateTime.now(),
         timeList: globals.allDrinkTimes,
         typeList: globals.drinkTypes,
-        totalWaters: globals.waterCount
-    );
+        totalWaters: globals.waterCount);
 
     // if no instance of day --> insert dayRow
     //await dbHelper.insert(dayRow);
@@ -537,27 +505,20 @@ class _WaterButtonState extends State<WaterButton> {
   }
 }
 
-  query() async {
+query() async {
   Database db = await DatabaseHelper.instance.database;
 
   List<String> columnsToSelect = [
     DatabaseHelper.columnDay,
     DatabaseHelper.columnDrinkCount,
     DatabaseHelper.columnWaterCount,
-
   ];
 
   String whereString = '${DatabaseHelper.columnDay} = ?';
   List<dynamic> whereArguments = [17];
 
-  List<Map> result = await db.query(
-    DatabaseHelper.tableDays,
-    columns: columnsToSelect,
-    where: whereString,
-    whereArgs: whereArguments);
-  
+  List<Map> result = await db.query(DatabaseHelper.tableDays,
+      columns: columnsToSelect, where: whereString, whereArgs: whereArguments);
+
   return result[0];
-
-
 }
-
