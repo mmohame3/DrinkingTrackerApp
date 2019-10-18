@@ -63,14 +63,14 @@ class DatabaseHelper {
   static final _databaseName = "CalendarDatabase.db";
   static final _databaseVersion = 1;
 
-  static final String tableDays = "days";
-  static final String columnDay = "day";
-  static final String columnTimeList = 'time list';
-  static final String columnTypeList = 'type list';
-  static final String columnMaxBAC = 'maxBAC';
-  static final String columnMBWater = 'Water at maxBAC';
-  static final String columnDrinkCount = "total drink count";
-  static final String columnWaterCount = "total water count";
+  static final tableDays = "days";
+  static final columnDay = "day";
+  static final columnTimeList = 'time list';
+  static final columnTypeList = 'type list';
+  static final columnMaxBAC = 'maxBAC';
+  static final columnMBWater = 'Water at maxBAC';
+  static final columnDrinkCount = "total drink count";
+  static final columnWaterCount = "total water count";
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
