@@ -508,7 +508,7 @@ class _WaterButtonState extends State<WaterButton> {
 query() async {
   Database db = await DatabaseHelper.instance.database;
 
-  List<Map> result = await db.rawQuery('SELECT * FROM tableDays WHERE day?', [""]) // set "" to today's date in string
+  List<Map> result = await db.rawQuery('SELECT * FROM tableDays WHERE day=?', [""]) // set "" to today's date in string
 
   return result[0];
 
