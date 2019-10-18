@@ -492,7 +492,7 @@ class _WaterButtonState extends State<WaterButton> {
               'assets/images/plants/drink${globals.drinkCount}water${globals
                   .waterCount}.png');
           waterButtonTap();
-          printDrinkCounts();
+          //printDrinkCounts();
         });
       },
       child: Stack(
@@ -537,25 +537,27 @@ class _WaterButtonState extends State<WaterButton> {
   }
 }
 
-//  printDrinkCounts() async {
-//  Database db = await DatabaseHelper.instance.database;
-//
-//  List<String> columnsToSelect = [
-//    DatabaseHelper.columnDrinkCount,
-//    DatabaseHelper.columnWaterCount,
-//  ];
-//
-//  String whereString = '${DatabaseHelper.columnDay} = ?';
-//  List<dynamic> whereArguments = [17];
-//
-//  List<Map> result = await db.query(
-//    DatabaseHelper.tableDays,
-//    columns: columnsToSelect,
-//    where: whereString,
-//    whereArgs: whereArguments);
-//
-//  result.forEach((row) => print(row));
-//
-//
-//}
+  query() async {
+  Database db = await DatabaseHelper.instance.database;
+
+  List<String> columnsToSelect = [
+    DatabaseHelper.columnDay,
+    DatabaseHelper.columnDrinkCount,
+    DatabaseHelper.columnWaterCount,
+
+  ];
+
+  String whereString = '${DatabaseHelper.columnDay} = ?';
+  List<dynamic> whereArguments = [17];
+
+  List<Map> result = await db.query(
+    DatabaseHelper.tableDays,
+    columns: columnsToSelect,
+    where: whereString,
+    whereArgs: whereArguments);
+  
+  return result[0];
+
+
+}
 
