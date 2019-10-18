@@ -425,12 +425,13 @@ class _DrinkButtonState extends State<DrinkButton> {
     globals.allDrinkTimes.add(currentTime);
     globals.drinkTypes.add(1);
     var dayRow = Day(
-        date: currentTime,
+        date: currentTime.toString(),
         timeList: globals.allDrinkTimes,
         typeList: globals.drinkTypes,
         totalDrinks: globals.drinkCount,
         maxBAC: globals.maxBAC,
-        waterAtMaxBAC: globals.waterAtMaxBAC);
+        waterAtMaxBAC: globals.waterAtMaxBAC,
+    totalWaters: globals.waterCount);
 
     // if no instance of day --> insert dayRow
     //await dbHelper.insert(dayRow);
@@ -492,7 +493,7 @@ class _WaterButtonState extends State<WaterButton> {
     globals.drinkTypes.add(0);
 
     var dayRow = Day(
-        date: DateTime.now(),
+        date: DateTime.now().toString(),
         timeList: globals.allDrinkTimes,
         typeList: globals.drinkTypes,
         totalWaters: globals.waterCount);
@@ -505,11 +506,11 @@ class _WaterButtonState extends State<WaterButton> {
   }
 }
 
-query() async {
-  Database db = await DatabaseHelper.instance.database;
-
-  List<Map> result = await db.rawQuery('SELECT * FROM tableDays WHERE day=?', [""]) // set "" to today's date in string
-
-  return result[0];
-
-}
+//query() async {
+//  Database db = await DatabaseHelper.instance.database;
+//
+//  List<Map> result = await db.rawQuery('SELECT * FROM tableDays WHERE day=?', [""]) // set "" to today's date in string
+//
+//  return result[0];
+//
+//}

@@ -7,15 +7,15 @@ import 'package:path_provider/path_provider.dart';
 // database table and column names
 final String tableDays = "days";
 final String columnDay = "day";
-final String columnTimeList = 'time list';
-final String columnTypeList = 'type list';
+final String columnTimeList = 'timelist';
+final String columnTypeList = 'typelist';
 final String columnMaxBAC = 'maxBAC';
-final String columnMBWater = 'Water at maxBAC';
-final String columnDrinkCount = "total drink count";
-final String columnWaterCount = "total water count";
+final String columnMBWater = 'WateratmaxBAC';
+final String columnDrinkCount = "totaldrinkcount";
+final String columnWaterCount = "totalwatercount";
 
 class Day {
-  DateTime date;
+  String date;
   var timeList = [];
   var typeList =[];
   double maxBAC;
@@ -65,12 +65,12 @@ class DatabaseHelper {
 
   static final tableDays = "days";
   static final columnDay = "day";
-  static final columnTimeList = 'time list';
-  static final columnTypeList = 'type list';
+  static final columnTimeList = 'timelist';
+  static final columnTypeList = 'typelist';
   static final columnMaxBAC = 'maxBAC';
-  static final columnMBWater = 'Water at maxBAC';
-  static final columnDrinkCount = "total drink count";
-  static final columnWaterCount = "total water count";
+  static final columnMBWater = 'WateratmaxBAC';
+  static final columnDrinkCount = "totaldrinkcount";
+  static final columnWaterCount = "totalwatercount";
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -93,10 +93,10 @@ class DatabaseHelper {
   Future _onCreate(Database db, int version) async {
     await db.execute('''
               CREATE TABLE $tableDays (
-              $columnDay DAY PRIMARY KEY
-                $columnTimeList LIST NOT NULL,
-                $columnTypeList LIST NOT NULL,
-                $columnMaxBAC DOUBLE NOT NULL,
+              $columnDay TEXT PRIMARY KEY
+                $columnTimeList BLOB NOT NULL,
+                $columnTypeList BLOB NOT NULL,
+                $columnMaxBAC REAL NOT NULL,
                 $columnMBWater INTEGER NOT NULL,
                 $columnDrinkCount INTEGER NOT NULL,
                 $columnWaterCount INTEGER NOT NULL, 
@@ -124,5 +124,8 @@ class DatabaseHelper {
   }
 
 }
+
+
+
 
 
