@@ -516,9 +516,6 @@ List<int> dateTimeListToHourList() {
   List<int> newList = new List();
   for (int i = 0; i < globals.allDrinkTimes.length; i++) {
     DateTime date = globals.allDrinkTimes[i];
-    print(i);
-    print(date.hour);
-    print(globals.allDrinkTimes[0]);
     newList.add(date.hour);
 
   }

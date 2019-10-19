@@ -98,14 +98,14 @@ class DatabaseHelper {
   Future _onCreate(Database db, int version) async {
     await db.execute('''
               CREATE TABLE $tableDays (
-              $columnDay TEXT PRIMARY KEY
+              $columnDay TEXT PRIMARY KEY,
                 $columnHourList BLOB NOT NULL,
                 $columnMinuteList BLOB NOT NULL,
                 $columnTypeList BLOB NOT NULL,
                 $columnMaxBAC REAL NOT NULL,
                 $columnMBWater INTEGER NOT NULL,
                 $columnDrinkCount INTEGER NOT NULL,
-                $columnWaterCount INTEGER NOT NULL, 
+                $columnWaterCount INTEGER NOT NULL 
               )
               ''');
   }
