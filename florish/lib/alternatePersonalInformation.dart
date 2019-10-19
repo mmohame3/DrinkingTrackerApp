@@ -5,60 +5,65 @@ import 'globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
+
 class altPersonalInfoPage extends StatefulWidget {
   @override
   altPersonalInfoPageState createState() => new altPersonalInfoPageState();
 }
 
 class altPersonalInfoPageState extends State<altPersonalInfoPage> {
-//  final _controller = new TextEditingController();
-//  var _formKey = GlobalKey<FormState>();
+  final _controller = new TextEditingController();
+  var _formKey = GlobalKey<FormState>();
 
-//  int selectedFeet = ;
+//  int selectedFeet = 0;
 //  int selectedInches = 0;
 //  int totalSelectedFeet = 0;
 //
 //  int selectedWeight = 0;
 //  String selectedSex = '';
-//
-//
-//  addIntToSF() async {
-//    SharedPreferences prefs = await SharedPreferences.getInstance();
-//    prefs.setInt('weight', globals.selectedWeight);
-//    prefs.setInt('feet', globals.selectedFeet);
-//    prefs.setInt('inches', globals.selectedInches);
-//    prefs.setString(AppConstants.PREF_SEX, globals.selectedSex);
-//
-//  }
-  _getValues() async {
+  int initialFeet = 0;
+
+
+  addIntToSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int feet = prefs.getInt('feet');
-    int inches = prefs.getInt('inches');
-    int weight = prefs.getInt('weight');
-    String sex = prefs.getString('sex');
+    prefs.setInt('weight', globals.selectedWeight);
+    prefs.setInt('feet', globals.selectedFeet);
+    prefs.setInt('inches', globals.selectedInches);
+    prefs.setString(AppConstants.PREF_SEX, globals.selectedSex);
+
+
+  }
+
+  getValues() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //initialFeet = prefs.getInt('feet');
+    globals.selectedFeet = prefs.getInt('feet');
+    globals.selectedInches = prefs.getInt('inches');
+    globals.selectedWeight = prefs.getInt('weight');
+    globals.selectedSex = prefs.getString('sex');
   }
 
   @override
   Widget build(BuildContext context) {
+    //getValues();
     return new Scaffold(
         appBar: new AppBar(
           title: new Text('Your Personal Information'),
           backgroundColor: Color(0xFF97B633),
 //          actions: [
-//            FutureBuilder<List>(
-//              future: SharedPreferencesHelper.getList(),
-//              initialData: [],
-//              builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-//
-//              },
-//
-//
-//            )
+////            FutureBuilder<List>(
+////              future: SharedPreferencesHelper.getList(),
+////              initialData: [],
+////              builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+////
+////              },
+////
+////
+////            )
 //          ],
         ),
         body: Scaffold(
-
-//          key: this._formKey,
+            key: this._formKey,
             backgroundColor: Colors.grey[600],
             body: Container(
                 margin: EdgeInsets.all(30.0),
@@ -231,13 +236,13 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
                         RaisedButton(
                           child: Text("Save"),
                           onPressed: () {
-                            _save();
-                            // print("Data are: " + selectedSex + "- " + selectedWeight.toString() + "- " + selectedFeet.toString());
-//                                  addIntToSF();
-//                                  if(this._formKey.currentState.validate())
-//                                  setState(() {
-//                                  this._formKey.currentState.save();
-//                                  });
+                            save();
+                             //print("Data are: " + selectedSex + "- " + selectedWeight.toString() + "- " + selectedFeet.toString());
+                                  addIntToSF();
+                                  if(this._formKey.currentState.validate())
+                                  setState(() {
+                                  this._formKey.currentState.save();
+                                  });
                           },
                         ),
                       ],
@@ -246,13 +251,15 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
                 ))));
   }
 
-  _save() async {
-    final prefs = await SharedPreferences.getInstance();
+  save() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt("feet", globals.selectedFeet);
     prefs.setInt("inches", globals.selectedInches);
     prefs.setInt("weight", globals.selectedWeight);
     prefs.setString("sex", globals.selectedSex);
   }
+
+
 }
 
 //class SharedPreferencesHelper {

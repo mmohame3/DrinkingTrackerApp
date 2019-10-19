@@ -7,7 +7,8 @@ import 'package:path_provider/path_provider.dart';
 // database table and column names
 final String tableDays = "days";
 final String columnDay = "day";
-final String columnTimeList = 'timelist';
+final String columnHourList = 'hourlist';
+final String columnMinuteList = 'minutelist';
 final String columnTypeList = 'typelist';
 final String columnMaxBAC = 'maxBAC';
 final String columnMBWater = 'WateratmaxBAC';
@@ -16,19 +17,21 @@ final String columnWaterCount = "totalwatercount";
 
 class Day {
   String date;
-  var timeList = [];
+  var hourList = [];
+  var minuteList = [];
   var typeList =[];
   double maxBAC;
   int waterAtMaxBAC;
   int totalDrinks;
   int totalWaters;
 
-  Day({this.date, this.timeList, this.typeList, this.maxBAC,
+  Day({this.date, this.hourList, this.minuteList, this.typeList, this.maxBAC,
   this.waterAtMaxBAC, this.totalDrinks, this.totalWaters});
 
   Day.fromMap(Map<String, dynamic> map) {
     date = map[columnDay];
-    timeList = map[columnTimeList];
+    hourList = map[columnHourList];
+    minuteList = map[columnMinuteList];
     typeList = map[columnTypeList];
     maxBAC = map[columnMaxBAC];
     waterAtMaxBAC = map[columnMBWater];
@@ -39,7 +42,8 @@ class Day {
   Map<String, dynamic> toMap() {
     var map = <String, dynamic> {
       columnDay: date,
-      columnTimeList: timeList,
+      columnHourList: hourList,
+      columnMinuteList: minuteList,
       columnTypeList: typeList,
       columnMaxBAC: maxBAC,
       columnMBWater: waterAtMaxBAC,
@@ -52,7 +56,7 @@ class Day {
 
   @override
   String toString() {
-    return 'Day {date: $date, timeList: $timeList, typeList: $typeList, '
+    return 'Day {date: $date, hourList: $hourList, minuteList: $minuteList, typeList: $typeList, '
         'maxBAC: $maxBAC, waterAtMaxBAC: $waterAtMaxBAC,'
         'totalDrinks: $totalDrinks, totalWaters: $totalWaters}';
   }
@@ -65,7 +69,8 @@ class DatabaseHelper {
 
   static final tableDays = "days";
   static final columnDay = "day";
-  static final columnTimeList = 'timelist';
+  static final columnHourList = 'hourlist';
+  static final columnMinuteList = 'minutelist';
   static final columnTypeList = 'typelist';
   static final columnMaxBAC = 'maxBAC';
   static final columnMBWater = 'WateratmaxBAC';
@@ -94,7 +99,8 @@ class DatabaseHelper {
     await db.execute('''
               CREATE TABLE $tableDays (
               $columnDay TEXT PRIMARY KEY
-                $columnTimeList BLOB NOT NULL,
+                $columnHourList BLOB NOT NULL,
+                $columnMinuteList BLOB NOT NULL,
                 $columnTypeList BLOB NOT NULL,
                 $columnMaxBAC REAL NOT NULL,
                 $columnMBWater INTEGER NOT NULL,
@@ -104,9 +110,9 @@ class DatabaseHelper {
               ''');
   }
 
-  Future<void> insert(Day day) async {
+  Future<void> insert(Map<String, dynamic> row) async {
     Database db = await database;
-    await db.insert(tableDays, day.toMap(),
+    await db.insert(tableDays, row,
     conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
@@ -118,10 +124,10 @@ class DatabaseHelper {
     whereArgs: [day.date]);
   }
 
-  Future<List> getTimeList(DateTime day) async{
-    Database db = await database;
-    db.query(tableDays, columns: [columnDay, columnTimeList,]);
-  }
+//  Future<List> getTimeList(DateTime day) async{
+//    Database db = await database;
+//    db.query(tableDays, columns: [columnDay, columnTimeList,]);
+//  }
 
 }
 

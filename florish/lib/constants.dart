@@ -1,6 +1,6 @@
 
 class AppConstants{
 
-   static final PREF_GENDER = "gender";
+   static final PREF_SEX = "gender";
 
 }

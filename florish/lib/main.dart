@@ -425,19 +425,20 @@ class _DrinkButtonState extends State<DrinkButton> {
     globals.allDrinkTimes.add(currentTime);
     globals.drinkTypes.add(1);
     var dayRow = Day(
-        date: currentTime.toString(),
-        timeList: globals.allDrinkTimes,
+        date: DateTime.now().toString(),
+        hourList: dateTimeListToHourList(),
+        minuteList: dateTimeListToMinuteList(),
         typeList: globals.drinkTypes,
+        totalWaters: globals.waterCount,
         totalDrinks: globals.drinkCount,
         maxBAC: globals.maxBAC,
-        waterAtMaxBAC: globals.waterAtMaxBAC,
-    totalWaters: globals.waterCount);
+        waterAtMaxBAC: globals.waterAtMaxBAC);
 
     // if no instance of day --> insert dayRow
-    //await dbHelper.insert(dayRow);
+    await dbHelper.insert(dayRow);
 
     //if day is already in there --> update
-    await dbHelper.updateDay(dayRow);
+    //await dbHelper.updateDay(dayRow);
   }
 }
 
@@ -494,17 +495,46 @@ class _WaterButtonState extends State<WaterButton> {
 
     var dayRow = Day(
         date: DateTime.now().toString(),
-        timeList: globals.allDrinkTimes,
+        hourList: dateTimeListToHourList(),
+        minuteList: dateTimeListToMinuteList(),
         typeList: globals.drinkTypes,
-        totalWaters: globals.waterCount);
+        totalWaters: globals.waterCount,
+        totalDrinks: globals.drinkCount,
+        maxBAC: globals.maxBAC,
+        waterAtMaxBAC: globals.waterAtMaxBAC);
 
     // if no instance of day --> insert dayRow
-    //await dbHelper.insert(dayRow);
+    await dbHelper.insert(dayRow);
 
     // if day is already in there --> update
-    await dbHelper.updateDay(dayRow);
+    //await dbHelper.updateDay(dayRow);
   }
+
+
 }
+List<int> dateTimeListToHourList() {
+  List<int> newList = new List();
+  for (int i = 0; i < globals.allDrinkTimes.length; i++) {
+    DateTime date = globals.allDrinkTimes[i];
+    print(i);
+    print(date.hour);
+    print(globals.allDrinkTimes[0]);
+    newList.add(date.hour);
+
+  }
+  return newList;
+}
+
+List<int> dateTimeListToMinuteList() {
+  List<int> newList = [];
+  for (int i = 0; i < globals.allDrinkTimes.length; i++) {
+    DateTime date = globals.allDrinkTimes[i];
+    newList.add(date.minute);
+  }
+  return newList;
+}
+
+
 
 //query() async {
 //  Database db = await DatabaseHelper.instance.database;
