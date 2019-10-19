@@ -110,9 +110,9 @@ class DatabaseHelper {
               ''');
   }
 
-  Future<void> insert(Map<String, dynamic> row) async {
+  Future<void> insert(Day day) async {
     Database db = await database;
-    await db.insert(tableDays, row,
+    await db.insert(tableDays, day.toMap(),
     conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
