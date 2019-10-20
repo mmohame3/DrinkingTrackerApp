@@ -394,12 +394,9 @@ class _DrinkButtonState extends State<DrinkButton> {
       onTap: () {
         setState(() {
           DateTime currentTime = DateTime.now();
-          if (globals.drinkCount < 4) {
-            globals.drinkCount++;
-          }
+          globals.drinkCount++;
           widget.parentAction(
-              'assets/images/plants/drink${bacToPlant()}water${globals
-                  .waterCount}.png');
+              'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
           widget.parentActionBAC(currentTime);
           drinkButtonTap(currentTime);
         });
@@ -452,6 +449,14 @@ class _DrinkButtonState extends State<DrinkButton> {
     }
     return plantNum;
   }
+
+  int waterToPlant() {
+    int plantNumWater = globals.waterCount;
+    if (plantNumWater > 5) {
+      plantNumWater = 5;
+    }
+    return plantNumWater;
+  }
 }
 
 class WaterButton extends StatefulWidget {
@@ -470,12 +475,10 @@ class _WaterButtonState extends State<WaterButton> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          if (globals.waterCount < 5) {
             globals.waterCount++;
-          }
           // where 5 is the number of plant stages we have and .12 is our "max" BAC
           widget.parentAction(
-              'assets/images/plants/drink${bacToPlant()}water${globals.waterCount}.png');
+              'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
           waterButtonTap();
           //printDrinkCounts();
         });
@@ -530,6 +533,14 @@ class _WaterButtonState extends State<WaterButton> {
     }
     return plantNum;
 
+  }
+
+  int waterToPlant() {
+    int plantNumWater = globals.waterCount;
+    if (plantNumWater > 5) {
+      plantNumWater = 5;
+    }
+    return plantNumWater;
   }
 
 
