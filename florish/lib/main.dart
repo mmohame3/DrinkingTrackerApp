@@ -277,6 +277,7 @@ class _PlantState extends State<Plant> {
     setState(() {
       globals.drinkTimes.add(currentTime);
       bac = _bacMath(currentTime, globals.drinkTimes);
+      globals.bac = bac;
       if (bac >= globals.maxBAC) {
         globals.maxBAC = bac;
         globals.waterAtMaxBAC = globals.waterCount;
@@ -302,6 +303,7 @@ class _PlantState extends State<Plant> {
     }
     return bac;
   }
+
 
   @override
   Widget build(context) {
@@ -385,6 +387,7 @@ class DrinkButton extends StatefulWidget {
 
 class _DrinkButtonState extends State<DrinkButton> {
   final dbHelper = DatabaseHelper.instance;
+
   @override
   Widget build(context) {
     return GestureDetector(
@@ -395,7 +398,8 @@ class _DrinkButtonState extends State<DrinkButton> {
             globals.drinkCount++;
           }
           widget.parentAction(
-              'assets/images/plants/drink${globals.drinkCount}water${globals.waterCount}.png');
+              'assets/images/plants/drink${bacToPlant()}water${globals
+                  .waterCount}.png');
           widget.parentActionBAC(currentTime);
           drinkButtonTap(currentTime);
         });
@@ -440,6 +444,14 @@ class _DrinkButtonState extends State<DrinkButton> {
     //if day is already in there --> update
     //await dbHelper.updateDay(dayRow);
   }
+// where 5 is the number of plant stages we have and .12 is our "max" BAC
+  int bacToPlant() {
+    int plantNum = 5 * (globals.bac / .12).floor();
+    if (plantNum > 4) {
+      plantNum = 4;
+    }
+    return plantNum;
+  }
 }
 
 class WaterButton extends StatefulWidget {
@@ -461,8 +473,9 @@ class _WaterButtonState extends State<WaterButton> {
           if (globals.waterCount < 5) {
             globals.waterCount++;
           }
+          // where 5 is the number of plant stages we have and .12 is our "max" BAC
           widget.parentAction(
-              'assets/images/plants/drink${globals.drinkCount}water${globals.waterCount}.png');
+              'assets/images/plants/drink${bacToPlant()}water${globals.waterCount}.png');
           waterButtonTap();
           //printDrinkCounts();
         });
@@ -508,6 +521,15 @@ class _WaterButtonState extends State<WaterButton> {
 
     // if day is already in there --> update
     //await dbHelper.updateDay(dayRow);
+  }
+  // where 5 is the number of plant stages we have and .12 is our "max" BAC
+  int bacToPlant() {
+    int plantNum = 5 * (globals.bac / .12).floor();
+    if (plantNum > 4){
+      plantNum = 4;
+    }
+    return plantNum;
+
   }
 
 
