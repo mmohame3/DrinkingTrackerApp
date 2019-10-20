@@ -425,7 +425,7 @@ class _DrinkButtonState extends State<DrinkButton> {
     globals.allDrinkTimes.add(currentTime);
     globals.drinkTypes.add(1);
     var dayRow = Day(
-        date: DateTime.now().toString(),
+        date: dateTimeToString(DateTime.now()),
         hourList: dateTimeListToHourList(),
         minuteList: dateTimeListToMinuteList(),
         typeList: globals.drinkTypes,
@@ -494,7 +494,7 @@ class _WaterButtonState extends State<WaterButton> {
     globals.drinkTypes.add(0);
 
     var dayRow = Day(
-        date: DateTime.now().toString(),
+        date: dateTimeToString(DateTime.now()),
         hourList: dateTimeListToHourList(),
         minuteList: dateTimeListToMinuteList(),
         typeList: globals.drinkTypes,
@@ -531,7 +531,12 @@ List<int> dateTimeListToMinuteList() {
   return newList;
 }
 
-
+String dateTimeToString(DateTime date) {
+  String y = date.year.toString();
+  String m = date.month.toString();
+  String d = date.day.toString();
+  return m + "/" + d + "/" + y;
+}
 
 //query() async {
 //  Database db = await DatabaseHelper.instance.database;
