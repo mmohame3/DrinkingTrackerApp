@@ -395,9 +395,10 @@ class _DrinkButtonState extends State<DrinkButton> {
         setState(() {
           DateTime currentTime = DateTime.now();
           globals.drinkCount++;
+          widget.parentActionBAC(currentTime);
           widget.parentAction(
               'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
-          widget.parentActionBAC(currentTime);
+
           drinkButtonTap(currentTime);
         });
       },
@@ -443,7 +444,7 @@ class _DrinkButtonState extends State<DrinkButton> {
   }
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
-    int plantNum = 5 * (globals.bac / .12).floor();
+    int plantNum = (5 * (globals.bac/.12)).floor();
     if (plantNum > 4) {
       plantNum = 4;
     }
@@ -527,7 +528,7 @@ class _WaterButtonState extends State<WaterButton> {
   }
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
-    int plantNum = 5 * (globals.bac / .12).floor();
+    int plantNum = (5 * (globals.bac / .12)).floor();
     if (plantNum > 4){
       plantNum = 4;
     }
