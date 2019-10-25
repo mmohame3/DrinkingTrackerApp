@@ -1,5 +1,7 @@
 library globals;
+import 'database_helpers.dart';
 
+//Day today;
 int waterCount = 0;
 int drinkCount = 0;
 

@@ -17,13 +17,13 @@ final String columnWaterCount = "totalwatercount";
 
 class Day {
   String date;
-  var hourList = [];
-  var minuteList = [];
-  var typeList =[];
-  double maxBAC;
-  int waterAtMaxBAC;
-  int totalDrinks;
-  int totalWaters;
+  List<int> hourList = new List();
+  List<int> minuteList = new List();
+  List<int> typeList = new List();
+  double maxBAC = 0;
+  int waterAtMaxBAC = 0;
+  int totalDrinks = 0;
+  int totalWaters = 0;
 
   Day({this.date, this.hourList, this.minuteList, this.typeList, this.maxBAC,
   this.waterAtMaxBAC, this.totalDrinks, this.totalWaters});
@@ -61,6 +61,71 @@ class Day {
         'totalDrinks: $totalDrinks, totalWaters: $totalWaters}';
   }
 
+  // NOTE: this many getters and setters CANNOT be efficient in a
+  // database but this is how we're doing it right now.
+  String getDate() {
+    return this.date;
+  }
+
+  List getHours() {
+    return this.hourList;
+  }
+
+  List getMinutes() {
+    return this.minuteList;
+  }
+
+  List getTypes() {
+    return this.typeList;
+  }
+
+  double getMaxBac() {
+    return this.maxBAC;
+  }
+
+  int getWaterAtMax(){
+    return this.waterAtMaxBAC;
+  }
+
+  int getTotalDrinks() {
+    return totalDrinks;
+  }
+
+  int getTotalWaters(){
+    return totalWaters;
+  }
+
+  void setDate(String date) {
+    this.date = date;
+  }
+
+  void addHour(int hour) {
+    this.hourList.add(hour);
+  }
+
+  void addMinute(int minute) {
+    this.minuteList.add(minute);
+  }
+
+  void addType(int type) {
+    this.typeList.add(type);
+  }
+
+  void setMaxBac(double mb) {
+    this.maxBAC = mb;
+  }
+
+  void setWatersAtMaxBac(int wamb) {
+    this.waterAtMaxBAC = wamb;
+  }
+
+  void setTotalDrinks(int drinks) {
+    this.totalDrinks = drinks;
+  }
+
+  void setTotalWaters(int waters) {
+    this.totalWaters = waters;
+  }
 }
 
 class DatabaseHelper {
@@ -110,7 +175,7 @@ class DatabaseHelper {
               ''');
   }
 
-  Future<void> insert(Day day) async {
+  Future<void> insertDay(Day day) async {
     Database db = await database;
     await db.insert(tableDays, day.toMap(),
     conflictAlgorithm: ConflictAlgorithm.replace);

@@ -17,6 +17,16 @@ import './alternatePersonalInformation.dart';
 
 void main() => runApp(MyApp());
 
+final Day today = new Day(date: dateTimeToString(DateTime.now()),
+    hourList: [],
+    minuteList: [],
+    typeList: [],
+    totalDrinks: 0,
+    totalWaters: 0,
+    maxBAC: 0,
+    waterAtMaxBAC: 0);
+
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -36,10 +46,11 @@ class AppHomeScreen extends StatefulWidget {
 class _AppHomeScreenState extends State<AppHomeScreen> {
   String bacValue = "0.0";
 
+
   @override
   void initState() {
     super.initState();
-    //calBac();
+    determineDay();
   }
 
   @override
@@ -278,12 +289,26 @@ class _PlantState extends State<Plant> {
       globals.drinkTimes.add(currentTime);
       bac = _bacMath(currentTime, globals.drinkTimes);
       globals.bac = bac;
-      if (bac >= globals.maxBAC) {
-        globals.maxBAC = bac;
-        globals.waterAtMaxBAC = globals.waterCount;
+      if (bac >= today.getMaxBac()) {
+//        globals.maxBAC = bac;
+//        globals.waterAtMaxBAC = globals.waterCount;
+        today.setMaxBac(bac);
+        today.setWatersAtMaxBac(today.getTotalWaters());
+
       }
     });
   }
+
+//  _allDrinksToAlcTimes(List allDrinks) {
+//    int i;
+//    globals.drinkTypes = [];
+//    List times = [];
+//    for (i = 0; i < allDrinks.length; i++) {
+//      if (allDrinks[i] == 1) {
+//        times.
+//      }
+//    }
+//  }
 
   _bacMath(currentTime, drinkTimeList) {
     bac = 0;
@@ -394,12 +419,13 @@ class _DrinkButtonState extends State<DrinkButton> {
       onTap: () {
         setState(() {
           DateTime currentTime = DateTime.now();
-          globals.drinkCount++;
+          //globals.drinkCount++;
+          drinkButtonTap(currentTime);
           widget.parentActionBAC(currentTime);
           widget.parentAction(
               'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
 
-          drinkButtonTap(currentTime);
+
         });
       },
       child: Stack(
@@ -424,24 +450,18 @@ class _DrinkButtonState extends State<DrinkButton> {
   }
 
   void drinkButtonTap(DateTime currentTime) async {
+    print(today.toString());
     globals.allDrinkTimes.add(currentTime);
-    globals.drinkTypes.add(1);
-    var dayRow = Day(
-        date: dateTimeToString(DateTime.now()),
-        hourList: dateTimeListToHourList(),
-        minuteList: dateTimeListToMinuteList(),
-        typeList: globals.drinkTypes,
-        totalWaters: globals.waterCount,
-        totalDrinks: globals.drinkCount,
-        maxBAC: globals.maxBAC,
-        waterAtMaxBAC: globals.waterAtMaxBAC);
 
-    // if no instance of day --> insert dayRow
-    await dbHelper.insert(dayRow);
+    today.addHour(currentTime.hour);
+    today.addMinute(currentTime.minute);
+    today.addType(1);
+    today.setTotalDrinks(today.getTotalDrinks() + 1);
 
-    //if day is already in there --> update
-    //await dbHelper.updateDay(dayRow);
+
+    dbHelper.updateDay(today);
   }
+
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
     int plantNum = (5 * (globals.bac/.12)).floor();
@@ -452,7 +472,7 @@ class _DrinkButtonState extends State<DrinkButton> {
   }
 
   int waterToPlant() {
-    int plantNumWater = globals.waterCount;
+    int plantNumWater = today.getTotalWaters();
     if (plantNumWater > 5) {
       plantNumWater = 5;
     }
@@ -471,17 +491,16 @@ class WaterButton extends StatefulWidget {
 class _WaterButtonState extends State<WaterButton> {
   final dbHelper = DatabaseHelper.instance;
 
+
   @override
   Widget build(context) {
     return GestureDetector(
       onTap: () {
         setState(() {
-            globals.waterCount++;
-          // where 5 is the number of plant stages we have and .12 is our "max" BAC
+//            globals.waterCount++;
+          waterButtonTap();
           widget.parentAction(
               'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
-          waterButtonTap();
-          //printDrinkCounts();
         });
       },
       child: Stack(
@@ -510,21 +529,12 @@ class _WaterButtonState extends State<WaterButton> {
     globals.allDrinkTimes.add(currentTime);
     globals.drinkTypes.add(0);
 
-    var dayRow = Day(
-        date: dateTimeToString(DateTime.now()),
-        hourList: dateTimeListToHourList(),
-        minuteList: dateTimeListToMinuteList(),
-        typeList: globals.drinkTypes,
-        totalWaters: globals.waterCount,
-        totalDrinks: globals.drinkCount,
-        maxBAC: globals.maxBAC,
-        waterAtMaxBAC: globals.waterAtMaxBAC);
+    today.setTotalWaters(today.getTotalWaters() + 1);
+    today.addHour(DateTime.now().hour);
+    today.addMinute(DateTime.now().minute);
+    today.addType(0);
+    await dbHelper.updateDay(today);
 
-    // if no instance of day --> insert dayRow
-    await dbHelper.insert(dayRow);
-
-    // if day is already in there --> update
-    //await dbHelper.updateDay(dayRow);
   }
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
@@ -537,7 +547,7 @@ class _WaterButtonState extends State<WaterButton> {
   }
 
   int waterToPlant() {
-    int plantNumWater = globals.waterCount;
+    int plantNumWater = today.getTotalWaters();
     if (plantNumWater > 5) {
       plantNumWater = 5;
     }
@@ -547,11 +557,10 @@ class _WaterButtonState extends State<WaterButton> {
 
 }
 List<int> dateTimeListToHourList() {
-  List<int> newList = new List();
+  List<int> newList = [];
   for (int i = 0; i < globals.allDrinkTimes.length; i++) {
     DateTime date = globals.allDrinkTimes[i];
     newList.add(date.hour);
-
   }
   return newList;
 }
@@ -570,6 +579,18 @@ String dateTimeToString(DateTime date) {
   String m = date.month.toString();
   String d = date.day.toString();
   return m + "/" + d + "/" + y;
+}
+
+// if today's date isn't in the db, adds it
+// atm does nothing if the date IS in the database
+void determineDay() async {
+  Database db = await DatabaseHelper.instance.database;
+  String todayDate = dateTimeToString(DateTime.now());
+  List<Map> result = await db.rawQuery('SELECT * FROM tableDays WHERE day=?', [todayDate]);
+  if (result == null) { //is this right?
+    await db.insert(tableDays, today.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
 }
 
 //query() async {
