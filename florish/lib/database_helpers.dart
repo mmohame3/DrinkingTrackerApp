@@ -17,13 +17,13 @@ final String columnWaterCount = "totalwatercount";
 
 class Day {
   String date;
-  List<int> hourList = new List();
-  List<int> minuteList = new List();
-  List<int> typeList = new List();
-  double maxBAC = 0;
-  int waterAtMaxBAC = 0;
-  int totalDrinks = 0;
-  int totalWaters = 0;
+  List<int> hourList;
+  List<int> minuteList;
+  List<int> typeList;
+  double maxBAC;
+  int waterAtMaxBAC;
+  int totalDrinks;
+  int totalWaters;
 
   Day({this.date, this.hourList, this.minuteList, this.typeList, this.maxBAC,
   this.waterAtMaxBAC, this.totalDrinks, this.totalWaters});

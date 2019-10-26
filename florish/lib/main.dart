@@ -17,14 +17,7 @@ import './alternatePersonalInformation.dart';
 
 void main() => runApp(MyApp());
 
-final Day today = new Day(date: dateTimeToString(DateTime.now()),
-    hourList: [],
-    minuteList: [],
-    typeList: [],
-    totalDrinks: 0,
-    totalWaters: 0,
-    maxBAC: 0,
-    waterAtMaxBAC: 0);
+Day today;
 
 
 class MyApp extends StatelessWidget {
@@ -45,6 +38,7 @@ class AppHomeScreen extends StatefulWidget {
 
 class _AppHomeScreenState extends State<AppHomeScreen> {
   String bacValue = "0.0";
+  DatabaseHelper dbHelper = DatabaseHelper.instance;
 
 
   @override
@@ -52,6 +46,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
     super.initState();
     determineDay();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -437,7 +432,7 @@ class _DrinkButtonState extends State<DrinkButton> {
             width: 71,
           ),
           Text(
-            globals.drinkCount.toString(),
+            today.totalDrinks.toString(),
             style: TextStyle(
               fontSize: 25,
               color: Colors.black,
@@ -450,7 +445,6 @@ class _DrinkButtonState extends State<DrinkButton> {
   }
 
   void drinkButtonTap(DateTime currentTime) async {
-    print(today.toString());
     globals.allDrinkTimes.add(currentTime);
 
     today.addHour(currentTime.hour);
@@ -458,7 +452,7 @@ class _DrinkButtonState extends State<DrinkButton> {
     today.addType(1);
     today.setTotalDrinks(today.getTotalDrinks() + 1);
 
-
+    print(today.toString());
     dbHelper.updateDay(today);
   }
 
@@ -512,7 +506,7 @@ class _WaterButtonState extends State<WaterButton> {
             width: 71,
           ),
           Text(
-            globals.waterCount.toString(),
+            today.totalWaters.toString(),
             style: TextStyle(
               fontSize: 25,
               color: Colors.black,
@@ -533,6 +527,8 @@ class _WaterButtonState extends State<WaterButton> {
     today.addHour(DateTime.now().hour);
     today.addMinute(DateTime.now().minute);
     today.addType(0);
+
+    print(today.toString());
     await dbHelper.updateDay(today);
 
   }
@@ -584,10 +580,12 @@ String dateTimeToString(DateTime date) {
 // if today's date isn't in the db, adds it
 // atm does nothing if the date IS in the database
 void determineDay() async {
+  print("determining day...");
   Database db = await DatabaseHelper.instance.database;
   String todayDate = dateTimeToString(DateTime.now());
-  List<Map> result = await db.rawQuery('SELECT * FROM tableDays WHERE day=?', [todayDate]);
-  if (result == null) { //is this right?
+  List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
+  if (result.isEmpty) { //is this right?
+    today = new Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
     await db.insert(tableDays, today.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
