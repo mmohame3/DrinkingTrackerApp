@@ -50,6 +50,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    determineDay();
     Widget plant = Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -267,10 +268,12 @@ class Plant extends StatefulWidget {
 class _PlantState extends State<Plant> {
   String imageName = 'assets/images/plants/drink0water0.png';
   double bac = 0;
+  DatabaseHelper dbhelper = DatabaseHelper.instance;
 
   @override
   void initState() {
     super.initState();
+    determineDay();
   }
 
   _updateImageName(String path) {
@@ -408,8 +411,10 @@ class DrinkButton extends StatefulWidget {
 class _DrinkButtonState extends State<DrinkButton> {
   final dbHelper = DatabaseHelper.instance;
 
+
   @override
   Widget build(context) {
+    determineDay();
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -488,6 +493,7 @@ class _WaterButtonState extends State<WaterButton> {
 
   @override
   Widget build(context) {
+    determineDay();
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -578,19 +584,36 @@ String dateTimeToString(DateTime date) {
 }
 
 // if today's date isn't in the db, adds it
-// atm does nothing if the date IS in the database
+// if it IS in the database, creates a new day from the data there,
+// i think this won't result in copies of the same day since in database_helpers
+// if there are two of the same day it just replaces the old one
 void determineDay() async {
   print("determining day...");
   Database db = await DatabaseHelper.instance.database;
   String todayDate = dateTimeToString(DateTime.now());
   List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
-  if (result.isEmpty) { //is this right?
+  if (result.isEmpty) {
     today = new Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
     await db.insert(tableDays, today.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
+  else {
+    today = new Day(date: result[0]["day"], hourList: new List<int>.from(result[0]['hourlist']), minuteList: new List<int>.from(result[0]['minutelist']),
+                    typeList: new List<int>.from(result[0]['typelist']), maxBAC: result[0]['maxBAC'], waterAtMaxBAC: result[0]["WateratmaxBAC"],
+                    totalDrinks: result[0]["totaldrinkcount"], totalWaters: result[0]["totalwatercount"]);
+
+  }
 }
 
+//final String tableDays = "days";
+//final String columnDay = "day";
+//final String columnHourList = 'hourlist';
+//final String columnMinuteList = 'minutelist';
+//final String columnTypeList = 'typelist';
+//final String columnMaxBAC = 'maxBAC';
+//final String columnMBWater = 'WateratmaxBAC';
+//final String columnDrinkCount = "totaldrinkcount";
+//final String columnWaterCount = "totalwatercount";
 //query() async {
 //  Database db = await DatabaseHelper.instance.database;
 //
