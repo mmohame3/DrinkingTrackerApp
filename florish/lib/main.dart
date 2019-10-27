@@ -17,7 +17,6 @@ import './alternatePersonalInformation.dart';
 
 void main() => runApp(MyApp());
 
-Day today;
 
 
 class MyApp extends StatelessWidget {
@@ -37,20 +36,20 @@ class AppHomeScreen extends StatefulWidget {
 }
 
 class _AppHomeScreenState extends State<AppHomeScreen> {
-  String bacValue = "0.0";
   DatabaseHelper dbHelper = DatabaseHelper.instance;
 
 
   @override
   void initState() {
-    super.initState();
     determineDay();
+    //dbHelper.deleteDay(globals.today.date);
+    super.initState();
+
   }
 
 
   @override
   Widget build(BuildContext context) {
-    determineDay();
     Widget plant = Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -266,50 +265,32 @@ class Plant extends StatefulWidget {
 }
 
 class _PlantState extends State<Plant> {
-  String imageName = 'assets/images/plants/drink0water0.png';
-  double bac = 0;
-  DatabaseHelper dbhelper = DatabaseHelper.instance;
+  final dbHelper = DatabaseHelper.instance;
 
   @override
   void initState() {
     super.initState();
-    determineDay();
   }
 
   _updateImageName(String path) {
     setState(() {
-      imageName = path;
+      globals.imageName = path;
     });
   }
 
   _updateBAC(currentTime) {
     setState(() {
-      globals.drinkTimes.add(currentTime);
-      bac = _bacMath(currentTime, globals.drinkTimes);
-      globals.bac = bac;
-      if (bac >= today.getMaxBac()) {
-//        globals.maxBAC = bac;
-//        globals.waterAtMaxBAC = globals.waterCount;
-        today.setMaxBac(bac);
-        today.setWatersAtMaxBac(today.getTotalWaters());
+      globals.bac = _bacMath(_dbListToTimeList());
+      if (globals.bac >= globals.today.getMaxBac()) {
+        globals.today.setMaxBac(globals.bac);
+        globals.today.setWatersAtMaxBac(globals.today.getTotalWaters());
 
       }
     });
   }
 
-//  _allDrinksToAlcTimes(List allDrinks) {
-//    int i;
-//    globals.drinkTypes = [];
-//    List times = [];
-//    for (i = 0; i < allDrinks.length; i++) {
-//      if (allDrinks[i] == 1) {
-//        times.
-//      }
-//    }
-//  }
-
-  _bacMath(currentTime, drinkTimeList) {
-    bac = 0;
+  _bacMath(drinkTimeList) {
+    double runningBac = 0;
     double r;
     Duration elapsedTime;
     if (globals.selectedSex == 'Male') {
@@ -319,13 +300,49 @@ class _PlantState extends State<Plant> {
     } else {
       r = 0.615;
     }
-    for (int i = 0; i < drinkTimeList.length; i++) {
-      elapsedTime = currentTime.difference(drinkTimeList[i]);
-      bac += ((14 / (globals.weightGrams * r)) * 100) -
+    for (int i = 0; i < drinkTimeList.length - 1; i++) {
+      elapsedTime = drinkTimeList[drinkTimeList.length - 1].difference(drinkTimeList[i]);
+      runningBac += ((14 / (globals.weightGrams * r)) * 100) -
           ((elapsedTime.inSeconds / 3600) * .015);
     }
-    return bac;
+    return runningBac;
   }
+
+  _dbListToTimeList() {
+    List hours = globals.today.getHours();
+    List minutes = globals.today.getMinutes();
+    List types = globals.today.getTypes();
+    int i;
+    DateTime newTime;
+    List<DateTime> timeList = [];
+    DateTime currentTime = DateTime.now();
+    for (i = 0; i <types.length; i++){
+      if (types[i] == 1){
+        newTime = new DateTime(currentTime.year, currentTime.month,
+        currentTime.day, hours[i], minutes[i]);
+        timeList.add(newTime);
+      }
+    }
+    return timeList;
+  }
+
+  int bacToPlant() {
+    int plantNum = (5 * (globals.bac/.12)).floor();
+    if (plantNum > 4) {
+      plantNum = 4;
+    }
+    return plantNum;
+  }
+
+  int waterToPlant() {
+    int plantNumWater = globals.today.getTotalWaters();
+    if (plantNumWater > 5) {
+      plantNumWater = 5;
+    }
+    return plantNumWater;
+  }
+
+
 
 
   @override
@@ -349,7 +366,7 @@ class _PlantState extends State<Plant> {
                       ),
                     ),
                     Text(
-                      bac.toStringAsFixed(2),
+                      globals.bac.toStringAsFixed(2),
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -373,7 +390,7 @@ class _PlantState extends State<Plant> {
           children: [
             Container(
               padding: EdgeInsets.only(bottom: 50),
-              child: Image.asset(imageName, width: 180),
+              child: Image.asset(globals.imageName, width: 180),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -398,6 +415,7 @@ class _PlantState extends State<Plant> {
   }
 }
 
+
 class DrinkButton extends StatefulWidget {
   final ValueChanged<String> parentAction;
   final ValueChanged<DateTime> parentActionBAC;
@@ -414,12 +432,11 @@ class _DrinkButtonState extends State<DrinkButton> {
 
   @override
   Widget build(context) {
-    determineDay();
     return GestureDetector(
       onTap: () {
         setState(() {
+          globals.today.setTotalDrinks(globals.today.getTotalDrinks() + 1);
           DateTime currentTime = DateTime.now();
-          //globals.drinkCount++;
           drinkButtonTap(currentTime);
           widget.parentActionBAC(currentTime);
           widget.parentAction(
@@ -437,7 +454,7 @@ class _DrinkButtonState extends State<DrinkButton> {
             width: 71,
           ),
           Text(
-            today.totalDrinks.toString(),
+            globals.today.totalDrinks.toString(),
             style: TextStyle(
               fontSize: 25,
               color: Colors.black,
@@ -450,15 +467,12 @@ class _DrinkButtonState extends State<DrinkButton> {
   }
 
   void drinkButtonTap(DateTime currentTime) async {
-    globals.allDrinkTimes.add(currentTime);
+    globals.today.addHour(currentTime.hour);
+    globals.today.addMinute(currentTime.minute);
+    globals.today.addType(1);
 
-    today.addHour(currentTime.hour);
-    today.addMinute(currentTime.minute);
-    today.addType(1);
-    today.setTotalDrinks(today.getTotalDrinks() + 1);
-
-    print(today.toString());
-    dbHelper.updateDay(today);
+    print(globals.today.toString());
+    dbHelper.updateDay(globals.today);
   }
 
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
@@ -471,7 +485,7 @@ class _DrinkButtonState extends State<DrinkButton> {
   }
 
   int waterToPlant() {
-    int plantNumWater = today.getTotalWaters();
+    int plantNumWater = globals.today.getTotalWaters();
     if (plantNumWater > 5) {
       plantNumWater = 5;
     }
@@ -493,11 +507,10 @@ class _WaterButtonState extends State<WaterButton> {
 
   @override
   Widget build(context) {
-    determineDay();
     return GestureDetector(
       onTap: () {
         setState(() {
-//            globals.waterCount++;
+          globals.today.setTotalWaters(globals.today.getTotalWaters() + 1);
           waterButtonTap();
           widget.parentAction(
               'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
@@ -512,7 +525,7 @@ class _WaterButtonState extends State<WaterButton> {
             width: 71,
           ),
           Text(
-            today.totalWaters.toString(),
+            globals.today.totalWaters.toString(),
             style: TextStyle(
               fontSize: 25,
               color: Colors.black,
@@ -525,17 +538,12 @@ class _WaterButtonState extends State<WaterButton> {
   }
 
   void waterButtonTap() async {
-    DateTime currentTime = DateTime.now();
-    globals.allDrinkTimes.add(currentTime);
-    globals.drinkTypes.add(0);
+    globals.today.addHour(DateTime.now().hour);
+    globals.today.addMinute(DateTime.now().minute);
+    globals.today.addType(0);
 
-    today.setTotalWaters(today.getTotalWaters() + 1);
-    today.addHour(DateTime.now().hour);
-    today.addMinute(DateTime.now().minute);
-    today.addType(0);
-
-    print(today.toString());
-    await dbHelper.updateDay(today);
+    print(globals.today.toString());
+    await dbHelper.updateDay(globals.today);
 
   }
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
@@ -545,11 +553,10 @@ class _WaterButtonState extends State<WaterButton> {
       plantNum = 4;
     }
     return plantNum;
-
   }
 
   int waterToPlant() {
-    int plantNumWater = today.getTotalWaters();
+    int plantNumWater = globals.today.getTotalWaters();
     if (plantNumWater > 5) {
       plantNumWater = 5;
     }
@@ -593,12 +600,12 @@ void determineDay() async {
   String todayDate = dateTimeToString(DateTime.now());
   List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
   if (result.isEmpty) {
-    today = new Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
-    await db.insert(tableDays, today.toMap(),
+    globals.today = new Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
+    await db.insert(tableDays, globals.today.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
   else {
-    today = new Day(date: result[0]["day"], hourList: new List<int>.from(result[0]['hourlist']), minuteList: new List<int>.from(result[0]['minutelist']),
+    globals.today = new Day(date: result[0]["day"], hourList: new List<int>.from(result[0]['hourlist']), minuteList: new List<int>.from(result[0]['minutelist']),
                     typeList: new List<int>.from(result[0]['typelist']), maxBAC: result[0]['maxBAC'], waterAtMaxBAC: result[0]["WateratmaxBAC"],
                     totalDrinks: result[0]["totaldrinkcount"], totalWaters: result[0]["totalwatercount"]);
 

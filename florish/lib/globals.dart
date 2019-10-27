@@ -1,14 +1,15 @@
 library globals;
 import 'database_helpers.dart';
 
-//Day today;
-int waterCount = 0;
-int drinkCount = 0;
+Day today;
+//int waterCount = 0;
+//int drinkCount = 0;
 
 double bac = 0.00;
-double maxBAC = 0.00;
-
-int waterAtMaxBAC = 0;
+String imageName = 'assets/images/plants/drink0water0.png';
+//double maxBAC = 0.00;
+//
+//int waterAtMaxBAC = 0;
 
 String selectedSex = '';
 int selectedHeight = 0;

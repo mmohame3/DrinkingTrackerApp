@@ -35,8 +35,8 @@ class Day {
     typeList = map[columnTypeList];
     maxBAC = map[columnMaxBAC];
     waterAtMaxBAC = map[columnMBWater];
-    totalDrinks = map[drinkCount];
-    totalWaters = map[waterCount];
+    totalDrinks = map[columnDrinkCount];
+    totalWaters = map[columnWaterCount];
   }
 
   Map<String, dynamic> toMap() {
@@ -188,6 +188,13 @@ class DatabaseHelper {
     where: "day = ?",
     whereArgs: [day.date]);
   }
+
+  Future<void> deleteDay(String date) async {
+    Database db = await instance.database;
+    print("deleted?");
+    return await db.delete(tableDays, where: '$columnDay = ?', whereArgs: [date]);
+  }
+
 
 //  Future<List> getTimeList(DateTime day) async{
 //    Database db = await database;
