@@ -326,25 +326,6 @@ class _PlantState extends State<Plant> {
     return timeList;
   }
 
-  int bacToPlant() {
-    int plantNum = (5 * (globals.bac/.12)).floor();
-    if (plantNum > 4) {
-      plantNum = 4;
-    }
-    return plantNum;
-  }
-
-  int waterToPlant() {
-    int plantNumWater = globals.today.getTotalWaters();
-    if (plantNumWater > 5) {
-      plantNumWater = 5;
-    }
-    return plantNumWater;
-  }
-
-
-
-
   @override
   Widget build(context) {
     return Column(
@@ -564,23 +545,6 @@ class _WaterButtonState extends State<WaterButton> {
   }
 
 
-}
-List<int> dateTimeListToHourList() {
-  List<int> newList = [];
-  for (int i = 0; i < globals.allDrinkTimes.length; i++) {
-    DateTime date = globals.allDrinkTimes[i];
-    newList.add(date.hour);
-  }
-  return newList;
-}
-
-List<int> dateTimeListToMinuteList() {
-  List<int> newList = [];
-  for (int i = 0; i < globals.allDrinkTimes.length; i++) {
-    DateTime date = globals.allDrinkTimes[i];
-    newList.add(date.minute);
-  }
-  return newList;
 }
 
 String dateTimeToString(DateTime date) {
