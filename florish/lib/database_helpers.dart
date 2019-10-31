@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:Florish/globals.dart';
 import 'package:path/path.dart';
@@ -88,7 +89,7 @@ class Day {
   }
 
   int getTotalDrinks() {
-    return totalDrinks;
+    return this.totalDrinks;
   }
 
   int getTotalWaters(){
@@ -193,6 +194,13 @@ class DatabaseHelper {
     Database db = await instance.database;
     print("deleted?");
     return await db.delete(tableDays, where: '$columnDay = ?', whereArgs: [date]);
+  }
+
+  Future<Day> getDay(String date) async {
+    Database db = await instance.database;
+    List result =  await db.query(tableDays, where: '$columnDay = ?', whereArgs: [date]);
+    Day dayone = result[0];
+    return dayone;
   }
 
 

@@ -41,8 +41,9 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
 
   @override
   void initState() {
-    determineDay();
-    //dbHelper.deleteDay(globals.today.date);
+    determineDay().whenComplete((){
+      print("completed");
+    });
     super.initState();
 
   }
@@ -413,6 +414,14 @@ class _DrinkButtonState extends State<DrinkButton> {
 
   @override
   Widget build(context) {
+    determineDay();
+    String drinkString;
+    if (globals.today != null){
+      drinkString = globals.today.totalDrinks.toString();
+    } else {
+      drinkString = "";
+    }
+
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -435,7 +444,7 @@ class _DrinkButtonState extends State<DrinkButton> {
             width: 71,
           ),
           Text(
-            globals.today.totalDrinks.toString(),
+            drinkString,
             style: TextStyle(
               fontSize: 25,
               color: Colors.black,
@@ -446,6 +455,7 @@ class _DrinkButtonState extends State<DrinkButton> {
       ),
     );
   }
+  
 
   void drinkButtonTap(DateTime currentTime) async {
     globals.today.addHour(currentTime.hour);
@@ -488,6 +498,12 @@ class _WaterButtonState extends State<WaterButton> {
 
   @override
   Widget build(context) {
+    String waterString;
+    if (globals.today != null){
+      waterString = globals.today.totalWaters.toString();
+    } else {
+      waterString = "";
+    }
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -506,7 +522,7 @@ class _WaterButtonState extends State<WaterButton> {
             width: 71,
           ),
           Text(
-            globals.today.totalWaters.toString(),
+            waterString,
             style: TextStyle(
               fontSize: 25,
               color: Colors.black,
@@ -558,11 +574,14 @@ String dateTimeToString(DateTime date) {
 // if it IS in the database, creates a new day from the data there,
 // i think this won't result in copies of the same day since in database_helpers
 // if there are two of the same day it just replaces the old one
-void determineDay() async {
-  print("determining day...");
-  Database db = await DatabaseHelper.instance.database;
+Future determineDay() async{
   String todayDate = dateTimeToString(DateTime.now());
+  //globals.today = new Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
+  print("determining day...");
+
+  Database db = await DatabaseHelper.instance.database;
   List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
+
   if (result.isEmpty) {
     globals.today = new Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
     await db.insert(tableDays, globals.today.toMap(),
@@ -576,20 +595,4 @@ void determineDay() async {
   }
 }
 
-//final String tableDays = "days";
-//final String columnDay = "day";
-//final String columnHourList = 'hourlist';
-//final String columnMinuteList = 'minutelist';
-//final String columnTypeList = 'typelist';
-//final String columnMaxBAC = 'maxBAC';
-//final String columnMBWater = 'WateratmaxBAC';
-//final String columnDrinkCount = "totaldrinkcount";
-//final String columnWaterCount = "totalwatercount";
-//query() async {
-//  Database db = await DatabaseHelper.instance.database;
-//
-//  List<Map> result = await db.rawQuery('SELECT * FROM tableDays WHERE day=?', [""]) // set "" to today's date in string
-//
-//  return result[0];
-//
-//}
+
