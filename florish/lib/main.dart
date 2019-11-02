@@ -41,9 +41,8 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
 
   @override
   void initState() {
-    determineDay().whenComplete((){
-      print("completed");
-    });
+    //uncomment to reset today's data to 0
+    //dbHelper.deleteDay(dateTimeToString(DateTime.now()));
     super.initState();
 
   }
@@ -64,6 +63,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
       ],
     );
 
+// Builds the drawer menu
     Widget menu = Drawer(
       child: Container(
         padding: EdgeInsets.only(left: 10),
@@ -223,7 +223,8 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title:
+        Text(
           "FLORISH",
           style: TextStyle(
             fontFamily: 'Montserrat',
@@ -238,26 +239,6 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
     );
   }
 
-//  Future <String> getBac()  async {
-//    SharedPreferences pref =  await SharedPreferences.getInstance();
-//    int selectedFeet = pref.getInt('feet');
-//    int selectedInches = pref.getInt('inches');
-//    String selectedSex = pref.getString(AppConstants.PREF_SEX);
-//    int selectedWeight = pref.getInt('weight');
-//    double r ;
-//
-//    if(selectedSex.toLowerCase() == 'Male'.toLowerCase()){
-//      r = 0.68;
-//    }else{
-//      r= 0.55;
-//    }
-//
-//    int SelectedHeight = selectedFeet + (selectedInches*0.0833333.floor());
-//    int usStandardDrink = 14;
-//
-//    int bacCal =(((globals.drinkCount*14)/selectedWeight*r)*100).floor();
-//    return bacCal.toString();
-//  }
 }
 
 class Plant extends StatefulWidget {
@@ -273,12 +254,43 @@ class _PlantState extends State<Plant> {
     super.initState();
   }
 
+// Sets up the plant and BAC
+  _PlantState() {
+    determineDay().then((day) => setState(() {
+      globals.today = day;
+      _updateBAC(DateTime.now());
+      globals.imageName = 'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
+      _updateImageName(globals.imageName);
+    }));
+  }
+
+// turns the BAC to a plant stage
+  // where 5 is the number of plant stages we have and .12 is our "max" BAC
+  int bacToPlant() {
+    int plantNum = (5 * (globals.bac/.12)).floor();
+    if (plantNum > 4) {
+      plantNum = 4;
+    }
+    return plantNum;
+  }
+
+ // turns the water count to a plant stage
+  int waterToPlant() {
+    int plantNumWater = globals.today.getTotalWaters();
+    if (plantNumWater > 5) {
+      plantNumWater = 5;
+    }
+    return plantNumWater;
+  }
+
+  // sets the plant's image name to a new path
   _updateImageName(String path) {
     setState(() {
       globals.imageName = path;
     });
   }
 
+  // sets the bac global to the new bac and updates the max bac
   _updateBAC(currentTime) {
     setState(() {
       globals.bac = _bacMath(_dbListToTimeList());
@@ -290,7 +302,10 @@ class _PlantState extends State<Plant> {
     });
   }
 
+  // takes in a list of DateTime objects and calculates the bac
   _bacMath(drinkTimeList) {
+    print(drinkTimeList);
+    DateTime currentTime = DateTime.now();
     double runningBac = 0;
     double r;
     Duration elapsedTime;
@@ -301,14 +316,16 @@ class _PlantState extends State<Plant> {
     } else {
       r = 0.615;
     }
-    for (int i = 0; i < drinkTimeList.length - 1; i++) {
-      elapsedTime = drinkTimeList[drinkTimeList.length - 1].difference(drinkTimeList[i]);
+    for (int i = 0; i < drinkTimeList.length; i++) {
+      elapsedTime = currentTime.difference(drinkTimeList[i]);
       runningBac += ((14 / (globals.weightGrams * r)) * 100) -
           ((elapsedTime.inSeconds / 3600) * .015);
     }
     return runningBac;
   }
 
+  // turns today's hours and minute lists to a list of DateTimes
+  // (for the ones that correspond to drinks not waters)
   _dbListToTimeList() {
     List hours = globals.today.getHours();
     List minutes = globals.today.getMinutes();
@@ -327,6 +344,8 @@ class _PlantState extends State<Plant> {
     return timeList;
   }
 
+  // builds the "column" (almost our entire app)
+  // with: bac counter, bac picture, plant image, and buttons
   @override
   Widget build(context) {
     return Column(
@@ -410,22 +429,25 @@ class DrinkButton extends StatefulWidget {
 
 class _DrinkButtonState extends State<DrinkButton> {
   final dbHelper = DatabaseHelper.instance;
+  String drinkString = "";
 
-
+  // determines the day and sets variables before building
+  _DrinkButtonState() {
+    determineDay().then((day) => setState(() {
+      globals.today = day;
+      drinkString = day.totalDrinks.toString();
+    }));
+  }
   @override
   Widget build(context) {
-    determineDay();
-    String drinkString;
-    if (globals.today != null){
-      drinkString = globals.today.totalDrinks.toString();
-    } else {
-      drinkString = "";
-    }
 
     return GestureDetector(
+      // when tapped: updates today's counts, updates the drinkString,
+      // updates BAC, updates the plant image, and calls drinkButtonTap
       onTap: () {
         setState(() {
           globals.today.setTotalDrinks(globals.today.getTotalDrinks() + 1);
+          drinkString = globals.today.totalDrinks.toString();
           DateTime currentTime = DateTime.now();
           drinkButtonTap(currentTime);
           widget.parentActionBAC(currentTime);
@@ -455,8 +477,10 @@ class _DrinkButtonState extends State<DrinkButton> {
       ),
     );
   }
-  
 
+// Updates today's time and type lists,
+  // updates the database itself
+// and prints today's data (just for testing)
   void drinkButtonTap(DateTime currentTime) async {
     globals.today.addHour(currentTime.hour);
     globals.today.addMinute(currentTime.minute);
@@ -466,6 +490,7 @@ class _DrinkButtonState extends State<DrinkButton> {
     dbHelper.updateDay(globals.today);
   }
 
+// turns the BAC to a plant stage
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
     int plantNum = (5 * (globals.bac/.12)).floor();
@@ -475,6 +500,7 @@ class _DrinkButtonState extends State<DrinkButton> {
     return plantNum;
   }
 
+// turns the water count into a plant stage
   int waterToPlant() {
     int plantNumWater = globals.today.getTotalWaters();
     if (plantNumWater > 5) {
@@ -494,20 +520,26 @@ class WaterButton extends StatefulWidget {
 
 class _WaterButtonState extends State<WaterButton> {
   final dbHelper = DatabaseHelper.instance;
+  String waterString = "";
+
+  // determines the day and sets variables before building
+  _WaterButtonState() {
+    determineDay().then((day) => setState(() {
+      globals.today = day;
+      waterString = day.totalWaters.toString();
+    }));
+  }
 
 
   @override
   Widget build(context) {
-    String waterString;
-    if (globals.today != null){
-      waterString = globals.today.totalWaters.toString();
-    } else {
-      waterString = "";
-    }
     return GestureDetector(
+      // when tapped: updates today's count, updates waterString,
+      // updates the plant image, and calls waterButtonTap()
       onTap: () {
         setState(() {
           globals.today.setTotalWaters(globals.today.getTotalWaters() + 1);
+          waterString = globals.today.totalWaters.toString();
           waterButtonTap();
           widget.parentAction(
               'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
@@ -534,6 +566,9 @@ class _WaterButtonState extends State<WaterButton> {
     );
   }
 
+  // updates today's time and type lists,
+  // updates the database itself,
+  // and prints today's data (for testing etc.)
   void waterButtonTap() async {
     globals.today.addHour(DateTime.now().hour);
     globals.today.addMinute(DateTime.now().minute);
@@ -543,6 +578,8 @@ class _WaterButtonState extends State<WaterButton> {
     await dbHelper.updateDay(globals.today);
 
   }
+
+  // turns BAC into a plant stage
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
     int plantNum = (5 * (globals.bac / .12)).floor();
@@ -552,6 +589,7 @@ class _WaterButtonState extends State<WaterButton> {
     return plantNum;
   }
 
+  // turns the waterCount into a plant stage
   int waterToPlant() {
     int plantNumWater = globals.today.getTotalWaters();
     if (plantNumWater > 5) {
@@ -563,6 +601,8 @@ class _WaterButtonState extends State<WaterButton> {
 
 }
 
+//takes a DateTime and makes it into the string format
+// we use as a database key
 String dateTimeToString(DateTime date) {
   String y = date.year.toString();
   String m = date.month.toString();
@@ -574,24 +614,24 @@ String dateTimeToString(DateTime date) {
 // if it IS in the database, creates a new day from the data there,
 // i think this won't result in copies of the same day since in database_helpers
 // if there are two of the same day it just replaces the old one
-Future determineDay() async{
+Future<Day> determineDay() async {
   String todayDate = dateTimeToString(DateTime.now());
-  //globals.today = new Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
-  print("determining day...");
 
   Database db = await DatabaseHelper.instance.database;
   List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
-
+  Day day;
   if (result.isEmpty) {
-    globals.today = new Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
-    await db.insert(tableDays, globals.today.toMap(),
+    day = new Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
+    await db.insert(tableDays, day.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+    return day;
   }
   else {
-    globals.today = new Day(date: result[0]["day"], hourList: new List<int>.from(result[0]['hourlist']), minuteList: new List<int>.from(result[0]['minutelist']),
+    day = new Day(date: result[0]["day"], hourList: new List<int>.from(result[0]['hourlist']), minuteList: new List<int>.from(result[0]['minutelist']),
                     typeList: new List<int>.from(result[0]['typelist']), maxBAC: result[0]['maxBAC'], waterAtMaxBAC: result[0]["WateratmaxBAC"],
                     totalDrinks: result[0]["totaldrinkcount"], totalWaters: result[0]["totalwatercount"]);
 
+    return day;
   }
 }
 
