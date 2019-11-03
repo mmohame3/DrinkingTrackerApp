@@ -39,7 +39,11 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   @override
   void initState() {
     //uncomment to reset today's data to 0
-    //dbHelper.deleteDay(dateTimeToString(DateTime.now()));
+//    DateTime time = DateTime.now();
+//    if (time.hour < 12){
+//      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+//    }
+//    dbHelper.deleteDay(dateTimeToString(time));
     super.initState();
 
   }
@@ -199,18 +203,20 @@ class _PlantState extends State<Plant> {
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
     int plantNum = (5 * (globals.bac/.12)).floor();
-    if (plantNum > 4) {
-      plantNum = 4;
-    }
+    plantNum = plantNum > 4 ? 4 : plantNum;
+//    if (plantNum > 4) {
+//      plantNum = 4;
+//    }
     return plantNum;
   }
 
  // turns the water count to a plant stage
   int waterToPlant() {
     int plantNumWater = globals.today.getTotalWaters();
-    if (plantNumWater > 5) {
-      plantNumWater = 5;
-    }
+    plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
+//    if (plantNumWater > 5) {
+//      plantNumWater = 5;
+//    }
     return plantNumWater;
   }
 
@@ -238,6 +244,7 @@ class _PlantState extends State<Plant> {
     print(drinkTimeList);
     DateTime currentTime = DateTime.now();
     double runningBac = 0;
+    double sumBac = 0;
     double r;
     Duration elapsedTime;
     if (globals.selectedSex == 'Male') {
@@ -249,10 +256,15 @@ class _PlantState extends State<Plant> {
     }
     for (int i = 0; i < drinkTimeList.length; i++) {
       elapsedTime = currentTime.difference(drinkTimeList[i]);
-      runningBac += ((14 / (globals.weightGrams * r)) * 100) -
+      runningBac = ((14 / (globals.weightGrams * r)) * 100) -
           ((elapsedTime.inSeconds / 3600) * .015);
+      runningBac = runningBac < 0 ? 0 : runningBac;
+//      if (runningBac < 0){
+//        runningBac =0;
+//      }
+      sumBac += runningBac;
     }
-    return runningBac;
+    return sumBac;
   }
 
   // turns today's hours and minute lists to a list of DateTimes
@@ -425,18 +437,20 @@ class _DrinkButtonState extends State<DrinkButton> {
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
     int plantNum = (5 * (globals.bac/.12)).floor();
-    if (plantNum > 4) {
-      plantNum = 4;
-    }
+    plantNum = plantNum > 4 ? 4 : plantNum;
+//    if (plantNum > 4) {
+//      plantNum = 4;
+//    }
     return plantNum;
   }
 
 // turns the water count into a plant stage
   int waterToPlant() {
     int plantNumWater = globals.today.getTotalWaters();
-    if (plantNumWater > 5) {
-      plantNumWater = 5;
-    }
+    plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
+//    if (plantNumWater > 5) {
+//      plantNumWater = 5;
+//    }
     return plantNumWater;
   }
 }
@@ -514,18 +528,20 @@ class _WaterButtonState extends State<WaterButton> {
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
     int plantNum = (5 * (globals.bac / .12)).floor();
-    if (plantNum > 4){
-      plantNum = 4;
-    }
+    plantNum = plantNum > 4 ? 4 : plantNum;
+//    if (plantNum > 4) {
+//      plantNum = 4;
+//    }
     return plantNum;
   }
 
   // turns the waterCount into a plant stage
   int waterToPlant() {
     int plantNumWater = globals.today.getTotalWaters();
-    if (plantNumWater > 5) {
-      plantNumWater = 5;
-    }
+    plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
+//    if (plantNumWater > 5) {
+//      plantNumWater = 5;
+//    }
     return plantNumWater;
   }
 
@@ -546,7 +562,12 @@ String dateTimeToString(DateTime date) {
 // i think this won't result in copies of the same day since in database_helpers
 // if there are two of the same day it just replaces the old one
 Future<Day> determineDay() async {
-  String todayDate = dateTimeToString(DateTime.now());
+  DateTime time = DateTime.now();
+  //DateTime tdn;
+  if (time.hour < 12){
+    time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+  }
+  String todayDate = dateTimeToString(time);
 
   Database db = await DatabaseHelper.instance.database;
   List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
@@ -558,6 +579,7 @@ Future<Day> determineDay() async {
     return day;
   }
   else {
+    print(result[0].toString());
     day = new Day(date: result[0]["day"], hourList: new List<int>.from(result[0]['hourlist']), minuteList: new List<int>.from(result[0]['minutelist']),
                     typeList: new List<int>.from(result[0]['typelist']), maxBAC: result[0]['maxBAC'], waterAtMaxBAC: result[0]["WateratmaxBAC"],
                     totalDrinks: result[0]["totaldrinkcount"], totalWaters: result[0]["totalwatercount"]);
