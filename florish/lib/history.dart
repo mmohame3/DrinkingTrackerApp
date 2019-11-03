@@ -21,14 +21,14 @@ class _CalendarState extends State<Calendar> {
   database.Day day;
 
   Future<database.Day> determineDay(DateTime date) async {
-//    String todayDate = main.dateTimeToString(DateTime.now());
+    String todayDate = main.dateTimeToString(DateTime.now());
 
     Database db = await database.DatabaseHelper.instance.database;
-    List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [date]);
+    List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
 //    database.Day day;
 
     if (result.isEmpty) {
-      day = new database.Day(date: main.dateTimeToString(date), hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
+      day = new database.Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
       await db.insert(database.tableDays, day.toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace);
       print(day); // TODO: remove
@@ -85,6 +85,8 @@ class _CalendarState extends State<Calendar> {
       todayButtonColor: Color(0xFFC9D986),
       iconColor: Colors.black,
       headerTextStyle: TextStyle(fontFamily: 'Montserrat', color: Colors.black),
+      minSelectedDate: DateTime(2019, 10, 30),
+      maxSelectedDate: DateTime(2019, 11, 30),
       markedDatesMap: _markedDateMap,
       markedDateShowIcon: true,
       markedDateIconMaxShown: 1,
