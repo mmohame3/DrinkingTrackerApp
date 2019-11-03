@@ -9,32 +9,56 @@ class _OurMissionPageState extends State<OurMissionPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar (
+        appBar: new AppBar(
           title: new Text('Our Mission'),
-        backgroundColor: Color(0xFF97B633),
-      ),
-      backgroundColor: Colors.grey[600],
-      body: Container(
-        margin: EdgeInsets.all(30.0),
-        padding: EdgeInsets.all(10.0),
-        alignment: Alignment.topCenter,
-        width: 800,
-        height: 300,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Color(0xFFA8C935), width: 7.0),
+          backgroundColor: Color(0xFF97B633),
         ),
-        child: Text("\t We aim to provide a mechanism to drink in a safe,"
-          "healthy, and enticing way via a drinking tracker that gives a visual"
-          "representation of Blood Alcohol Content."
-          "\n"
-          "\n"
-          "\t It's easy to binge drink and lose track of alcohol consumption and we hope "
-          "to provide an emotional incentive to monitor well-being and drinking habits.",
-          style: TextStyle(fontSize: 20, color: Colors.black)),
-      )
-    );
-
-
+        backgroundColor: Colors.grey[600],
+        body: Container(
+            color: Color(0xFFE6E7E8),
+            child:
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Container(
+                  padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
+                  child: Text(
+                    'OUR MISSION',
+                    style: TextStyle(letterSpacing: 1, height: 1.5),
+                  )),
+              Container(
+                  color: Colors.white,
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                        "We aim to provide a mechanism to drink in a safe, "
+                            "healthy, and enticing way via a drinking tracker that gives a visual "
+                            "representation of Blood Alcohol Content. \n\n"
+                            "It's easy to binge drink and lose track of alcohol consumption and we hope "
+                            "to provide an emotional incentive to monitor well-being and drinking habits.",
+                        style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            height: 1.3,
+                            color: Colors.black)),
+                  )),
+              Container(
+                  padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
+                  child: Text(
+                    'DISCLAIMER',
+                    style: TextStyle(letterSpacing: 1, height: 1.5),
+                  )),
+              Container(
+                  color: Colors.white,
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                        "Florish is an app to help people keep track of their drinking. "
+                            "It is not a scientific or precise way to monitor your BAC.",
+                        style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            height: 1.3,
+                            color: Colors.black)),
+                  ))
+            ])));
   }
 }

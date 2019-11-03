@@ -9,11 +9,8 @@ import 'package:sqflite/sqflite.dart';
 
 import './history.dart';
 import './standardDrink.dart';
-import './alcoholInfo.dart';
 import './ourMission.dart';
-import './resources.dart';
-import './termsConditions.dart';
-import './alternatePersonalInformation.dart';
+import './PersonalInformation.dart';
 
 void main() => runApp(MyApp());
 
@@ -104,26 +101,6 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
             ),
             ListTile(
               title: Text(
-                "PERSONAL INFORMATION",
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 1),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (BuildContext context) =>
-//                        new PersonalInfoPage()));
-                            new altPersonalInfoPage()));
-              },
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
-            ),
-            ListTile(
-              title: Text(
                 'A "STANDARD DRINK"',
                 style: TextStyle(
                     fontSize: 16,
@@ -138,44 +115,6 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
                             new StandardDrinkPage()));
-              },
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
-            ),
-            ListTile(
-              title: Text(
-                "ALCOHOL FACTS",
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 1),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            new AlcoholInfoPage()));
-              },
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
-            ),
-            ListTile(
-              title: Text(
-                "HELP & RESOURCES",
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 1),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            new ResourcesPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
@@ -198,25 +137,6 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
-            ListTile(
-              title: Text(
-                "TERMS & CONDITIONS",
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 1),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            new TermsConditionsPage()));
-              },
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
-            ),
           ],
         ),
       ),
@@ -231,6 +151,17 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
             letterSpacing: 3,
           ),
         ),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.person, color: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                        new PersonalInfoPage()));
+              })
+        ],
         backgroundColor: Color(0xFF97B633),
       ),
       drawer: menu,

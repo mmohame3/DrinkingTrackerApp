@@ -3,15 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/material.dart';
 
-
-class altPersonalInfoPage extends StatefulWidget {
+class PersonalInfoPage extends StatefulWidget {
   @override
-  altPersonalInfoPageState createState() => new altPersonalInfoPageState();
+  PersonalInfoPageState createState() => new PersonalInfoPageState();
 }
 
-class altPersonalInfoPageState extends State<altPersonalInfoPage> {
+class PersonalInfoPageState extends State<PersonalInfoPage> {
   final _controller = new TextEditingController();
   var _formKey = GlobalKey<FormState>();
 
@@ -64,24 +62,15 @@ class altPersonalInfoPageState extends State<altPersonalInfoPage> {
         ),
         body: Scaffold(
             key: this._formKey,
-            backgroundColor: Colors.grey[600],
             body: Container(
-                margin: EdgeInsets.all(30.0),
-                padding: EdgeInsets.all(10.0),
-                alignment: Alignment.center,
-                width: 800,
-                height: 250,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Color(0xFFA8C935), width: 7.0),
-                ),
+                color: Color(0xFFE6E7E8),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Row(children: <Widget>[
                       CupertinoButton(
                           child: Text(
                             'Height:   ${globals.selectedFeet} feet, ${globals.selectedInches} inches',
-                            style: TextStyle(fontSize: 18),
                           ),
                           onPressed: () {
                             showModalBottomSheet(
