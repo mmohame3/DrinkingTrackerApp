@@ -31,14 +31,14 @@ class _CalendarState extends State<Calendar> {
       day = new database.Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
       await db.insert(database.tableDays, day.toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace);
-      print(day); // TODO: remove
+      print(day); 
       return day;
     }
     else {
       day = new database.Day(date: result[0]["day"], hourList: new List<int>.from(result[0]['hourlist']), minuteList: new List<int>.from(result[0]['minutelist']),
           typeList: new List<int>.from(result[0]['typelist']), maxBAC: result[0]['maxBAC'], waterAtMaxBAC: result[0]["WateratmaxBAC"],
           totalDrinks: result[0]["totaldrinkcount"], totalWaters: result[0]["totalwatercount"]);
-      print(day); // TODO: remove
+      print(day);
       return day;
     }
   }

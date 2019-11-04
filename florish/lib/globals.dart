@@ -5,6 +5,11 @@ Day today;
 double bac = 0.00;
 String imageName = 'assets/images/plants/drink0water0.png';
 
+String selectedFeetKey = "selectedFeetKey";
+String selectedHeightKey = "selectedHeightKey";
+String selectedWeightKey = "selectedWeightKey";
+String selectedInchKey = "selectedIntKey";
+String selectedSexKey = "selectedSexKey";
 
 String selectedSex = '';
 int selectedHeight = 0;

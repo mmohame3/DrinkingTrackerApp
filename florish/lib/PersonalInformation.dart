@@ -4,14 +4,46 @@ import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'main.dart';
+
 class PersonalInfoPage extends StatefulWidget {
   @override
   PersonalInfoPageState createState() => new PersonalInfoPageState();
 }
 
 class PersonalInfoPageState extends State<PersonalInfoPage> {
-  final _controller = new TextEditingController();
-  var _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  SharedPreferences _prefs;
+  
+  String _weight = "";
+  String _height = "";
+
+  @override
+  void initState() { 
+    super.initState();
+      _initSharedPref();
+      // _getWeight();
+      // _getHeight();
+  }
+
+  _initSharedPref() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
+
+  // _getWeight() {
+  //   int weight = _prefs?.getInt(globals.selectedWeightKey);
+  //   if(weight != null && weight > 0)
+  //     _weight = 'Weight:   $weight pounds';
+  //   else _weight = 'Weight:   ${globals.selectedWeight} pounds';
+  // }
+
+  // _getHeight() {
+  //   int height = _prefs?.getInt(globals.selectedHeightKey);
+  //   if(height != null && height > 0)
+  //     _height = 'Height:   $height inches';
+  //     // _height = 'Height:   ${globals.selectedFeet} feet, ${globals.selectedInches} inches';
+  //   else _height = 'Height:   ${globals.selectedHeight} inches';
+  // }
 
 //  int selectedFeet = 0;
 //  int selectedInches = 0;
@@ -32,6 +64,13 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
 
   }
 
+  _showSnackBar(message) {
+    var _snackBar = SnackBar(
+      content: message,
+    );
+    _scaffoldKey.currentState.showSnackBar(_snackBar);
+  }
+
   getValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //initialFeet = prefs.getInt('feet');
@@ -48,6 +87,11 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
         appBar: new AppBar(
           title: new Text('Your Personal Information'),
           backgroundColor: Color(0xFF97B633),
+          leading: InkWell(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AppHomeScreen()));
+            },
+            child: Icon(Icons.arrow_back_ios)),
 //          actions: [
 ////            FutureBuilder<List>(
 ////              future: SharedPreferencesHelper.getList(),
@@ -61,7 +105,7 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
 //          ],
         ),
         body: Scaffold(
-            key: this._formKey,
+            key: _scaffoldKey,
             body: Container(
                 color: Color(0xFFE6E7E8),
                 child: Column(
@@ -224,14 +268,16 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                       children: [
                         RaisedButton(
                           child: Text("Save"),
-                          onPressed: () {
-                            save();
+                          onPressed: () async {
+                            await save();
+
+                            _showSnackBar(Text('Saved successfully'));
                              //print("Data are: " + selectedSex + "- " + selectedWeight.toString() + "- " + selectedFeet.toString());
                                   addIntToSF();
-                                  if(this._formKey.currentState.validate())
-                                  setState(() {
-                                  this._formKey.currentState.save();
-                                  });
+                                  // if(this._formKey.currentState.validate())
+                                  // setState(() {
+                                  // this._formKey.currentState.save();
+                                  // });
                           },
                         ),
                       ],
@@ -242,10 +288,10 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
 
   save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt("feet", globals.selectedFeet);
-    prefs.setInt("inches", globals.selectedInches);
-    prefs.setInt("weight", globals.selectedWeight);
-    prefs.setString("sex", globals.selectedSex);
+    await prefs.setInt(globals.selectedFeetKey, globals.selectedFeet);
+    await prefs.setInt(globals.selectedInchKey, globals.selectedInches);
+    await prefs.setInt(globals.selectedWeightKey, globals.selectedWeight);
+    await prefs.setString(globals.selectedSexKey, globals.selectedSex);
   }
 
 

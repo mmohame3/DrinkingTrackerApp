@@ -11,6 +11,7 @@ import './history.dart';
 import './standardDrink.dart';
 import './ourMission.dart';
 import './PersonalInformation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
@@ -183,10 +184,16 @@ class Plant extends StatefulWidget {
 
 class _PlantState extends State<Plant> {
   final dbHelper = DatabaseHelper.instance;
+  SharedPreferences _prefs;
 
   @override
   void initState() {
     super.initState();
+      _initSharedPref();
+  }
+
+  _initSharedPref() async {
+    _prefs = await SharedPreferences.getInstance();
   }
 
 // Sets up the plant and BAC
@@ -223,7 +230,8 @@ class _PlantState extends State<Plant> {
   // sets the plant's image name to a new path
   _updateImageName(String path) {
     setState(() {
-      globals.imageName = path;
+      // globals.imageName = path;
+      globals.imageName = 'assets/images/plants/drink0water1.png';
     });
   }
 
@@ -241,30 +249,27 @@ class _PlantState extends State<Plant> {
 
   // takes in a list of DateTime objects and calculates the bac
   _bacMath(drinkTimeList) {
+
     print(drinkTimeList);
     DateTime currentTime = DateTime.now();
     double runningBac = 0;
-    double sumBac = 0;
     double r;
     Duration elapsedTime;
-    if (globals.selectedSex == 'Male') {
+    if (_prefs.getString(globals.selectedSexKey) == 'Male') {
       r = 0.68;
-    } else if (globals.selectedSex == 'Female') {
+    } else if (_prefs.getString(globals.selectedSexKey) == 'Female') {
       r = 0.55;
     } else {
       r = 0.615;
     }
     for (int i = 0; i < drinkTimeList.length; i++) {
       elapsedTime = currentTime.difference(drinkTimeList[i]);
-      runningBac = ((14 / (globals.weightGrams * r)) * 100) -
+      runningBac += ((14 / (globals.weightGrams * _prefs.getInt(globals.selectedWeightKey) * r)) * 100) -
           ((elapsedTime.inSeconds / 3600) * .015);
-      runningBac = runningBac < 0 ? 0 : runningBac;
-//      if (runningBac < 0){
-//        runningBac =0;
-//      }
-      sumBac += runningBac;
     }
-    return sumBac;
+    print('from back math method sex : ${_prefs.getString(globals.selectedSexKey)}');
+    print('from back math method : $runningBac');
+    return runningBac;
   }
 
   // turns today's hours and minute lists to a list of DateTimes
@@ -310,7 +315,7 @@ class _PlantState extends State<Plant> {
                       ),
                     ),
                     Text(
-                      globals.bac.toStringAsFixed(2),
+                      globals.bac.toStringAsFixed(4),
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
