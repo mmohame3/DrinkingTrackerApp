@@ -1,25 +1,25 @@
-import 'package:Florish/constants.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import 'main.dart';
+import './standardDrink.dart';
+
+
 
 class PopupLayout extends ModalRoute {
   final Widget child;
 
   @override
   Duration get transitionDuration =>
-  Duration(milliseconds: 300);
+  Duration(milliseconds: 0);
 
   @override
   bool get opaque => false;
 
   @override
-  bool get barrierDismissible => false;
+  bool get barrierDismissible => true;
+
 
   @override
   Color get barrierColor => Colors.black.withOpacity(0.5);
@@ -47,7 +47,7 @@ class PopupLayout extends ModalRoute {
 
     return GestureDetector(
       onTap: () {
-        SystemChannels.textInput.invokeMethod('TextInput.hide');
+        //SystemChannels.textInput.invokeMethod('TextInput.hide');
       },
       child: Material(
         type: MaterialType.transparency,
@@ -63,8 +63,8 @@ class PopupLayout extends ModalRoute {
   Widget _buildOverlayContent(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(
-        top: 150,
-          bottom: 150,
+        top: 50,
+          bottom: 50,
         left: 30,
         right: 30),
       child: child,
@@ -78,7 +78,7 @@ class PopupContent extends StatefulWidget {
 
   PopupContent({
     Key key,
-    this.content,
+    this.content
   }) : super(key: key);
 
   _PopupContentState createState() => _PopupContentState();
@@ -117,13 +117,13 @@ showPopup(BuildContext context) {
                   );
                 }),
               ),
-              body: popUpBody(),
+              body: popUpBody(context),
             ),
           )
       ));
 }
 
-Widget popUpBody() {
+Widget popUpBody(BuildContext context) {
   return Container(
       color: Color(0xFFE6E7E8),
       child:
@@ -142,7 +142,7 @@ Widget popUpBody() {
                 child: Column(children: [
                   Text(
                     "Your BAC is currently ${globals.bac.toStringAsFixed(3)} "
-                        "which means you may be feeling.....",
+                        "which means you may be feeling: \n\n ${_getBacInfo(globals.bac)}",
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           height: 1.3,
@@ -159,20 +159,88 @@ Widget popUpBody() {
             alignment: Alignment.topCenter,
             child: Container(
               padding: EdgeInsets.all(20),
-              child: Text(
+              child: Column(
+                children: [
+                  Text(
                   "Blood Alcohol Concentration (BAC) refers to the percent of "
                       "alcohol in a person's blood stream."
-                      "\n\nA BAC of .10% means "
-                      "that an individual's blood supply contains one part alcohol for every 1000 parts blood. "
-                      "\n\nIn the U.S., a person is legally intoxicated if he/she has a BAC of .08% or higher.",
+                      "\n\nIn the U.S., a person is legally intoxicated if he/she has a BAC of .08% or higher.\n\n",
                   style: TextStyle(
                       fontFamily: 'Montserrat',
                       height: 1.3,
                       color: Colors.black)),
-            ))
-      ])
-  );
+                  CupertinoButton(
+                      onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                          new MaterialPageRoute(
+                              builder: (BuildContext context) => new StandardDrinkPage()));
+                        },
+                        color: Color(0xFFA8C935),
+                        child: Text('More Information',
+                        style: TextStyle(color: Colors.white)),
+                  )
+
+            ]))),
+
+
+        ])
+        );
 }
+
+
+String _getBacInfo(double bac) {
+  //switch statements.....
+  String effects;
+  if (bac < .02) {
+    effects = "none? idk";
+  }
+
+  if ((bac >= 0.020) && (bac < 0.04)) {
+  effects = "No loss of coordination, slight euphoria, and loss of shyness. Relaxation, but depressant effects are not apparent.";
+  }
+
+  if ((bac >= .04) && (bac < 0.06)) {
+    effects = "Feeling of well-being, relaxation, lower inhibitions, and sensation of warmth. Euphoria. Some minor impairment of judgment and memory, lowering of caution.";
+  }
+
+
+  if ((bac >= .06) && (bac < 0.1)) {
+  effects = "Slight impairment of balance, speech, vision, reaction time, and hearing. Euphoria. Reduced judgment and self-control. Impaired reasoning and memory.";
+  }
+
+  if ((bac >= .1) && (bac < 0.13)) {
+    effects = "Significant impairment of motor coordination and loss of good judgment. Speech may be slurred; balance, peripheral vision, reaction time, and hearing will be impaired.";
+  }
+
+
+  if ((bac >= .13) && (bac < 0.16)) {
+    effects = "Gross motor impairment and lack of physical control. Blurred vision and major loss of balance. Euphoria is reducing and beginning dysphoria (a state of feeling unwell)";
+  }
+
+  if ((bac >= .16) && (bac < 0.2)) {
+    effects = "Dysphoria predominates, nausea may appear. The drinker has the appearance of a sloppy drunk.";
+  }
+
+  if ((bac >= .2) && (bac < 0.25)) {
+    effects = "Needs assistance in walking; total mental confusion. Dysphoria with nausea and vomiting; possible blackout.";
+  }
+
+  if ((bac >= .25) && (bac < 0.4)) {
+    effects = "Alcohol poisoning. Loss of consciousness";
+  }
+  
+  if (bac >= .5) {
+    effects = "onset of come, possible death due to respiratory arrest";
+  }
+
+
+  return effects;
+
+}
+
+
 
 
 

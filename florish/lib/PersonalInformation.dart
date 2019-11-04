@@ -92,17 +92,6 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
               Navigator.push(context, MaterialPageRoute(builder: (context) => AppHomeScreen()));
             },
             child: Icon(Icons.arrow_back_ios)),
-//          actions: [
-////            FutureBuilder<List>(
-////              future: SharedPreferencesHelper.getList(),
-////              initialData: [],
-////              builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-////
-////              },
-////
-////
-////            )
-//          ],
         ),
         body: Scaffold(
             key: _scaffoldKey,
