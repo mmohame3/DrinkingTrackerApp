@@ -142,7 +142,7 @@ Widget popUpBody() {
                 child: Column(children: [
                   Text(
                     "Your BAC is currently ${globals.bac.toStringAsFixed(3)} "
-                        "which means you may be feeling.....\n\n\n\n\n",
+                        "which means you may be feeling.....",
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           height: 1.3,
