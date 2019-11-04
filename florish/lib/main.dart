@@ -230,8 +230,8 @@ class _PlantState extends State<Plant> {
   // sets the plant's image name to a new path
   _updateImageName(String path) {
     setState(() {
-      // globals.imageName = path;
-      globals.imageName = 'assets/images/plants/drink0water1.png';
+      globals.imageName = path;
+      //globals.imageName = 'assets/images/plants/drink0water1.png';
     });
   }
 
@@ -250,9 +250,16 @@ class _PlantState extends State<Plant> {
   // takes in a list of DateTime objects and calculates the bac
   _bacMath(drinkTimeList) {
 
-    print(drinkTimeList);
+    //print(drinkTimeList);
+    // sets the "current" date to one of two dates depending on
+    // the time of day. This is to avoid issues with the noon-to-noon
+    // resetting of counters and Day objects.
     DateTime currentTime = DateTime.now();
-    double runningBac = 0;
+    int dayNum = currentTime.hour < 12 ? 2 : 1;
+    DateTime newTime = new DateTime(2019, 11,
+        dayNum, currentTime.hour, currentTime.minute);
+    double runningBac = 0.0;
+    double sumBac = 0.0;
     double r;
     Duration elapsedTime;
     if (_prefs.getString(globals.selectedSexKey) == 'Male') {
@@ -263,13 +270,15 @@ class _PlantState extends State<Plant> {
       r = 0.615;
     }
     for (int i = 0; i < drinkTimeList.length; i++) {
-      elapsedTime = currentTime.difference(drinkTimeList[i]);
-      runningBac += ((14 / (globals.weightGrams * _prefs.getInt(globals.selectedWeightKey) * r)) * 100) -
+      elapsedTime = newTime.difference(drinkTimeList[i]);
+      runningBac = ((14 / ((_prefs.getInt(globals.selectedWeightKey) * 453.592 * r))) * 100) -
           ((elapsedTime.inSeconds / 3600) * .015);
+      runningBac = runningBac < 0 ? 0 : runningBac;
+      sumBac += runningBac;
     }
     print('from back math method sex : ${_prefs.getString(globals.selectedSexKey)}');
-    print('from back math method : $runningBac');
-    return runningBac;
+    print('from back math method : $sumBac');
+    return sumBac;
   }
 
   // turns today's hours and minute lists to a list of DateTimes
@@ -279,13 +288,20 @@ class _PlantState extends State<Plant> {
     List minutes = globals.today.getMinutes();
     List types = globals.today.getTypes();
     int i;
+    int dayNum;
     DateTime newTime;
     List<DateTime> timeList = [];
     DateTime currentTime = DateTime.now();
     for (i = 0; i <types.length; i++){
+      // if the drink type is alcohol, the corresponding info
+      // is added to the new list of DateTimes
+
       if (types[i] == 1){
-        newTime = new DateTime(currentTime.year, currentTime.month,
-        currentTime.day, hours[i], minutes[i]);
+        // year and month are hard set bc issues arise because
+        // of our noon-to-noon system for resetting drinks
+        dayNum = hours[i] < 12 ? 2 : 1;
+        newTime = new DateTime(2019, 11,
+        dayNum, hours[i], minutes[i]);
         timeList.add(newTime);
       }
     }
@@ -315,7 +331,7 @@ class _PlantState extends State<Plant> {
                       ),
                     ),
                     Text(
-                      globals.bac.toStringAsFixed(4),
+                      globals.bac.toStringAsFixed(3),
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -434,7 +450,7 @@ class _DrinkButtonState extends State<DrinkButton> {
     globals.today.addMinute(currentTime.minute);
     globals.today.addType(1);
 
-    print(globals.today.toString());
+    //print(globals.today.toString());
     dbHelper.updateDay(globals.today);
   }
 
@@ -524,7 +540,7 @@ class _WaterButtonState extends State<WaterButton> {
     globals.today.addMinute(DateTime.now().minute);
     globals.today.addType(0);
 
-    print(globals.today.toString());
+    //print(globals.today.toString());
     await dbHelper.updateDay(globals.today);
 
   }
@@ -584,7 +600,7 @@ Future<Day> determineDay() async {
     return day;
   }
   else {
-    print(result[0].toString());
+    //print(result[0].toString());
     day = new Day(date: result[0]["day"], hourList: new List<int>.from(result[0]['hourlist']), minuteList: new List<int>.from(result[0]['minutelist']),
                     typeList: new List<int>.from(result[0]['typelist']), maxBAC: result[0]['maxBAC'], waterAtMaxBAC: result[0]["WateratmaxBAC"],
                     totalDrinks: result[0]["totaldrinkcount"], totalWaters: result[0]["totalwatercount"]);
