@@ -41,11 +41,11 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   @override
   void initState() {
     //uncomment to reset today's data to 0
-    DateTime time = DateTime.now();
-    if (time.hour < 12){
-      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
-    }
-    dbHelper.deleteDay(dateTimeToString(time));
+//    DateTime time = DateTime.now();
+//    if (time.hour < 12){
+//      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+//    }
+//    dbHelper.deleteDay(dateTimeToString(time));
     super.initState();
 
   }
