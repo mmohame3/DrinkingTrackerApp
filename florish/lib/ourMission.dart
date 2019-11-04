@@ -15,11 +15,13 @@ class _OurMissionPageState extends State<OurMissionPage> {
         ),
         backgroundColor: Colors.grey[600],
         body: Container(
-            color: Color(0xFFE6E7E8),
+            color: Color(0xFFF2F2F2),
             child:
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Container(
-                  padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 20,
+                      left: MediaQuery.of(context).size.width / 20,
+                      bottom: MediaQuery.of(context).size.width / 100),
                   child: Text(
                     'OUR MISSION',
                     style: TextStyle(letterSpacing: 1, height: 1.5),
@@ -28,7 +30,7 @@ class _OurMissionPageState extends State<OurMissionPage> {
                   color: Colors.white,
                   alignment: Alignment.topCenter,
                   child: Container(
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width / 20),
                     child: Text(
                         "We aim to provide a mechanism to drink in a safe, "
                             "healthy, and enticing way via a drinking tracker that gives a visual "
@@ -41,7 +43,10 @@ class _OurMissionPageState extends State<OurMissionPage> {
                             color: Colors.black)),
                   )),
               Container(
-                  padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.width / 20,
+                      left: MediaQuery.of(context).size.width / 20,
+                      bottom: MediaQuery.of(context).size.width / 100),
                   child: Text(
                     'DISCLAIMER',
                     style: TextStyle(letterSpacing: 1, height: 1.5),
@@ -50,7 +55,7 @@ class _OurMissionPageState extends State<OurMissionPage> {
                   color: Colors.white,
                   alignment: Alignment.topCenter,
                   child: Container(
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width / 20),
                     child: Text(
                         "Florish is an app to help people keep track of their drinking. "
                             "It is not a scientific or precise way to monitor your BAC.",

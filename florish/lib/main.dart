@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 import 'database_helpers.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:flutter/services.dart';
 
 import './history.dart';
 import './standardDrink.dart';
@@ -15,11 +16,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
-
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // blocks sideways rotation
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     return MaterialApp(
       title: 'Plant Nanny',
       theme: ThemeData(fontFamily: 'Montserrat'),
@@ -36,7 +41,6 @@ class AppHomeScreen extends StatefulWidget {
 class _AppHomeScreenState extends State<AppHomeScreen> {
   DatabaseHelper dbHelper = DatabaseHelper.instance;
 
-
   @override
   void initState() {
     //uncomment to reset today's data to 0
@@ -46,9 +50,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
 //    }
 //    dbHelper.deleteDay(dateTimeToString(time));
     super.initState();
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +58,10 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
       alignment: Alignment.bottomCenter,
       children: [
         Container(
-          padding: const EdgeInsets.only(bottom: 140),
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width/3),
           child: Image.asset(
             'assets/images/plantSetting.png',
+//            width: MediaQuery.of(context).size.width,
           ),
         ),
         new Plant(),
@@ -68,7 +71,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
 // Builds the drawer menu
     Widget menu = Drawer(
       child: Container(
-        padding: EdgeInsets.only(left: 10),
+        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/40),
         color: Color(0xFF97B633),
         child: ListView(
           children: <Widget>[
@@ -148,8 +151,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
     );
     return Scaffold(
       appBar: AppBar(
-        title:
-        Text(
+        title: Text(
           "FLORISH",
           style: TextStyle(
             fontFamily: 'Montserrat',
@@ -164,7 +166,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                        new PersonalInfoPage()));
+                            new PersonalInfoPage()));
               })
         ],
         backgroundColor: Color(0xFF97B633),
@@ -174,7 +176,6 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
       body: plant,
     );
   }
-
 }
 
 class Plant extends StatefulWidget {
@@ -199,17 +200,18 @@ class _PlantState extends State<Plant> {
 // Sets up the plant and BAC
   _PlantState() {
     determineDay().then((day) => setState(() {
-      globals.today = day;
-      _updateBAC(DateTime.now());
-      globals.imageName = 'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
-      _updateImageName(globals.imageName);
-    }));
+          globals.today = day;
+          _updateBAC(DateTime.now());
+          globals.imageName =
+              'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
+          _updateImageName(globals.imageName);
+        }));
   }
 
 // turns the BAC to a plant stage
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
-    int plantNum = (5 * (globals.bac/.12)).floor();
+    int plantNum = (5 * (globals.bac / .12)).floor();
     plantNum = plantNum > 4 ? 4 : plantNum;
 //    if (plantNum > 4) {
 //      plantNum = 4;
@@ -217,7 +219,7 @@ class _PlantState extends State<Plant> {
     return plantNum;
   }
 
- // turns the water count to a plant stage
+  // turns the water count to a plant stage
   int waterToPlant() {
     int plantNumWater = globals.today.getTotalWaters();
     plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
@@ -242,7 +244,6 @@ class _PlantState extends State<Plant> {
       if (globals.bac >= globals.today.getMaxBac()) {
         globals.today.setMaxBac(globals.bac);
         globals.today.setWatersAtMaxBac(globals.today.getTotalWaters());
-
       }
     });
   }
@@ -315,7 +316,7 @@ class _PlantState extends State<Plant> {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(32),
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width/12),
           child: Row(
             children: [
               Spacer(
@@ -342,20 +343,19 @@ class _PlantState extends State<Plant> {
               ),
               Image.asset(
                 'assets/images/bacDrop.png',
-                height: 42,
-                width: 28,
+                width: MediaQuery.of(context).size.width/12,
               ),
             ],
           ),
         ),
         Spacer(
-          flex: 4,
+          flex: 5,
         ),
         Column(
           children: [
             Container(
-              padding: EdgeInsets.only(bottom: 50),
-              child: Image.asset(globals.imageName, width: 180),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width/9),
+              child: Image.asset(globals.imageName, width: MediaQuery.of(context).size.width/2),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -374,12 +374,11 @@ class _PlantState extends State<Plant> {
             ),
           ],
         ),
-        Container(padding: EdgeInsets.all(20))
+        Container(padding: EdgeInsets.all(MediaQuery.of(context).size.width/25))
       ],
     );
   }
 }
-
 
 class DrinkButton extends StatefulWidget {
   final ValueChanged<String> parentAction;
@@ -398,13 +397,12 @@ class _DrinkButtonState extends State<DrinkButton> {
   // determines the day and sets variables before building
   _DrinkButtonState() {
     determineDay().then((day) => setState(() {
-      globals.today = day;
-      drinkString = day.totalDrinks.toString();
-    }));
+          globals.today = day;
+          drinkString = day.totalDrinks.toString();
+        }));
   }
   @override
   Widget build(context) {
-
     return GestureDetector(
       // when tapped: updates today's counts, updates the drinkString,
       // updates BAC, updates the plant image, and calls drinkButtonTap
@@ -417,18 +415,26 @@ class _DrinkButtonState extends State<DrinkButton> {
           widget.parentActionBAC(currentTime);
           widget.parentAction(
               'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
-
-
         });
       },
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          Image.asset(
-            'assets/images/soloCup.png',
-            height: 71,
-            width: 71,
-          ),
+          Container(
+              decoration: new BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey[700],
+                    blurRadius: 5,
+                    spreadRadius: 1,
+                    offset: Offset(1, 1),
+                  )
+                ],
+                borderRadius: BorderRadius.circular(1000),
+              ),
+              child: Image.asset(
+                'assets/images/soloCupButton.png',
+                width: MediaQuery.of(context).size.width/5)),
           Text(
             drinkString,
             style: TextStyle(
@@ -457,11 +463,8 @@ class _DrinkButtonState extends State<DrinkButton> {
 // turns the BAC to a plant stage
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
-    int plantNum = (5 * (globals.bac/.12)).floor();
+    int plantNum = (5 * (globals.bac / .12)).floor();
     plantNum = plantNum > 4 ? 4 : plantNum;
-//    if (plantNum > 4) {
-//      plantNum = 4;
-//    }
     return plantNum;
   }
 
@@ -469,9 +472,6 @@ class _DrinkButtonState extends State<DrinkButton> {
   int waterToPlant() {
     int plantNumWater = globals.today.getTotalWaters();
     plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
-//    if (plantNumWater > 5) {
-//      plantNumWater = 5;
-//    }
     return plantNumWater;
   }
 }
@@ -491,11 +491,10 @@ class _WaterButtonState extends State<WaterButton> {
   // determines the day and sets variables before building
   _WaterButtonState() {
     determineDay().then((day) => setState(() {
-      globals.today = day;
-      waterString = day.totalWaters.toString();
-    }));
+          globals.today = day;
+          waterString = day.totalWaters.toString();
+        }));
   }
-
 
   @override
   Widget build(context) {
@@ -514,11 +513,22 @@ class _WaterButtonState extends State<WaterButton> {
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          Image.asset(
-            'assets/images/waterCup.png',
-            height: 71,
-            width: 71,
-          ),
+          Container(
+              decoration: new BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey[700],
+                    blurRadius: 5,
+                    spreadRadius: 1,
+                    offset: Offset(1, 1),
+                  )
+                ],
+                borderRadius: BorderRadius.circular(1000),
+              ),
+              child: Image.asset(
+                'assets/images/waterCupButton.png',
+                width: MediaQuery.of(context).size.width/5,
+              )),
           Text(
             waterString,
             style: TextStyle(
@@ -542,7 +552,6 @@ class _WaterButtonState extends State<WaterButton> {
 
     //print(globals.today.toString());
     await dbHelper.updateDay(globals.today);
-
   }
 
   // turns BAC into a plant stage
@@ -550,9 +559,6 @@ class _WaterButtonState extends State<WaterButton> {
   int bacToPlant() {
     int plantNum = (5 * (globals.bac / .12)).floor();
     plantNum = plantNum > 4 ? 4 : plantNum;
-//    if (plantNum > 4) {
-//      plantNum = 4;
-//    }
     return plantNum;
   }
 
@@ -560,13 +566,8 @@ class _WaterButtonState extends State<WaterButton> {
   int waterToPlant() {
     int plantNumWater = globals.today.getTotalWaters();
     plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
-//    if (plantNumWater > 5) {
-//      plantNumWater = 5;
-//    }
     return plantNumWater;
   }
-
-
 }
 
 //takes a DateTime and makes it into the string format
@@ -585,16 +586,26 @@ String dateTimeToString(DateTime date) {
 Future<Day> determineDay() async {
   DateTime time = DateTime.now();
   //DateTime tdn;
-  if (time.hour < 12){
-    time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+  if (time.hour < 12) {
+    time = new DateTime(time.year, time.month, time.day - 1, time.hour,
+        time.minute, time.second, time.millisecond, time.microsecond);
   }
   String todayDate = dateTimeToString(time);
 
   Database db = await DatabaseHelper.instance.database;
-  List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
+  List<Map> result =
+      await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
   Day day;
   if (result.isEmpty) {
-    day = new Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
+    day = new Day(
+        date: todayDate,
+        hourList: [],
+        minuteList: [],
+        typeList: [],
+        maxBAC: 0.0,
+        waterAtMaxBAC: 0,
+        totalDrinks: 0,
+        totalWaters: 0);
     await db.insert(tableDays, day.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return day;
@@ -608,5 +619,3 @@ Future<Day> determineDay() async {
     return day;
   }
 }
-
-
