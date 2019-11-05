@@ -43,12 +43,12 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   @override
   void initState() {
     //uncomment to reset today's data to 0
-    DateTime time = DateTime.now();
-    if (time.hour < 12){
-      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
-    }
-//    dbHelper.deleteDay(dateTimeToString(time));
-    dbHelper.resetDay(dateTimeToString(time));
+//    DateTime time = DateTime.now();
+//    if (time.hour < 12){
+//      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+//    }
+////    dbHelper.deleteDay(dateTimeToString(time));
+//    dbHelper.resetDay(dateTimeToString(time));
     super.initState();
 
   }
@@ -205,7 +205,7 @@ class _PlantState extends State<Plant> {
   _PlantState() {
     determineDay().then((day) => setState(() {
       globals.today = day;
-      _updateImageAndBAC('assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
+      _updateImageAndBAC('assets/images/plants/drink0water0.png');
 
     }));
   }
@@ -633,9 +633,7 @@ Future<Day> determineDay() async {
         conflictAlgorithm: ConflictAlgorithm.replace);
     return day;
   }
-//  if (result == null){
-//    print("null result");
-  //}
+
   else {
     print("result: ");
     print(result[0]['hourList']);
@@ -651,8 +649,7 @@ Future<Day> determineDay() async {
       dbListT = new List<int>.from(result[0]['typelist']);
 
     }
-//    print("result: ");
-//    print(result[0]['hourList']);
+
 
     day = new Day(date: result[0]["day"], hourList: dbListH, minuteList: dbListM,
                     typeList: dbListT, maxBAC: result[0]['maxBAC'], waterAtMaxBAC: result[0]["WateratmaxBAC"],
