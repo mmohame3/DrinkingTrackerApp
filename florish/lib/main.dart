@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 import 'database_helpers.dart';
 import 'package:sqflite/sqflite.dart';
+import 'dart:async';
 
 import './history.dart';
 import './standardDrink.dart';
@@ -238,14 +239,22 @@ class _PlantState extends State<Plant> {
 
   // sets the bac global to the new bac and updates the max bac
   _updateBAC(currentTime) {
+    Timer timer;
+    const spread= const Duration(seconds: 5);
     setState(() {
+
+
       globals.bac = _bacMath(_dbListToTimeList());
       if (globals.bac >= globals.today.getMaxBac()) {
         globals.today.setMaxBac(globals.bac);
         globals.today.setWatersAtMaxBac(globals.today.getTotalWaters());
 
+
       }
+
     });
+    new Timer.periodic(spread, (Timer t) => setState(() {}));
+
   }
 
   // takes in a list of DateTime objects and calculates the bac
