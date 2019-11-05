@@ -37,7 +37,9 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                             "\n •  5 oz of wine (12% alcohol)"
                             "\n •  1.5 oz of liquor(40% alcohol)"
                             "\n\nIn Florish, by clicking the drink button, you are indicating "
-                            "that you just had one standard drink.",
+                            "that you just had one standard drink."
+                        "\n\nPlease remember that Florish's calculations are an estimation and not an"
+                            "exact science.",
                         style: TextStyle(
                             fontFamily: 'Montserrat',
                             height: 1.3,

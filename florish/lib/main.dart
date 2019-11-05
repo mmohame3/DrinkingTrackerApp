@@ -13,6 +13,7 @@ import './standardDrink.dart';
 import './ourMission.dart';
 import './PersonalInformation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import './bacPopup.dart';
 
 void main() => runApp(MyApp());
 
@@ -332,7 +333,7 @@ class _PlantState extends State<Plant> {
                       ),
                     ),
                     Text(
-                      globals.bac.toStringAsFixed(3),
+                      '${globals.bac.toStringAsFixed(3)}%',
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -341,10 +342,22 @@ class _PlantState extends State<Plant> {
                   ],
                 ),
               ),
-              Image.asset(
+//            onPressed: () {
+//              Navigator.push(
+//                  context,
+//                  new MaterialPageRoute(
+//                      builder: (BuildContext context) =>
+//                      new PersonalInfoPage()));
+//            })
+              IconButton(
+                  icon: Image.asset(
                 'assets/images/bacDrop.png',
                 width: MediaQuery.of(context).size.width/12,
               ),
+                      onPressed: () {
+                    showPopup(context);
+                      }
+              )
             ],
           ),
         ),
@@ -378,6 +391,8 @@ class _PlantState extends State<Plant> {
       ],
     );
   }
+
+
 }
 
 class DrinkButton extends StatefulWidget {
@@ -611,7 +626,7 @@ Future<Day> determineDay() async {
     return day;
   }
   else {
-    //print(result[0].toString());
+    print(result[0].toString());
     day = new Day(date: result[0]["day"], hourList: new List<int>.from(result[0]['hourlist']), minuteList: new List<int>.from(result[0]['minutelist']),
                     typeList: new List<int>.from(result[0]['typelist']), maxBAC: result[0]['maxBAC'], waterAtMaxBAC: result[0]["WateratmaxBAC"],
                     totalDrinks: result[0]["totaldrinkcount"], totalWaters: result[0]["totalwatercount"]);
