@@ -39,14 +39,15 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   DatabaseHelper dbHelper = DatabaseHelper.instance;
 
 
+
   @override
   void initState() {
     //uncomment to reset today's data to 0
-//    DateTime time = DateTime.now();
-//    if (time.hour < 12){
-//      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
-//    }
-//    dbHelper.deleteDay(dateTimeToString(time));
+    DateTime time = DateTime.now();
+    if (time.hour < 12){
+      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+    }
+    dbHelper.deleteDay(dateTimeToString(time));
     super.initState();
 
   }
@@ -54,6 +55,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     Widget plant = Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -202,9 +204,10 @@ class _PlantState extends State<Plant> {
   _PlantState() {
     determineDay().then((day) => setState(() {
       globals.today = day;
-      _updateBAC(DateTime.now());
-      globals.imageName = 'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
-      _updateImageName(globals.imageName);
+      _updateImageAndBAC('assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
+//      _updateBAC(DateTime.now());
+//      globals.imageName = 'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
+//      _updateImageName(globals.imageName);
     }));
   }
 
@@ -229,21 +232,22 @@ class _PlantState extends State<Plant> {
     return plantNumWater;
   }
 
-  // sets the plant's image name to a new path
-  _updateImageName(String path) {
-    setState(() {
-      globals.imageName = path;
-      //globals.imageName = 'assets/images/plants/drink0water1.png';
-    });
-  }
+//
+//  _updateImageName(String path) {
+//    setState(() {
+//      globals.imageName = path;
+//      //globals.imageName = 'assets/images/plants/drink0water1.png';
+//    });
+//  }
 
   // sets the bac global to the new bac and updates the max bac
-  _updateBAC(currentTime) {
+  // sets the plant's image name to a new path
+  _updateImageAndBAC(String path) {
     Timer timer;
     const spread= const Duration(seconds: 5);
     setState(() {
 
-
+      globals.imageName = path;
       globals.bac = _bacMath(_dbListToTimeList());
       if (globals.bac >= globals.today.getMaxBac()) {
         globals.today.setMaxBac(globals.bac);
@@ -271,7 +275,7 @@ class _PlantState extends State<Plant> {
         dayNum, currentTime.hour, currentTime.minute);
     double runningBac = 0.0;
     double sumBac = 0.0;
-    double r;
+    double r = 0.615;
     Duration elapsedTime;
     if (_prefs.getString(globals.selectedSexKey) == 'Male') {
       r = 0.68;
@@ -385,12 +389,13 @@ class _PlantState extends State<Plant> {
               children: <Widget>[
                 Expanded(
                   child: new DrinkButton(
-                      parentAction: _updateImageName,
-                      parentActionBAC: _updateBAC),
+//                      parentAction: _updateImageName,
+//                      parentActionBAC: _updateBAC
+                      parentActionUpdates: _updateImageAndBAC),
                 ),
                 Expanded(
                   child: new WaterButton(
-                    parentAction: _updateImageName,
+                    parentAction: _updateImageAndBAC,
                   ),
                 ),
               ],
@@ -407,9 +412,10 @@ class _PlantState extends State<Plant> {
 
 
 class DrinkButton extends StatefulWidget {
-  final ValueChanged<String> parentAction;
-  final ValueChanged<DateTime> parentActionBAC;
-  const DrinkButton({Key key, this.parentAction, this.parentActionBAC})
+//  final ValueChanged<String> parentAction;
+//  final ValueChanged<DateTime> parentActionBAC;
+  final ValueChanged<String> parentActionUpdates;
+  const DrinkButton({Key key, this.parentActionUpdates})
       : super(key: key);
 
   @override
@@ -439,9 +445,10 @@ class _DrinkButtonState extends State<DrinkButton> {
           drinkString = globals.today.totalDrinks.toString();
           DateTime currentTime = DateTime.now();
           drinkButtonTap(currentTime);
-          widget.parentActionBAC(currentTime);
-          widget.parentAction(
-              'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
+          widget.parentActionUpdates('assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
+//          widget.parentActionBAC(currentTime);
+//          widget.parentAction(
+//              'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
 
 
         });
@@ -623,6 +630,9 @@ Future<Day> determineDay() async {
     await db.insert(tableDays, day.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return day;
+  }
+  else if (result == null){
+    print("null result");
   }
   else {
     print(result[0].toString());
