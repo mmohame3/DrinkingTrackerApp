@@ -43,11 +43,11 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   @override
   void initState() {
     //uncomment to reset today's data to 0
-    DateTime time = DateTime.now();
-    if (time.hour < 12){
-      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
-    }
-    dbHelper.deleteDay(dateTimeToString(time));
+//    DateTime time = DateTime.now();
+//    if (time.hour < 12){
+//      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+//    }
+//    dbHelper.deleteDay(dateTimeToString(time));
     super.initState();
 
   }
@@ -205,9 +205,7 @@ class _PlantState extends State<Plant> {
     determineDay().then((day) => setState(() {
       globals.today = day;
       _updateImageAndBAC('assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
-//      _updateBAC(DateTime.now());
-//      globals.imageName = 'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
-//      _updateImageName(globals.imageName);
+
     }));
   }
 
@@ -216,9 +214,7 @@ class _PlantState extends State<Plant> {
   int bacToPlant() {
     int plantNum = (5 * (globals.bac/.12)).floor();
     plantNum = plantNum > 4 ? 4 : plantNum;
-//    if (plantNum > 4) {
-//      plantNum = 4;
-//    }
+
     return plantNum;
   }
 
@@ -226,9 +222,7 @@ class _PlantState extends State<Plant> {
   int waterToPlant() {
     int plantNumWater = globals.today.getTotalWaters();
     plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
-//    if (plantNumWater > 5) {
-//      plantNumWater = 5;
-//    }
+
     return plantNumWater;
   }
 
@@ -247,8 +241,9 @@ class _PlantState extends State<Plant> {
     const spread= const Duration(seconds: 5);
     setState(() {
 
-      globals.imageName = path;
+
       globals.bac = _bacMath(_dbListToTimeList());
+      globals.imageName = path;
       if (globals.bac >= globals.today.getMaxBac()) {
         globals.today.setMaxBac(globals.bac);
         globals.today.setWatersAtMaxBac(globals.today.getTotalWaters());
@@ -621,17 +616,22 @@ Future<Day> determineDay() async {
     time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
   }
   String todayDate = dateTimeToString(time);
+  List<Map> result;
 
   Database db = await DatabaseHelper.instance.database;
-  List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
+  result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
+
+//  getDbResult(todayDate).then((dbResult) =>
+//    result = dbResult);
   Day day;
-  if (result.isEmpty) {
+  print(result);
+  if ((result == null) || (result.isEmpty)) {
     day = new Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
     await db.insert(tableDays, day.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return day;
   }
-  else if (result == null){
+  if (result == null){
     print("null result");
   }
   else {
@@ -642,6 +642,11 @@ Future<Day> determineDay() async {
 
     return day;
   }
+}
+
+Future<List<Map>> getDbResult(String date) async {
+  Database db = await DatabaseHelper.instance.database;
+  return await db.rawQuery('SELECT * FROM days WHERE day=?', [date]);
 }
 
 
