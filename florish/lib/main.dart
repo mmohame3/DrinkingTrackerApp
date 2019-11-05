@@ -43,11 +43,12 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   @override
   void initState() {
     //uncomment to reset today's data to 0
-//    DateTime time = DateTime.now();
-//    if (time.hour < 12){
-//      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
-//    }
+    DateTime time = DateTime.now();
+    if (time.hour < 12){
+      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+    }
 //    dbHelper.deleteDay(dateTimeToString(time));
+    dbHelper.resetDay(dateTimeToString(time));
     super.initState();
 
   }
@@ -625,19 +626,36 @@ Future<Day> determineDay() async {
 //    result = dbResult);
   Day day;
   print(result);
+  List<int> dbListH, dbListM, dbListT;
   if ((result == null) || (result.isEmpty)) {
-    day = new Day(date: todayDate, hourList: [], minuteList: [], typeList: [], maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
+    day = new Day(date: todayDate, hourList: new List<int>(), minuteList: new List<int>(), typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
     await db.insert(tableDays, day.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return day;
   }
-  if (result == null){
-    print("null result");
-  }
+//  if (result == null){
+//    print("null result");
+  //}
   else {
-    print(result[0].toString());
-    day = new Day(date: result[0]["day"], hourList: new List<int>.from(result[0]['hourlist']), minuteList: new List<int>.from(result[0]['minutelist']),
-                    typeList: new List<int>.from(result[0]['typelist']), maxBAC: result[0]['maxBAC'], waterAtMaxBAC: result[0]["WateratmaxBAC"],
+    print("result: ");
+    print(result[0]['hourList']);
+
+    if (result[0]['hourlist'] == null) {
+      dbListH = [];
+      dbListM = [];
+      dbListT = [];
+    }
+    else {
+      dbListH = new List<int>.from(result[0]['hourlist']);
+      dbListM = new List<int>.from(result[0]['minutelist']);
+      dbListT = new List<int>.from(result[0]['typelist']);
+
+    }
+//    print("result: ");
+//    print(result[0]['hourList']);
+
+    day = new Day(date: result[0]["day"], hourList: dbListH, minuteList: dbListM,
+                    typeList: dbListT, maxBAC: result[0]['maxBAC'], waterAtMaxBAC: result[0]["WateratmaxBAC"],
                     totalDrinks: result[0]["totaldrinkcount"], totalWaters: result[0]["totalwatercount"]);
 
     return day;
