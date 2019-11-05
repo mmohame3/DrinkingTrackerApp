@@ -214,7 +214,7 @@ class _PlantState extends State<Plant> {
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
     int plantNum = (5 * (globals.bac/.12)).floor();
-    plantNum = plantNum > 5 ? 5 : plantNum;
+    plantNum = plantNum > 4 ? 4 : plantNum;
 
     return plantNum;
   }
@@ -222,7 +222,7 @@ class _PlantState extends State<Plant> {
  // turns the water count to a plant stage
   int waterToPlant() {
     int plantNumWater = globals.today.getTotalWaters();
-    plantNumWater = plantNumWater > 6 ? 6 : plantNumWater;
+    plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
 
     return plantNumWater;
   }
@@ -486,7 +486,9 @@ class _DrinkButtonState extends State<DrinkButton> {
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
     int plantNum = (5 * (globals.bac/.12)).floor();
+    print(plantNum);
     plantNum = plantNum > 4 ? 4 : plantNum;
+    print(plantNum);
 //    if (plantNum > 4) {
 //      plantNum = 4;
 //    }
