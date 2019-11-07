@@ -642,7 +642,7 @@ Future<Day> determineDay() async {
 
   Day day;
   List<int> dbListH, dbListM, dbListT;
-  if ((result == null) || (result.isEmpty)) {
+  if (result.isEmpty) {
     day = new Day(date: todayDate, hourList: new List<int>(), minuteList: new List<int>(), typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
     await db.insert(tableDays, day.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
@@ -651,8 +651,6 @@ Future<Day> determineDay() async {
   }
 
   else {
-    print("result: ");
-    print(result[0]['hourList']);
     globals.dayEnded = false;
 
     if (result[0]['hourlist'] == null) {
