@@ -7,7 +7,7 @@ import 'globals.dart' as globals;
 import 'database_helpers.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/services.dart';
-
+import 'dart:async';
 import './history.dart';
 import './standardDrink.dart';
 import './ourMission.dart';
@@ -45,16 +45,18 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   @override
   void initState() {
     //uncomment to reset today's data to 0
-//    DateTime time = DateTime.now();
-//    if (time.hour < 12){
-//      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
-//    }
+    DateTime time = DateTime.now();
+    if (time.hour < 12){
+      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+    }
 //    dbHelper.deleteDay(dateTimeToString(time));
+    dbHelper.resetDay(dateTimeToString(time));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     Widget plant = Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -201,12 +203,10 @@ class _PlantState extends State<Plant> {
 // Sets up the plant and BAC
   _PlantState() {
     determineDay().then((day) => setState(() {
-          globals.today = day;
-          _updateBAC(DateTime.now());
-          globals.imageName =
-              'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
-          _updateImageName(globals.imageName);
-        }));
+      globals.today = day;
+      _updateImageAndBAC('assets/images/plants/drink0water0.png');
+
+    }));
   }
 
 // turns the BAC to a plant stage
@@ -223,30 +223,38 @@ class _PlantState extends State<Plant> {
   // turns the water count to a plant stage
   int waterToPlant() {
     int plantNumWater = globals.today.getTotalWaters();
-    plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
-//    if (plantNumWater > 5) {
-//      plantNumWater = 5;
-//    }
+    plantNumWater = plantNumWater > 6 ? 6 : plantNumWater;
+
     return plantNumWater;
   }
 
-  // sets the plant's image name to a new path
-  _updateImageName(String path) {
-    setState(() {
-      globals.imageName = path;
-      //globals.imageName = 'assets/images/plants/drink0water1.png';
-    });
-  }
+//
+//  _updateImageName(String path) {
+//    setState(() {
+//      globals.imageName = path;
+//      //globals.imageName = 'assets/images/plants/drink0water1.png';
+//    });
+//  }
 
   // sets the bac global to the new bac and updates the max bac
-  _updateBAC(currentTime) {
+  // sets the plant's image name to a new path
+  _updateImageAndBAC(String path) {
+    Timer timer;
+    const spread= const Duration(seconds: 5);
     setState(() {
+
+
       globals.bac = _bacMath(_dbListToTimeList());
+      globals.imageName = 'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
       if (globals.bac >= globals.today.getMaxBac()) {
         globals.today.setMaxBac(globals.bac);
         globals.today.setWatersAtMaxBac(globals.today.getTotalWaters());
       }
+
     });
+    new Timer.periodic(spread, (Timer t) => setState(() {}));
+//    ssjsjsjsjs
+
   }
 
   // takes in a list of DateTime objects and calculates the bac
@@ -262,7 +270,7 @@ class _PlantState extends State<Plant> {
         dayNum, currentTime.hour, currentTime.minute);
     double runningBac = 0.0;
     double sumBac = 0.0;
-    double r;
+    double r = 0.615;
     Duration elapsedTime;
     if (_prefs.getString(globals.selectedSexKey) == 'Male') {
       r = 0.68;
@@ -375,12 +383,13 @@ class _PlantState extends State<Plant> {
               children: <Widget>[
                 Expanded(
                   child: new DrinkButton(
-                      parentAction: _updateImageName,
-                      parentActionBAC: _updateBAC),
+//                      parentAction: _updateImageName,
+//                      parentActionBAC: _updateBAC
+                      parentActionUpdates: _updateImageAndBAC),
                 ),
                 Expanded(
                   child: new WaterButton(
-                    parentAction: _updateImageName,
+                    parentAction: _updateImageAndBAC,
                   ),
                 ),
               ],
@@ -396,9 +405,10 @@ class _PlantState extends State<Plant> {
 }
 
 class DrinkButton extends StatefulWidget {
-  final ValueChanged<String> parentAction;
-  final ValueChanged<DateTime> parentActionBAC;
-  const DrinkButton({Key key, this.parentAction, this.parentActionBAC})
+//  final ValueChanged<String> parentAction;
+//  final ValueChanged<DateTime> parentActionBAC;
+  final ValueChanged<String> parentActionUpdates;
+  const DrinkButton({Key key, this.parentActionUpdates})
       : super(key: key);
 
   @override
@@ -427,9 +437,11 @@ class _DrinkButtonState extends State<DrinkButton> {
           drinkString = globals.today.totalDrinks.toString();
           DateTime currentTime = DateTime.now();
           drinkButtonTap(currentTime);
-          widget.parentActionBAC(currentTime);
-          widget.parentAction(
-              'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
+          widget.parentActionUpdates('assets/images/plants/drink0water0.png');
+//          widget.parentActionBAC(currentTime);
+//          widget.parentAction(
+//              'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
+
         });
       },
       child: Stack(
@@ -601,36 +613,54 @@ String dateTimeToString(DateTime date) {
 Future<Day> determineDay() async {
   DateTime time = DateTime.now();
   //DateTime tdn;
-  if (time.hour < 12) {
-    time = new DateTime(time.year, time.month, time.day - 1, time.hour,
-        time.minute, time.second, time.millisecond, time.microsecond);
+  if (time.hour < 12){
+    time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
   }
   String todayDate = dateTimeToString(time);
+  List<Map> result;
 
   Database db = await DatabaseHelper.instance.database;
-  List<Map> result =
-      await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
+  result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
+
+//  getDbResult(todayDate).then((dbResult) =>
+//    result = dbResult);
   Day day;
-  if (result.isEmpty) {
-    day = new Day(
-        date: todayDate,
-        hourList: [],
-        minuteList: [],
-        typeList: [],
-        maxBAC: 0.0,
-        waterAtMaxBAC: 0,
-        totalDrinks: 0,
-        totalWaters: 0);
+  print(result);
+  List<int> dbListH, dbListM, dbListT;
+  if ((result == null) || (result.isEmpty)) {
+    day = new Day(date: todayDate, hourList: new List<int>(), minuteList: new List<int>(), typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
     await db.insert(tableDays, day.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     return day;
   }
+
   else {
-    print(result[0].toString());
-    day = new Day(date: result[0]["day"], hourList: new List<int>.from(result[0]['hourlist']), minuteList: new List<int>.from(result[0]['minutelist']),
-                    typeList: new List<int>.from(result[0]['typelist']), maxBAC: result[0]['maxBAC'], waterAtMaxBAC: result[0]["WateratmaxBAC"],
-                    totalDrinks: result[0]["totaldrinkcount"], totalWaters: result[0]["totalwatercount"]);
+    print("result: ");
+    print(result[0]['hourList']);
+
+    if (result[0]['hourlist'] == null) {
+      dbListH = [];
+      dbListM = [];
+      dbListT = [];
+    }
+    else {
+      dbListH = new List<int>.from(result[0]['hourlist']);
+      dbListM = new List<int>.from(result[0]['minutelist']);
+      dbListT = new List<int>.from(result[0]['typelist']);
+
+    }
+
+
+    day = new Day(date: result[0]["day"], hourList: dbListH, minuteList: dbListM,
+        typeList: dbListT, maxBAC: result[0]['maxBAC'], waterAtMaxBAC: result[0]["WateratmaxBAC"],
+        totalDrinks: result[0]["totaldrinkcount"], totalWaters: result[0]["totalwatercount"]);
 
     return day;
   }
 }
+
+Future<List<Map>> getDbResult(String date) async {
+  Database db = await DatabaseHelper.instance.database;
+  return await db.rawQuery('SELECT * FROM days WHERE day=?', [date]);
+}
+

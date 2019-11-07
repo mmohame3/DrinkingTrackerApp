@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -199,6 +200,15 @@ class DatabaseHelper {
     print("deleted?");
     return await db
         .delete(tableDays, where: '$columnDay = ?', whereArgs: [date]);
+  }
+
+  Future<void> resetDay(String date) async {
+    Database db = await instance.database;
+    print(new List<int>());
+    print([]);
+    Day newDay = Day(date: date, hourList: new List<int>(), minuteList: new List<int>(),
+        typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
+    updateDay(newDay);
   }
 
   Future<Day> getDay(String date) async {
