@@ -20,6 +20,9 @@ int selectedWeight = 150;
 double weightGrams = selectedWeight * 453.592;
 int heightInches = 0;
 
+bool dayEnded = false;
+int yesterDrink = 0;
+int yesterWater = 0;
 
 var weights = [
   '100', '105', '110', '115', '120', '125', '130', '135', '140', '145',
