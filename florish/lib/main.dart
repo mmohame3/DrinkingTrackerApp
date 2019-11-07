@@ -45,12 +45,12 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   @override
   void initState() {
     //uncomment to reset today's data to 0
-    DateTime time = DateTime.now();
-    if (time.hour < 12){
-      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
-    }
-//    dbHelper.deleteDay(dateTimeToString(time));
-    dbHelper.resetDay(dateTimeToString(time));
+//    DateTime time = DateTime.now();
+//    if (time.hour < 12){
+//      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+//    }
+////    dbHelper.deleteDay(dateTimeToString(time));
+//    dbHelper.resetDay(dateTimeToString(time));
     super.initState();
   }
 
@@ -212,18 +212,16 @@ class _PlantState extends State<Plant> {
 // turns the BAC to a plant stage
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
-    int plantNum = (5 * (globals.bac / .12)).floor();
+    int plantNum = (5 * (globals.bac/.12)).floor();
     plantNum = plantNum > 4 ? 4 : plantNum;
-//    if (plantNum > 4) {
-//      plantNum = 4;
-//    }
+
     return plantNum;
   }
 
   // turns the water count to a plant stage
   int waterToPlant() {
     int plantNumWater = globals.today.getTotalWaters();
-    plantNumWater = plantNumWater > 6 ? 6 : plantNumWater;
+    plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
 
     return plantNumWater;
   }
@@ -490,8 +488,9 @@ class _DrinkButtonState extends State<DrinkButton> {
 // turns the BAC to a plant stage
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
-    int plantNum = (5 * (globals.bac / .12)).floor();
+    int plantNum = (5 * (globals.bac/.12)).floor();
     plantNum = plantNum > 4 ? 4 : plantNum;
+
     return plantNum;
   }
 
