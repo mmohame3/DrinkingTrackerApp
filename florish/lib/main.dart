@@ -10,7 +10,7 @@ import './ourMission.dart';
 import './PersonalInformation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './bacPopup.dart';
-import 'dayEndedAlert.dart';
+import './alerts.dart';
 
 void main() => runApp(MyApp());
 
@@ -54,6 +54,10 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
       await determineDay();
       await dayEndAlert(context);
     });
+
+      const oneSecond = const Duration(seconds: 3);
+      new Timer.periodic(oneSecond, (Timer t) => setState((){}));
+      //new Timer.periodic(oneSecond, (Timer t) => updateImageAndBAC());
 
   }
 
@@ -214,7 +218,7 @@ class _PlantState extends State<Plant> {
   _PlantState() {
     determineDay().then((day) => setState(() {
       globals.today = day;
-      _updateImageAndBAC('assets/images/plants/drink0water0.png');
+      updateImageAndBAC('assets/images/plants/drink0water0.png');
 
     }));
   }
@@ -246,7 +250,7 @@ class _PlantState extends State<Plant> {
 
   // sets the bac global to the new bac and updates the max bac
   // sets the plant's image name to a new path
-  _updateImageAndBAC(String path) {
+  updateImageAndBAC(String path) {
     Timer timer;
     const spread= const Duration(seconds: 5);
     setState(() {
@@ -294,7 +298,8 @@ class _PlantState extends State<Plant> {
       runningBac = runningBac < 0 ? 0 : runningBac;
       sumBac += runningBac;
     }
-//    print('from back math method sex : ${_prefs.getString(globals.selectedSexKey)}');
+    print('from back math method sex : ${_prefs.getString(globals.selectedSexKey)}');
+    print('from back math method weight : ${_prefs.getInt(globals.selectedWeightKey)}');
 //    print('from back math method : $sumBac');
     return sumBac;
   }
@@ -393,11 +398,11 @@ class _PlantState extends State<Plant> {
                   child: new DrinkButton(
 //                      parentAction: _updateImageName,
 //                      parentActionBAC: _updateBAC
-                      parentActionUpdates: _updateImageAndBAC),
+                      parentActionUpdates: updateImageAndBAC),
                 ),
                 Expanded(
                   child: new WaterButton(
-                    parentAction: _updateImageAndBAC,
+                    parentAction: updateImageAndBAC,
                   ),
                 ),
               ],
@@ -449,7 +454,7 @@ class _DrinkButtonState extends State<DrinkButton> {
 //          widget.parentActionBAC(currentTime);
 //          widget.parentAction(
 //              'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
-
+          settingsAlert(context);
         });
       },
       child: Stack(
@@ -491,7 +496,6 @@ class _DrinkButtonState extends State<DrinkButton> {
     globals.today.addMinute(currentTime.minute);
     globals.today.addType(1);
 
-    //print(globals.today.toString());
     dbHelper.updateDay(globals.today);
   }
 
@@ -586,7 +590,6 @@ class _WaterButtonState extends State<WaterButton> {
     globals.today.addMinute(DateTime.now().minute);
     globals.today.addType(0);
 
-    //print(globals.today.toString());
     await dbHelper.updateDay(globals.today);
   }
 
@@ -638,7 +641,6 @@ Future<Day> determineDay() async {
 
 
   Day day;
-  print(result);
   List<int> dbListH, dbListM, dbListT;
   if ((result == null) || (result.isEmpty)) {
     day = new Day(date: todayDate, hourList: new List<int>(), minuteList: new List<int>(), typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
@@ -651,6 +653,7 @@ Future<Day> determineDay() async {
   else {
     print("result: ");
     print(result[0]['hourList']);
+    globals.dayEnded = false;
 
     if (result[0]['hourlist'] == null) {
       dbListH = [];

@@ -60,7 +60,7 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
     prefs.setInt('weight', globals.selectedWeight);
     prefs.setInt('feet', globals.selectedFeet);
     prefs.setInt('inches', globals.selectedInches);
-    prefs.setString(AppConstants.PREF_SEX, globals.selectedSex);
+    prefs.setString("sex", globals.selectedSex);
   }
 
   _showSnackBar(message) {

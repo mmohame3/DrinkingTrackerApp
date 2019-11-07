@@ -11,7 +11,7 @@ String selectedWeightKey = "selectedWeightKey";
 String selectedInchKey = "selectedIntKey";
 String selectedSexKey = "selectedSexKey";
 
-String selectedSex = '';
+String selectedSex = 'Other';
 int selectedHeight = 0;
 int selectedFeet = 0;
 int selectedInches = 0;
