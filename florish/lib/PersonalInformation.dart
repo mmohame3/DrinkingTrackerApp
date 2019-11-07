@@ -15,16 +15,16 @@ class PersonalInfoPage extends StatefulWidget {
 class PersonalInfoPageState extends State<PersonalInfoPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   SharedPreferences _prefs;
-  
+
   String _weight = "";
   String _height = "";
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
-      _initSharedPref();
-      // _getWeight();
-      // _getHeight();
+    _initSharedPref();
+    // _getWeight();
+    // _getHeight();
   }
 
   _initSharedPref() async {
@@ -87,10 +87,11 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
           title: new Text('Your Personal Information'),
           backgroundColor: Color(0xFF97B633),
           leading: InkWell(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AppHomeScreen()));
-            },
-            child: Icon(Icons.arrow_back_ios)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AppHomeScreen()));
+              },
+              child: Icon(Icons.arrow_back_ios)),
 //          actions: [
 ////            FutureBuilder<List>(
 ////              future: SharedPreferencesHelper.getList(),
@@ -112,7 +113,9 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                           top: MediaQuery.of(context).size.width / 20,
                           left: MediaQuery.of(context).size.width / 20),
                       child: Text('YOUR PROFILE',
-                          style: TextStyle(letterSpacing: 1, height: 1.5))), // "Your Profile" label
+                          style: TextStyle(
+                              letterSpacing: 1,
+                              height: 1.5))), // "Your Profile" label
                   Container(
                     color: Colors.white,
                     child: CupertinoButton(
@@ -270,26 +273,28 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                   ), // sex
                   Container(
                     child: RaisedButton(
-                        child: Text("Save"),
-                        onPressed: () async {
-                          await save();
+                      child: Text("Save"),
+                      onPressed: () async {
+                        await save();
 
-                          _showSnackBar(Text('Saved successfully'));
-                          //print("Data are: " + selectedSex + "- " + selectedWeight.toString() + "- " + selectedFeet.toString());
-                          addIntToSF();
-                          // if(this._formKey.currentState.validate())
-                          // setState(() {
-                          // this._formKey.currentState.save();
-                          // });
-                        },
-                      ),
-                        ), // save button
+                        _showSnackBar(Text('Saved successfully'));
+                        //print("Data are: " + selectedSex + "- " + selectedWeight.toString() + "- " + selectedFeet.toString());
+                        addIntToSF();
+                        // if(this._formKey.currentState.validate())
+                        // setState(() {
+                        // this._formKey.currentState.save();
+                        // });
+                      },
+                    ),
+                  ), // save button
                   Container(
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).size.width / 20,
                           left: MediaQuery.of(context).size.width / 20),
                       child: Text('DRINK OVERRIDE',
-                          style: TextStyle(letterSpacing: 1, height: 1.5))), // "Drink Override" label
+                          style: TextStyle(
+                              letterSpacing: 1,
+                              height: 1.5))), // "Drink Override" label
                   Container(
                     color: Colors.white,
                     child: CupertinoButton(
@@ -303,11 +308,14 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                             Container(
                                 width: MediaQuery.of(context).size.width / 5,
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     GestureDetector(
                                         onTap: () {
-                                          setState(() => day.totalDrinks--);
+                                          if (day.totalDrinks > 0) {
+                                            setState(() => day.totalDrinks--);
+                                          }
                                         },
                                         child: Icon(
                                           Icons.remove,
@@ -347,7 +355,9 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                   children: <Widget>[
                                     GestureDetector(
                                         onTap: () {
-                                          setState(() => day.totalWaters--);
+                                          if (day.totalWaters > 0) {
+                                            setState(() => day.totalWaters--);
+                                          }
                                         },
                                         child: Icon(
                                           Icons.remove,
