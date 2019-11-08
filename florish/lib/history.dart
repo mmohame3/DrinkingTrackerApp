@@ -218,11 +218,9 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   String typeToImageName(int type) {
-    if (type == 1) {
-      return 'assets/images/soloCup.png';
-    } else {
-      return 'assets/images/waterDrop.png';
-    }
+    String path = type == 1 ? 'assets/images/soloCup.png' : 'assets/images/waterDrop.png';
+    return path;
+
   }
 
   @override
@@ -263,6 +261,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       children: <Widget>[
                         Column(children: <Widget>[
                           Image.asset(
+                            // TODO: Turn day.getMaxBAC into a plant number
                             'assets/images/plants/drink${day.getMaxBac().floor()}water${day.getWaterAtMax()}.png',
                             width: 150,
                           ), // TODO: make function so that this doesnt require the edit in database_helpers.dart
