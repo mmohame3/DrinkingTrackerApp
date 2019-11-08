@@ -88,11 +88,16 @@ class Day {
   }
 
   double getMaxBac() {
+    if (this.maxBAC >= 0.12) {
+      return 0.12;
+    }
     return this.maxBAC;
   }
 
   int getWaterAtMax() {
-    return this.waterAtMaxBAC;
+    if (this.waterAtMaxBAC >= 5) {
+      return 5;
+    }return this.waterAtMaxBAC;
   }
 
   int getTotalDrinks() {

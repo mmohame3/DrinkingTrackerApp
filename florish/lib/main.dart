@@ -439,6 +439,7 @@ class _DrinkButtonState extends State<DrinkButton> {
       drinkString = day.totalDrinks.toString();
     }));
   }
+
   @override
   Widget build(context) {
     return GestureDetector(
