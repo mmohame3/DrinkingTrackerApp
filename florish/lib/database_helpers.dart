@@ -26,8 +26,15 @@ class Day {
   int totalDrinks;
   int totalWaters;
 
-  Day({this.date, this.hourList, this.minuteList, this.typeList, this.maxBAC,
-  this.waterAtMaxBAC, this.totalDrinks, this.totalWaters});
+  Day(
+      {this.date,
+      this.hourList,
+      this.minuteList,
+      this.typeList,
+      this.maxBAC,
+      this.waterAtMaxBAC,
+      this.totalDrinks,
+      this.totalWaters});
 
   Day.fromMap(Map<String, dynamic> map) {
     date = map[columnDay];
@@ -41,7 +48,7 @@ class Day {
   }
 
   Map<String, dynamic> toMap() {
-    var map = <String, dynamic> {
+    var map = <String, dynamic>{
       columnDay: date,
       columnHourList: hourList,
       columnMinuteList: minuteList,
@@ -81,18 +88,23 @@ class Day {
   }
 
   double getMaxBac() {
+    if (this.maxBAC >= 0.12) {
+      return 0.12;
+    }
     return this.maxBAC;
   }
 
-  int getWaterAtMax(){
-    return this.waterAtMaxBAC;
+  int getWaterAtMax() {
+    if (this.waterAtMaxBAC >= 5) {
+      return 5;
+    }return this.waterAtMaxBAC;
   }
 
   int getTotalDrinks() {
     return this.totalDrinks;
   }
 
-  int getTotalWaters(){
+  int getTotalWaters() {
     return totalWaters;
   }
 
@@ -157,8 +169,7 @@ class DatabaseHelper {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
-        version: _databaseVersion,
-        onCreate: _onCreate);
+        version: _databaseVersion, onCreate: _onCreate);
   }
 
   Future _onCreate(Database db, int version) async {
@@ -179,21 +190,21 @@ class DatabaseHelper {
   Future<void> insertDay(Day day) async {
     Database db = await database;
     await db.insert(tableDays, day.toMap(),
-    conflictAlgorithm: ConflictAlgorithm.replace);
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<void> updateDay(Day day) async {
     final db = await database;
 
     await db.update(tableDays, day.toMap(),
-    where: "day = ?",
-    whereArgs: [day.date]);
+        where: "day = ?", whereArgs: [day.date]);
   }
 
   Future<void> deleteDay(String date) async {
     Database db = await instance.database;
     print("deleted?");
-    return await db.delete(tableDays, where: '$columnDay = ?', whereArgs: [date]);
+    return await db
+        .delete(tableDays, where: '$columnDay = ?', whereArgs: [date]);
   }
 
   Future<void> resetDay(String date) async {
@@ -207,11 +218,11 @@ class DatabaseHelper {
 
   Future<Day> getDay(String date) async {
     Database db = await instance.database;
-    List result =  await db.query(tableDays, where: '$columnDay = ?', whereArgs: [date]);
+    List result =
+        await db.query(tableDays, where: '$columnDay = ?', whereArgs: [date]);
     Day dayone = result[0];
     return dayone;
   }
-
 
 //  Future<List> getTimeList(DateTime day) async{
 //    Database db = await database;
@@ -219,9 +230,3 @@ class DatabaseHelper {
 //  }
 
 }
-
-
-
-
-
-

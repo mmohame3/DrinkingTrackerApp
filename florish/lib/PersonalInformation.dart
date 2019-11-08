@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'database_helpers.dart' as database;
 
 import 'main.dart';
 
@@ -14,16 +15,16 @@ class PersonalInfoPage extends StatefulWidget {
 class PersonalInfoPageState extends State<PersonalInfoPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   SharedPreferences _prefs;
-  
+
   String _weight = "";
   String _height = "";
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
-      _initSharedPref();
-      // _getWeight();
-      // _getHeight();
+    _initSharedPref();
+    // _getWeight();
+    // _getHeight();
   }
 
   _initSharedPref() async {
@@ -52,16 +53,14 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
 //  int selectedWeight = 0;
 //  String selectedSex = '';
   int initialFeet = 0;
-
+  database.Day day = globals.today;
 
   addIntToSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('weight', globals.selectedWeight);
     prefs.setInt('feet', globals.selectedFeet);
     prefs.setInt('inches', globals.selectedInches);
-    prefs.setString(AppConstants.PREF_SEX, globals.selectedSex);
-
-
+    prefs.setString("sex", globals.selectedSex);
   }
 
   _showSnackBar(message) {
@@ -88,191 +87,300 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
           title: new Text('Your Personal Information'),
           backgroundColor: Color(0xFF97B633),
           leading: InkWell(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AppHomeScreen()));
-            },
-            child: Icon(Icons.arrow_back_ios)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AppHomeScreen()));
+              },
+              child: Icon(Icons.arrow_back_ios)),
+//          actions: [
+////            FutureBuilder<List>(
+////              future: SharedPreferencesHelper.getList(),
+////              initialData: [],
+////              builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+////              },
+////            )
+//          ],
         ),
         body: Scaffold(
             key: _scaffoldKey,
             body: Container(
-                color: Color(0xFFE6E7E8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(children: <Widget>[
-                      CupertinoButton(
-                          child: Text(
-                            'Height:   ${globals.selectedFeet} feet, ${globals.selectedInches} inches',
-                          ),
-                          onPressed: () {
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return Container(
-                                    height: 200.0,
-                                    color: Colors.white,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: CupertinoPicker(
-                                              scrollController:
-                                                  new FixedExtentScrollController(
-                                                initialItem:
-                                                    globals.selectedFeet,
-                                              ),
-                                              itemExtent: 32.0,
-                                              backgroundColor: Colors.white,
-                                              onSelectedItemChanged:
-                                                  (int index) {
-                                                setState(() {
-                                                  globals.selectedFeet = index;
-                                                });
-                                              },
-                                              children:
-                                                  new List<Widget>.generate(8,
-                                                      (int index) {
-                                                return new Center(
-                                                  child: Text('${index}'),
-                                                );
-                                              })),
-                                        ),
-                                        Expanded(
-                                          child: CupertinoPicker(
-                                              scrollController:
-                                                  new FixedExtentScrollController(
-                                                initialItem:
-                                                    globals.selectedInches,
-                                              ),
-                                              itemExtent: 32.0,
-                                              backgroundColor: Colors.white,
-                                              onSelectedItemChanged:
-                                                  (int index) {
-                                                setState(() {
-                                                  globals.selectedInches =
-                                                      index;
-                                                });
-                                              },
-                                              children:
-                                                  new List<Widget>.generate(13,
-                                                      (int index) {
-                                                return new Center(
-                                                  child: Text('${index}'),
-                                                );
-                                              })),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                });
-                          }),
-//
-                    ]),
-                    Row(
-                      children: <Widget>[
-                        CupertinoButton(
-                          child: Text(
-                            'Weight:   ${globals.selectedWeight} pounds',
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          onPressed: () {
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return Container(
-                                      height: 200,
-                                      child: CupertinoPicker(
-                                          scrollController:
-                                              new FixedExtentScrollController(
-                                            initialItem: globals.weights
-                                                .indexOf(globals.selectedWeight
-                                                    .toString()),
-                                          ),
-                                          itemExtent: 32.0,
-                                          backgroundColor: Colors.white,
-                                          onSelectedItemChanged: (int index) {
-                                            setState(() {
-                                              globals.selectedWeight =
-                                                  int.parse(
-                                                      globals.weights[index]);
-                                            });
-                                          },
-                                          children: new List<Widget>.generate(
-                                              globals.weights.length,
-                                              (int index) {
-                                            return new Center(
-                                              child:
-                                                  Text(globals.weights[index]),
-                                            );
-                                          })));
-                                });
-                          },
-                        ),
-                      ],
+              color: Color(0xFFF2F2F2),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.width / 20,
+                          left: MediaQuery.of(context).size.width / 20),
+                      child: Text('YOUR PROFILE',
+                          style: TextStyle(
+                              letterSpacing: 1,
+                              height: 1.5))), // "Your Profile" label
+                  Container(
+                    color: Colors.white,
+                    child: CupertinoButton(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                'Height',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              Text(
+                                '${globals.selectedFeet} ft ${globals.selectedInches} in',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ]),
+                        onPressed: () {
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Container(
+                                  height: 200.0,
+                                  color: Colors.white,
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: CupertinoPicker(
+                                            scrollController:
+                                                new FixedExtentScrollController(
+                                              initialItem: globals.selectedFeet,
+                                            ),
+                                            itemExtent: 32.0,
+                                            backgroundColor: Colors.white,
+                                            onSelectedItemChanged: (int index) {
+                                              setState(() {
+                                                globals.selectedFeet = index;
+                                              });
+                                            },
+                                            children: new List<Widget>.generate(
+                                                8, (int index) {
+                                              return new Center(
+                                                child: Text(index.toString()),
+                                              );
+                                            })),
+                                      ),
+                                      Expanded(
+                                        child: CupertinoPicker(
+                                            scrollController:
+                                                new FixedExtentScrollController(
+                                              initialItem:
+                                                  globals.selectedInches,
+                                            ),
+                                            itemExtent: 32.0,
+                                            backgroundColor: Colors.white,
+                                            onSelectedItemChanged: (int index) {
+                                              setState(() {
+                                                globals.selectedInches = index;
+                                              });
+                                            },
+                                            children: new List<Widget>.generate(
+                                                13, (int index) {
+                                              return new Center(
+                                                child: Text(index.toString()),
+                                              );
+                                            })),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              });
+                        }),
+                  ), // height
+                  Divider(height: 0.5, thickness: 0.5, indent: 12),
+                  Container(
+                    color: Colors.white,
+                    child: CupertinoButton(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text('Weight',
+                                style: TextStyle(color: Colors.black)),
+                            Text('${globals.selectedWeight} lbs',
+                                style: TextStyle(color: Colors.black)),
+                          ]),
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Container(
+                                  height: 200,
+                                  child: CupertinoPicker(
+                                      scrollController:
+                                          new FixedExtentScrollController(
+                                        initialItem: globals.weights.indexOf(
+                                            globals.selectedWeight.toString()),
+                                      ),
+                                      itemExtent: 32.0,
+                                      backgroundColor: Colors.white,
+                                      onSelectedItemChanged: (int index) {
+                                        setState(() {
+                                          globals.selectedWeight =
+                                              int.parse(globals.weights[index]);
+                                        });
+                                      },
+                                      children: new List<Widget>.generate(
+                                          globals.weights.length, (int index) {
+                                        return new Center(
+                                          child: Text(globals.weights[index]),
+                                        );
+                                      })));
+                            });
+                      },
                     ),
-                    Row(
-                      children: <Widget>[
-                        CupertinoButton(
-                          child: Text("Sex at birth:   ${globals.selectedSex}",
-                              style: TextStyle(fontSize: 18)),
-                          onPressed: () {
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return Container(
-                                      height: 200,
-                                      child: CupertinoPicker(
-                                          scrollController:
-                                              new FixedExtentScrollController(
-                                            initialItem: globals.sexes
-                                                .indexOf(
-                                                    globals.selectedSex),
-                                          ),
-                                          itemExtent: 32.0,
-                                          backgroundColor: Colors.white,
-                                          onSelectedItemChanged: (int index) {
-                                            setState(() {
-                                              globals.selectedSex =
-                                                  globals.sexes[index];
-                                            });
-                                          },
-                                          children: new List<Widget>.generate(
-                                              globals.sexes.length,
-                                              (int index) {
-                                            return new Center(
-                                              child:
-                                                  Text(globals.sexes[index]),
-                                            );
-                                          })));
-                                });
-                          },
-                        ),
-                      ],
+                  ), // weight
+                  Divider(height: 0.5, thickness: 0.5, indent: 12),
+                  Container(
+                    color: Colors.white,
+                    child: CupertinoButton(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text('Sex at birth',
+                                style: TextStyle(color: Colors.black)),
+                            Text('${globals.selectedSex}',
+                                style: TextStyle(color: Colors.black))
+                          ]),
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Container(
+                                  height: 200,
+                                  child: CupertinoPicker(
+                                      scrollController:
+                                          new FixedExtentScrollController(
+                                        initialItem: globals.sexes
+                                            .indexOf(globals.selectedSex),
+                                      ),
+                                      itemExtent: 32.0,
+                                      backgroundColor: Colors.white,
+                                      onSelectedItemChanged: (int index) {
+                                        setState(() {
+                                          globals.selectedSex =
+                                              globals.sexes[index];
+                                        });
+                                      },
+                                      children: new List<Widget>.generate(
+                                          globals.sexes.length, (int index) {
+                                        return new Center(
+                                          child: Text(globals.sexes[index]),
+                                        );
+                                      })));
+                            });
+                      },
                     ),
-                    Spacer(
-                      flex: 1,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        RaisedButton(
-                          child: Text("Save"),
-                          onPressed: () async {
-                            await save();
+                  ), // sex
+                  Container(
+                    child: RaisedButton(
+                      child: Text("Save"),
+                      onPressed: () async {
+                        await save();
 
-                            _showSnackBar(Text('Saved successfully'));
-                             //print("Data are: " + selectedSex + "- " + selectedWeight.toString() + "- " + selectedFeet.toString());
-                                  addIntToSF();
-                                  // if(this._formKey.currentState.validate())
-                                  // setState(() {
-                                  // this._formKey.currentState.save();
-                                  // });
-                          },
-                        ),
-                      ],
+                        _showSnackBar(Text('Saved successfully'));
+                        //print("Data are: " + selectedSex + "- " + selectedWeight.toString() + "- " + selectedFeet.toString());
+                        addIntToSF();
+                        // if(this._formKey.currentState.validate())
+                        // setState(() {
+                        // this._formKey.currentState.save();
+                        // });
+                      },
                     ),
-                  ],
-                ))));
+                  ), // save button
+                  Container(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.width / 20,
+                          left: MediaQuery.of(context).size.width / 20),
+                      child: Text('DRINK OVERRIDE',
+                          style: TextStyle(
+                              letterSpacing: 1,
+                              height: 1.5))), // "Drink Override" label
+                  Container(
+                    color: Colors.white,
+                    child: CupertinoButton(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              'Drink Count',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            Container(
+                                width: MediaQuery.of(context).size.width / 5,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    GestureDetector(
+                                        onTap: () {
+                                          if (day.totalDrinks > 0) {
+                                            setState(() => day.totalDrinks--);
+                                          }
+                                        },
+                                        child: Icon(
+                                          Icons.remove,
+                                          color: Colors.black,
+                                        )),
+                                    Text(day.totalDrinks.toString(),
+                                        style: TextStyle(color: Colors.black)),
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() => day.totalDrinks++);
+                                        },
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.black,
+                                        ))
+                                  ],
+                                )),
+                          ]),
+                    ),
+                  ), // drinkCount adjuster
+                  Divider(height: 0.5, thickness: 0.5, indent: 12),
+                  Container(
+                    color: Colors.white,
+                    child: CupertinoButton(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              'Water Count',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            Container(
+                                width: MediaQuery.of(context).size.width / 5,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    GestureDetector(
+                                        onTap: () {
+                                          if (day.totalWaters > 0) {
+                                            setState(() => day.totalWaters--);
+                                          }
+                                        },
+                                        child: Icon(
+                                          Icons.remove,
+                                          color: Colors.black,
+                                        )),
+                                    Text(day.totalWaters.toString(),
+                                        style: TextStyle(color: Colors.black)),
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() => day.totalWaters++);
+                                        },
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.black,
+                                        ))
+                                  ],
+                                )),
+                          ]),
+                    ),
+                  ) // waterCount adjuster
+                ],
+              ),
+            )));
   }
 
   save() async {
@@ -282,8 +390,6 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
     await prefs.setInt(globals.selectedWeightKey, globals.selectedWeight);
     await prefs.setString(globals.selectedSexKey, globals.selectedSex);
   }
-
-
 }
 
 //class SharedPreferencesHelper {

@@ -16,7 +16,7 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
           backgroundColor: Color(0xFF97B633),
         ),
         body: Container(
-            color: Color(0xFFE6E7E8),
+            color: Color(0xFFF2F2F2),
             child:
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Container(
