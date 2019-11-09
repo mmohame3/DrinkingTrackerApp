@@ -86,25 +86,28 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
 // Builds the drawer menu
     Widget menu = Drawer(
       child: Container(
-        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/40),
+        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width/40,
+            top: MediaQuery.of(context).size.height/30 ),
         color: Color(0xFF97B633),
         child: ListView(
           children: <Widget>[
+//            ListTile(
+//              title: Text(
+//                "MY PLANT",
+//                style: TextStyle(
+//                    fontSize: 16,
+//                    color: Colors.white,
+//                    fontFamily: 'Montserrat',
+//                    letterSpacing: 1),
+//              ),
+//              onTap: () {
+//                Navigator.pop(context);
+//              },
+//              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+//            ),
             ListTile(
-              title: Text(
-                "MY PLANT",
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 1),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-              },
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
-            ),
-            ListTile(
+//              contentPadding: (top: MediaQuery.of(context).size.height/40),
+              leading: Icon(Icons.calendar_today, color: Colors.white,),
               title: Text(
                 "HISTORY",
                 style: TextStyle(
@@ -123,6 +126,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
+              leading: Icon(Icons.info_outline, color: Colors.white,),
               title: Text(
                 'A "STANDARD DRINK"',
                 style: TextStyle(
@@ -142,6 +146,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
             ListTile(
+              leading: Icon(Icons.message, color: Colors.white,),
               title: Text(
                 "OUR MISSION",
                 style: TextStyle(
