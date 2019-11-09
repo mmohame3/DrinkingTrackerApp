@@ -237,9 +237,5 @@ class DatabaseHelper {
     return await _connection.query('inputTable');
   }
 
-//  Future<List> getTimeList(DateTime day) async{
-//    Database db = await database;
-//    db.query(tableDays, columns: [columnDay, columnTimeList,]);
-//  }
 
 }
