@@ -16,47 +16,44 @@ class PersonalInfoPage extends StatefulWidget {
 
 class PersonalInfoPageState extends State<PersonalInfoPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  SharedPreferences _prefs;
+  // SharedPreferences _prefs;
   
-  String _weight ="";
-  String _height ="";
-
 
   @override
   void initState() {
     super.initState();
-    _initSharedPref();
+    // _initSharedPref();
     getInputInformation();
     // _getWeight();
     // _getHeight();
   }
 
-  _initSharedPref() async {
-    _prefs = await SharedPreferences.getInstance();
-    _getHeight();
-    _getWeight();
-  }
+  // _initSharedPref() async {
+  //   _prefs = await SharedPreferences.getInstance();
+  //   _getHeight();
+  //   _getWeight();
+  // }
 
-  _getWeight() {
-    int weight = _prefs?.getInt(globals.selectedWeightKey);
-    if(weight != null && weight > 0){
-    _weight = 'weight: ${weight} pounds';
-    }
+  // _getWeight() {
+  //   int weight = _prefs?.getInt(globals.selectedWeightKey);
+  //   if(weight != null && weight > 0){
+  //   _weight = 'weight: ${weight} pounds';
+  //   }
       
 
   
-    else{
-     _weight = 'Weight:   ${globals.selectedWeight} pounds';
-    }
-  }
+  //   else{
+  //    _weight = 'Weight:   ${globals.selectedWeight} pounds';
+  //   }
+  // }
 
-  _getHeight() {
-    int height = _prefs?.getInt(globals.selectedHeightKey);
-    if(height != null && height > 0)
-      _height = 'Height:   $height inches';
-      // _height = 'Height:   ${globals.selectedFeet} feet, ${globals.selectedInches} inches';
-    else _height = 'Height:   ${globals.selectedHeight} inches';
-  }
+  // _getHeight() {
+  //   int height = _prefs?.getInt(globals.selectedHeightKey);
+  //   if(height != null && height > 0)
+  //     _height = 'Height:   $height inches';
+  //     // _height = 'Height:   ${globals.selectedFeet} feet, ${globals.selectedInches} inches';
+  //   else _height = 'Height:   ${globals.selectedHeight} inches';
+  // }
 
 //  int selectedFeet = 0;
 //  int selectedInches = 0;
@@ -309,10 +306,14 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
 
 
                         var result = await _databaseHelper.saveInputInformation(inputModel.toMap());
-                        print(result);
+                        if(result > 0){
+                          _showSnackBar(Text('Saved successfully', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),));
+                        } else {
+                          _showSnackBar(Text('Did not save successfully', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)));
+                        }
                         // await save();
 
-                        _showSnackBar(Text('Saved successfully'));
+                        
                         //print("Data are: " + selectedSex + "- " + selectedWeight.toString() + "- " + selectedFeet.toString());
                         addIntToSF();
                         // if(this._formKey.currentState.validate())
@@ -418,13 +419,13 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
             )));
   }
 
-  // save() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   await prefs.setInt(globals.selectedFeetKey, globals.selectedFeet);
-  //   await prefs.setInt(globals.selectedInchKey, globals.selectedInches);
-  //   await prefs.setInt(globals.selectedWeightKey, globals.selectedWeight);
-  //   await prefs.setString(globals.selectedSexKey, globals.selectedSex);
-  // }
+  save() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(globals.selectedFeetKey, globals.selectedFeet);
+    await prefs.setInt(globals.selectedInchKey, globals.selectedInches);
+    await prefs.setInt(globals.selectedWeightKey, globals.selectedWeight);
+    await prefs.setString(globals.selectedSexKey, globals.selectedSex);
+  }
 }
 
 //class SharedPreferencesHelper {
