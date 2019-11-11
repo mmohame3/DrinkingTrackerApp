@@ -88,9 +88,6 @@ class Day {
   }
 
   double getMaxBac() {
-    if (this.maxBAC >= 0.12) {
-      return 0.12;
-    }
     return this.maxBAC;
   }
 
@@ -142,7 +139,8 @@ class Day {
 }
 
 class DatabaseHelper {
-  static final _databaseName = "CalendarDatabase.db";
+
+  static final _databaseName = "CalendarDatabase_2.db";
   static final _databaseVersion = 1;
 
   static final tableDays = "days";
@@ -185,6 +183,13 @@ class DatabaseHelper {
                 $columnWaterCount INTEGER NOT NULL 
               )
               ''');
+    await db.execute('CREATE TABLE inputTable (id INTEGER PRIMARY KEY, feet INTEGER, inch INTEGER, weight INTEGER, gender TEXT)');
+  }
+
+  saveInputInformation(inputTable) async {
+    var connection = await database;
+    await connection.delete('inputTable');
+    return await connection.insert('inputTable', inputTable);
   }
 
   Future<void> insertDay(Day day) async {
@@ -224,9 +229,10 @@ class DatabaseHelper {
     return dayone;
   }
 
-//  Future<List> getTimeList(DateTime day) async{
-//    Database db = await database;
-//    db.query(tableDays, columns: [columnDay, columnTimeList,]);
-//  }
+  getInputInformation() async {
+    var _connection = await database;
+    return await _connection.query('inputTable');
+  }
+
 
 }

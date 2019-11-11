@@ -15,7 +15,7 @@ String selectedSex = 'Other';
 int selectedHeight = 0;
 int selectedFeet = 0;
 int selectedInches = 0;
-int selectedWeight = 150;
+int selectedWeight = 180;
 
 double weightGrams = selectedWeight * 453.592;
 int heightInches = 0;
