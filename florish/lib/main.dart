@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 
 import './history.dart';
+import './altHistory.dart';
 import './standardDrink.dart';
 import './ourMission.dart';
 import './PersonalInformation.dart';
@@ -77,7 +78,6 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
               EdgeInsets.only(bottom: MediaQuery.of(context).size.width / 3),
           child: Image.asset(
             'assets/images/plantSetting2.png',
-//            width: MediaQuery.of(context).size.width,
           ),
         ),
         new Plant(),
@@ -127,6 +127,29 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
                     context,
                     new MaterialPageRoute(
                         builder: (BuildContext context) => new HistoryPage()));
+              },
+              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+            ),
+            ListTile(
+//              contentPadding: (top: MediaQuery.of(context).size.height/40),
+              leading: Icon(
+                Icons.calendar_today,
+                color: Colors.white,
+              ),
+              title: Text(
+                "ALT HISTORY",
+                style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontFamily: 'Montserrat',
+                    letterSpacing: 1),
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (BuildContext context) => new AltHistoryPage()));
               },
               trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
             ),
