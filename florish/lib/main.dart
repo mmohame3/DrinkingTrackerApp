@@ -14,6 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import './bacPopup.dart';
 import './alerts.dart';
 
+final int resetTime = 12;
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -45,7 +47,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   void initState() {
     //uncomment to reset today's data to 0
 //    DateTime time = DateTime.now();
-//    if (time.hour < 12){
+//    if (time.hour < resetTime){
 //      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
 //    }
 
@@ -264,7 +266,12 @@ class _PlantState extends State<Plant> {
     // say you're awake 16 hours a day, 8 cups would be .5
     // "max" water ratio will be .7 (11.2 cups of water per day)
     int plantNumWater = (5 * (ratio / .7)).floor();
-
+///TODO: phase out waters from past days hour by hour etc.?
+    /// .7 waters per 1 hour.
+    /// timeFromNoon = current.difference(today's date at noon)
+    /// rolloverWater = last plantNumWater from yesterday
+    /// plantNumwater = plantNumWater + (rolloverWater - (timeFromNoon * .7))
+    /// rolloverWater
     plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
     return plantNumWater;
   }
@@ -288,7 +295,7 @@ class _PlantState extends State<Plant> {
     // the time of day. This is to avoid issues with the noon-to-noon
     // resetting of counters and Day objects.
     DateTime currentTime = DateTime.now();
-    int dayNum = currentTime.hour < 12 ? 2 : 1;
+    int dayNum = currentTime.hour < resetTime ? 2 : 1;
     DateTime newTime =
         new DateTime(2019, 11, dayNum, currentTime.hour, currentTime.minute, currentTime.second);
     double runningBac = 0.0;
@@ -333,7 +340,7 @@ class _PlantState extends State<Plant> {
       if (types[i] == 1) {
         // year and month are hard set bc issues arise because
         // of our noon-to-noon system for resetting drinks
-        dayNum = hours[i] < 12 ? 2 : 1;
+        dayNum = hours[i] < resetTime ? 2 : 1;
         newTime = new DateTime(2019, 11, dayNum, hours[i], minutes[i]);
         timeList.add(newTime);
       }
@@ -690,7 +697,7 @@ Future<Day> determineDay() async {
   //DateTime tdn;
   yesterday = new DateTime(time.year, time.month, time.day - 1, time.hour,
       time.minute, time.second, time.millisecond, time.microsecond);
-  if (time.hour < 12) {
+  if (time.hour < resetTime) {
     time = yesterday;
   }
 
