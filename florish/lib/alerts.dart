@@ -5,35 +5,6 @@ import 'globals.dart' as globals;
 
 
 
-
-Future<void> dayEndAlert(BuildContext context) {
-//  print(globals.dayEnded);
-//  print(globals.yesterDrink);
-//  print(globals.yesterWater);
-  if (globals.dayEnded) {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return CupertinoAlertDialog(
-          title: Text('Day Completed'),
-          content: Text(
-              'Yesterday you had ${globals.yesterDrink} drinks and ${globals
-                  .yesterWater} waters'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Okay'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
 Future<void> settingsAlert(BuildContext context) async {
   SharedPreferences _prefs;
   _prefs = await SharedPreferences.getInstance();

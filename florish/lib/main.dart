@@ -55,7 +55,9 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await determineDay();
-      await dayEndAlert(context);
+      if (globals.dayEnded) {
+        showDayEndPopup(context);
+      }
     });
 
     const oneSecond = const Duration(seconds: 3);
@@ -244,9 +246,26 @@ class _PlantState extends State<Plant> {
 
   // turns the water count to a plant stage
   int waterToPlant() {
-    int plantNumWater = globals.today.getTotalWaters();
-    plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
+    DateTime current = DateTime.now();
+    int first = 0;
+    for (int i = 0; i < globals.today.typeList.length; i++) {
+      if (globals.today.typeList[i] == 1) {
+        first = i;
+        break;
+      }
+    }
+    DateTime firstWater = new DateTime(current.year, current.month, current.day, globals.today.hourList[first],
+        globals.today.minuteList[first]);
+    Duration diffDuration = current.difference(firstWater);
+    int diff = diffDuration.inMinutes;
+    diff = diff < 0 ? -diff : diff;
+    double ratio = globals.today.totalWaters / (diff / 60); // = drinks per hour
+    // here we have to assign ranges to different drinks per hour
+    // say you're awake 16 hours a day, 8 cups would be .5
+    // "max" water ratio will be .7 (11.2 cups of water per day)
+    int plantNumWater = (5 * (ratio / .7)).floor();
 
+    plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
     return plantNumWater;
   }
 
@@ -326,7 +345,6 @@ class _PlantState extends State<Plant> {
   // with: bac counter, bac picture, plant image, and buttons
   @override
   Widget build(context) {
-
     return TimerBuilder.periodic(Duration(seconds: 5),
         builder: (context) {
       determineDay().then((day) => setState(() {
@@ -388,7 +406,7 @@ class _PlantState extends State<Plant> {
 //                    width: MediaQuery.of(context).size.width/,
                       ),
                       onPressed: () {
-                        showPopup(context);
+                        showBACPopup(context);
                       }))
             ],
           ),
@@ -516,8 +534,27 @@ class _DrinkButtonState extends State<DrinkButton> {
   }
 
 // turns the water count into a plant stage
+  // based on a max waters per hours of .7 and 5 water stages.
   int waterToPlant() {
-    int plantNumWater = globals.today.getTotalWaters();
+    DateTime current = DateTime.now();
+    int first = 0;
+    for (int i = 0; i < globals.today.typeList.length; i++) {
+      if (globals.today.typeList[i] == 1) {
+        first = i;
+        break;
+      }
+    }
+    DateTime firstWater = new DateTime(current.year, current.month, current.day, globals.today.hourList[first],
+        globals.today.minuteList[first]);
+    Duration diffDuration = current.difference(firstWater);
+    int diff = diffDuration.inMinutes;
+    diff = diff < 0 ? -diff : diff;
+    double ratio = globals.today.totalWaters / (diff / 60); // = drinks per hour
+    // here we have to assign ranges to different drinks per hour
+    // say you're awake 16 hours a day, 8 cups would be .5
+    // "max" water ratio will be .7 (11.2 cups of water per day)
+    int plantNumWater = (5 * (ratio / .7)).floor();
+
     plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
     return plantNumWater;
   }
@@ -610,7 +647,25 @@ class _WaterButtonState extends State<WaterButton> {
 
   // turns the waterCount into a plant stage
   int waterToPlant() {
-    int plantNumWater = globals.today.getTotalWaters();
+    DateTime current = DateTime.now();
+    int first = 0;
+    for (int i = 0; i < globals.today.typeList.length; i++) {
+      if (globals.today.typeList[i] == 1) {
+        first = i;
+        break;
+      }
+    }
+    DateTime firstWater = new DateTime(current.year, current.month, current.day, globals.today.hourList[first],
+        globals.today.minuteList[first]);
+    Duration diffDuration = current.difference(firstWater);
+    int diff = diffDuration.inMinutes;
+    diff = diff < 0 ? -diff : diff;
+    double ratio = globals.today.totalWaters / (diff / 60); // = drinks per hour
+    // here we have to assign ranges to different drinks per hour
+    // say you're awake 16 hours a day, 8 cups would be .5
+    // "max" water ratio will be .7 (11.2 cups of water per day)
+    int plantNumWater = (5 * (ratio / .7)).floor();
+
     plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
     return plantNumWater;
   }
