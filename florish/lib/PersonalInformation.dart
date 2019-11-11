@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'database_helpers.dart' as database;
 import 'globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main.dart';
+import 'models/inputModel.dart';
 
 class PersonalInfoPage extends StatefulWidget {
   @override
@@ -12,17 +14,26 @@ class PersonalInfoPage extends StatefulWidget {
 
 class PersonalInfoPageState extends State<PersonalInfoPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  SharedPreferences _prefs;
 
   @override
   void initState() {
     super.initState();
-    _initSharedPref();
+    // _initSharedPref();
+    getInputInformation();
+    // _getWeight();
+    // _getHeight();
   }
 
-  _initSharedPref() async {
-    _prefs = await SharedPreferences.getInstance();
-  }
+  // _initSharedPref() async {
+  //   _prefs = await SharedPreferences.getInstance();
+  //   _getHeight();
+  //   _getWeight();
+  // }
+
+
+  int initialFeet = 0;
+  database.Day day = globals.today;
+  var _databaseHelper = database.DatabaseHelper.instance;
 
   addIntToSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -32,12 +43,24 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
     prefs.setString("sex", globals.selectedSex);
   }
 
-//  _showSnackBar(message) {
-//    var _snackBar = SnackBar(
-//      content: message,
-//    );
-//    _scaffoldKey.currentState.showSnackBar(_snackBar);
-//  }
+  getInputInformation() async {
+    var _inputInformation = await _databaseHelper.getInputInformation();
+    _inputInformation.forEach((input){
+      setState(() {
+        globals.selectedFeet = input['feet'];
+        globals.selectedInches = input['inch'];
+        globals.selectedWeight = input['weight'];
+        globals.selectedSex = input['gender'];
+      });
+    });
+  }
+
+  _showSnackBar(message) {
+    var _snackBar = SnackBar(
+      content: message,
+    );
+    _scaffoldKey.currentState.showSnackBar(_snackBar);
+  }
 
   getValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

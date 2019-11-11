@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
+import 'package:timer_builder/timer_builder.dart';
 import 'database_helpers.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
+
 import './history.dart';
 import './standardDrink.dart';
 import './ourMission.dart';
@@ -46,8 +48,9 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
 //    if (time.hour < 12){
 //      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
 //    }
+
 //    dbHelper.deleteDay(dateTimeToString(time));
-//    dbHelper.resetDay(dateTimeToString(time));
+    //dbHelper.resetDay(dateTimeToString(time));
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -251,8 +254,6 @@ class _PlantState extends State<Plant> {
   // sets the plant's image name to a new path
   updateImageAndBAC(String path) {
 //    Timer timer;
-    const spread = const Duration(seconds: 5);
-    setState(() {
       globals.bac = _bacMath(_dbListToTimeList());
       globals.imageName =
           'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
@@ -260,10 +261,7 @@ class _PlantState extends State<Plant> {
         globals.today.setMaxBac(globals.bac);
         globals.today.setWatersAtMaxBac(globals.today.getTotalWaters());
       }
-    });
-    new Timer.periodic(spread, (Timer t) => setState(() {}));
-//    ssjsjsjsjs
-  }
+    }
 
   // takes in a list of DateTime objects and calculates the bac
   _bacMath(drinkTimeList) {
@@ -273,7 +271,7 @@ class _PlantState extends State<Plant> {
     DateTime currentTime = DateTime.now();
     int dayNum = currentTime.hour < 12 ? 2 : 1;
     DateTime newTime =
-        new DateTime(2019, 11, dayNum, currentTime.hour, currentTime.minute);
+        new DateTime(2019, 11, dayNum, currentTime.hour, currentTime.minute, currentTime.second);
     double runningBac = 0.0;
     double sumBac = 0.0;
     double r = 0.615;
@@ -287,13 +285,15 @@ class _PlantState extends State<Plant> {
     }
     for (int i = 0; i < drinkTimeList.length; i++) {
       elapsedTime = newTime.difference(drinkTimeList[i]);
-      runningBac =
-          ((14 / ((_prefs.getInt(globals.selectedWeightKey) * 453.592 * r))) *
-                  100) -
-              ((elapsedTime.inSeconds / 3600) * .015);
+
+      runningBac = ((14 / ((_prefs.getInt(globals.selectedWeightKey) * 453.592 * r))) * 100) -
+          ((elapsedTime.inSeconds / 3600.0) * .015);
       runningBac = runningBac < 0 ? 0 : runningBac;
       sumBac += runningBac;
     }
+    //print('from back math method sex : ${_prefs.getString(globals.selectedSexKey)}');
+    //print('from back math method weight : ${_prefs.getInt(globals.selectedWeightKey)}');
+//    print('from back math method : $sumBac');
     return sumBac;
   }
 
@@ -326,7 +326,15 @@ class _PlantState extends State<Plant> {
   // with: bac counter, bac picture, plant image, and buttons
   @override
   Widget build(context) {
-    return Column(
+
+    return TimerBuilder.periodic(Duration(seconds: 5),
+        builder: (context) {
+      determineDay().then((day) => setState(() {
+        globals.today = day;
+        updateImageAndBAC('assets/images/plants/drink0water0.png');
+
+      }));
+      return Column(
       children: [
         Container(
           padding: EdgeInsets.all(MediaQuery.of(context).size.width / 12),
@@ -418,12 +426,11 @@ class _PlantState extends State<Plant> {
             padding: EdgeInsets.all(MediaQuery.of(context).size.width / 25))
       ],
     );
+        });
   }
 }
 
 class DrinkButton extends StatefulWidget {
-//  final ValueChanged<String> parentAction;
-//  final ValueChanged<DateTime> parentActionBAC;
   final ValueChanged<String> parentActionUpdates;
   const DrinkButton({Key key, this.parentActionUpdates}) : super(key: key);
 
@@ -455,9 +462,6 @@ class _DrinkButtonState extends State<DrinkButton> {
           DateTime currentTime = DateTime.now();
           drinkButtonTap(currentTime);
           widget.parentActionUpdates('assets/images/plants/drink0water0.png');
-//          widget.parentActionBAC(currentTime);
-//          widget.parentAction(
-//              'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
           settingsAlert(context);
         });
       },
