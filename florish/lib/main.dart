@@ -58,13 +58,11 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await determineDay();
       if (globals.dayEnded) {
+        await getDayEnded();
         showDayEndPopup(context);
       }
     });
 
-    const oneSecond = const Duration(seconds: 3);
-    new Timer.periodic(oneSecond, (Timer t) => setState(() {}));
-    //new Timer.periodic(oneSecond, (Timer t) => updateImageAndBAC());
   }
 
   @override
@@ -242,6 +240,7 @@ class _PlantState extends State<Plant> {
     determineDay().then((day) => setState(() {
           globals.today = day;
           updateImageAndBAC('assets/images/plants/drink0water0.png');
+          getDayEnded();
         }));
   }
 
@@ -755,7 +754,7 @@ Future<Day> determineDay() async {
   result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
 
   Day day;
-  List<int> dbListH, dbListM, dbListT;
+  List<int> dbListH, dbListM, dbListT, dbListS;
   if (result.isEmpty) {
     day = new Day(
         date: todayDate,
@@ -765,22 +764,34 @@ Future<Day> determineDay() async {
         maxBAC: 0.0,
         waterAtMaxBAC: 0,
         totalDrinks: 0,
-        totalWaters: 0);
+        totalWaters: 0,
+        session: new List<int>());
     await db.insert(tableDays, day.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+    await getDayEnded();
     globals.dayEnded = true;
+
     return day;
   } else {
     globals.dayEnded = false;
+
 
     if (result[0]['hourlist'] == null) {
       dbListH = [];
       dbListM = [];
       dbListT = [];
+      dbListS = [];
     } else {
+
       dbListH = new List<int>.from(result[0]['hourlist']);
       dbListM = new List<int>.from(result[0]['minutelist']);
       dbListT = new List<int>.from(result[0]['typelist']);
+      if (result[0]['session'] == null) {
+        dbListS = [];
+      }
+      else {
+        dbListS = new List<int>.from(result[0]['session']);
+      }
     }
 
     day = new Day(
@@ -791,7 +802,8 @@ Future<Day> determineDay() async {
         maxBAC: result[0]['maxBAC'],
         waterAtMaxBAC: result[0]["WateratmaxBAC"],
         totalDrinks: result[0]["totaldrinkcount"],
-        totalWaters: result[0]["totalwatercount"]);
+        totalWaters: result[0]["totalwatercount"],
+        session: dbListS);
 
     return day;
   }
@@ -802,21 +814,22 @@ Future<Day> determineDay() async {
 Future<void> getDayEnded() async {
   if (globals.dayEnded) {
     DateTime time = DateTime.now();
-    DateTime yesterday;
 
-    yesterday = new DateTime(time.year, time.month, time.day - 1, time.hour,
-        time.minute, time.second, time.millisecond, time.microsecond);
-
-    String yesterDate = dateTimeToString(yesterday);
+    String y = time.year.toString();
+    String m = time.month.toString();
+    String d = (time.day - 1 ).toString();
+    String yesterDate =  m + "/" + d + "/" + y;
 
     Database db = await DatabaseHelper.instance.database;
 
     List<Map> yesterdayResult =
         await db.rawQuery('SELECT * FROM days WHERE day=?', [yesterDate]);
+
     if (yesterdayResult.isEmpty) {
       //call alert w/ 0s
       globals.yesterDrink = 0;
       globals.yesterWater = 0;
+
     } else {
       int d = yesterdayResult[0]["totaldrinkcount"];
       int w = yesterdayResult[0]['totalwatercount'];

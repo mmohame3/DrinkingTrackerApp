@@ -15,6 +15,7 @@ final String columnMaxBAC = 'maxBAC';
 final String columnMBWater = 'WateratmaxBAC';
 final String columnDrinkCount = "totaldrinkcount";
 final String columnWaterCount = "totalwatercount";
+final String columnSession = "sessionlist";
 
 class Day {
   String date;
@@ -25,6 +26,7 @@ class Day {
   int waterAtMaxBAC;
   int totalDrinks;
   int totalWaters;
+  List<int> session;
 
   Day(
       {this.date,
@@ -34,7 +36,8 @@ class Day {
       this.maxBAC,
       this.waterAtMaxBAC,
       this.totalDrinks,
-      this.totalWaters});
+      this.totalWaters,
+      this.session});
 
   Day.fromMap(Map<String, dynamic> map) {
     date = map[columnDay];
@@ -45,6 +48,7 @@ class Day {
     waterAtMaxBAC = map[columnMBWater];
     totalDrinks = map[columnDrinkCount];
     totalWaters = map[columnWaterCount];
+    session = map[columnSession];
   }
 
   Map<String, dynamic> toMap() {
@@ -57,6 +61,7 @@ class Day {
       columnMBWater: waterAtMaxBAC,
       columnDrinkCount: totalDrinks,
       columnWaterCount: totalWaters,
+      columnSession: session,
     };
 
     return map;
@@ -66,7 +71,7 @@ class Day {
   String toString() {
     return 'Day {date: $date, hourList: $hourList, minuteList: $minuteList, typeList: $typeList, '
         'maxBAC: $maxBAC, waterAtMaxBAC: $waterAtMaxBAC,'
-        'totalDrinks: $totalDrinks, totalWaters: $totalWaters}';
+        'totalDrinks: $totalDrinks, totalWaters: $totalWaters, session: $session}';
   }
 
   // NOTE: this many getters and setters CANNOT be efficient in a
@@ -136,12 +141,16 @@ class Day {
   void setTotalWaters(int waters) {
     this.totalWaters = waters;
   }
+
+  void addSession(int start) {
+    this.session.add(start);
+  }
 }
 
 class DatabaseHelper {
 
-  static final _databaseName = "CalendarDatabase_2.db";
-  static final _databaseVersion = 1;
+  static final _databaseName = "CalendarDatabase_3.db";
+  static final _databaseVersion = 2;
 
   static final tableDays = "days";
   static final columnDay = "day";
@@ -152,6 +161,7 @@ class DatabaseHelper {
   static final columnMBWater = 'WateratmaxBAC';
   static final columnDrinkCount = "totaldrinkcount";
   static final columnWaterCount = "totalwatercount";
+  static final columnSession = "sessionlist";
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -180,7 +190,8 @@ class DatabaseHelper {
                 $columnMaxBAC REAL NOT NULL,
                 $columnMBWater INTEGER NOT NULL,
                 $columnDrinkCount INTEGER NOT NULL,
-                $columnWaterCount INTEGER NOT NULL 
+                $columnWaterCount INTEGER NOT NULL,
+                $columnSession BLOB NOT NULL 
               )
               ''');
     await db.execute('CREATE TABLE inputTable (id INTEGER PRIMARY KEY, feet INTEGER, inch INTEGER, weight INTEGER, gender TEXT)');
@@ -217,7 +228,7 @@ class DatabaseHelper {
     print(new List<int>());
     print([]);
     Day newDay = Day(date: date, hourList: new List<int>(), minuteList: new List<int>(),
-        typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0);
+        typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0, session: new List<int>());
     updateDay(newDay);
   }
 

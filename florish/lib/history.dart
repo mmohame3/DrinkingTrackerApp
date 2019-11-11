@@ -33,7 +33,7 @@ class _CalendarState extends State<Calendar> {
 
     database.Day day;
 
-    List<int> dbListH, dbListM, dbListT;
+    List<int> dbListH, dbListM, dbListT, dbListS;
     if ((result == null) || (result.isEmpty)) {
       day = new database.Day(
           date: selectedDate,
@@ -43,7 +43,8 @@ class _CalendarState extends State<Calendar> {
           maxBAC: 0.0,
           waterAtMaxBAC: 0,
           totalDrinks: 0,
-          totalWaters: 0);
+          totalWaters: 0,
+          session: new List<int>());
       await db.insert(database.tableDays, day.toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace);
       return day;
@@ -52,10 +53,17 @@ class _CalendarState extends State<Calendar> {
         dbListH = [];
         dbListM = [];
         dbListT = [];
+        dbListS = [];
       } else {
         dbListH = new List<int>.from(result[0]['hourlist']);
         dbListM = new List<int>.from(result[0]['minutelist']);
         dbListT = new List<int>.from(result[0]['typelist']);
+        if (result[0]['session'] == null){
+          dbListS = [];
+        }
+        else {
+          dbListS = new List<int>.from(result[0]['session']);
+        }
       }
 
       day = new database.Day(
