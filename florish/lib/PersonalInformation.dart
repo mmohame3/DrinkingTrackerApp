@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'models/inputModel.dart';
 
+final dbHelper = database.DatabaseHelper.instance;
+
 class PersonalInfoPage extends StatefulWidget {
   @override
   PersonalInfoPageState createState() => new PersonalInfoPageState();
@@ -72,6 +74,8 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
 
   @override
   Widget build(BuildContext context) {
+    String drinkString = globals.today.totalDrinks.toString();
+    String waterString = globals.today.totalWaters.toString();
     return new Scaffold(
         appBar: new AppBar(
           title: new Text('Your Personal Information'),
@@ -288,20 +292,25 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                     GestureDetector(
                                         onTap: () {
                                           if (globals.today.totalDrinks > 0) {
-                                            setState(() =>
-                                                globals.today.totalDrinks--);
+                                              globals.today.totalDrinks--;
+                                            setState(() => {
+                                            drinkString = globals.today.totalDrinks.toString()});
                                           }
+                                          drinkDec(DateTime.now());
                                         },
                                         child: Icon(
                                           Icons.remove,
                                           color: Colors.black,
                                         )),
-                                    Text(globals.today.totalDrinks.toString(),
+                                    Text(drinkString,
                                         style: TextStyle(color: Colors.black)),
                                     GestureDetector(
                                         onTap: () {
-                                          setState(() =>
-                                              globals.today.totalDrinks++);
+                                          globals.today.totalDrinks++;
+                                          setState(() => {
+                                          drinkString = globals.today.totalDrinks.toString()
+                                          });
+                                          drinkInc(DateTime.now());
                                         },
                                         child: Icon(
                                           Icons.add,
@@ -331,26 +340,29 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                   children: <Widget>[
                                     GestureDetector(
                                         onTap: () {
+
                                           if (globals.today.totalWaters > 0) {
+                                            globals.today.totalWaters--;
                                             setState(() {
-                                              globals.today.setTotalWaters(
-                                                  globals.today
-                                                          .getTotalWaters() +
-                                                      1);
-//                                            setState(() => globals.today.totalWaters++);
-                                            });
+                                              drinkString = globals.today.totalWaters.toString();}
+                                              );
+                                            waterDec();
                                           }
                                         },
                                         child: Icon(
                                           Icons.remove,
                                           color: Colors.black,
                                         )),
-                                    Text(globals.today.totalWaters.toString(),
+                                    Text(waterString,
                                         style: TextStyle(color: Colors.black)),
                                     GestureDetector(
                                         onTap: () {
-                                          setState(() =>
-                                              globals.today.totalWaters++);
+                                          globals.today.totalWaters++;
+                                          setState(() => {
+                                            waterString = globals.today.totalWaters.toString()
+                                          }
+                                          );
+                                          waterInc();
                                         },
                                         child: Icon(
                                           Icons.add,
@@ -364,6 +376,47 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                 ],
               ),
             )));
+  }
+  void drinkInc(DateTime currentTime) async {
+    //globals.today.totalDrinks++;
+    globals.today.addHour(currentTime.hour);
+    globals.today.addMinute(currentTime.minute);
+    globals.today.addType(1);
+
+    await dbHelper.updateDay(globals.today);
+  }
+
+  void waterInc() async {
+    //globals.today.totalWaters++;
+    globals.today.addHour(DateTime.now().hour);
+    globals.today.addMinute(DateTime.now().minute);
+    globals.today.addType(0);
+
+    await dbHelper.updateDay(globals.today);
+  }
+
+  void drinkDec(DateTime currentTime) async {
+    //globals.today.totalDrinks--;
+    int i = globals.today.typeList.lastIndexOf(1);
+    if (i >= 0) {
+      globals.today.typeList.removeAt(i);
+      globals.today.hourList.removeAt(i);
+      globals.today.minuteList.removeAt(i);
+    }
+    await dbHelper.updateDay(globals.today);
+  }
+
+  void waterDec() async {
+    //globals.today.totalWaters--;
+    int i = globals.today.typeList.lastIndexOf(0);
+    if (i >= 0) {
+      globals.today.typeList.removeAt(i);
+      globals.today.hourList.removeAt(i);
+      globals.today.minuteList.removeAt(i);
+      print(globals.today.totalWaters);
+      print(globals.today.typeList);
+      await dbHelper.updateDay(globals.today);
+    }
   }
 
   save() async {
