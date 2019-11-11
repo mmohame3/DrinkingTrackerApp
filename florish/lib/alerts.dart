@@ -7,9 +7,9 @@ import 'globals.dart' as globals;
 
 
 Future<void> dayEndAlert(BuildContext context) {
-  print(globals.dayEnded);
-  print(globals.yesterDrink);
-  print(globals.yesterWater);
+//  print(globals.dayEnded);
+//  print(globals.yesterDrink);
+//  print(globals.yesterWater);
   if (globals.dayEnded) {
     return showDialog<void>(
       context: context,

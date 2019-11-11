@@ -124,7 +124,7 @@ Widget popUpBody(BuildContext context) {
                 child: Column(children: [
                   Text(
                       "Your BAC is currently ${globals.bac.toStringAsFixed(3)} "
-                      "which means you may be feeling: \n\n ${_getBacInfo(globals.bac)}",
+                      "which means you may be feeling: \n\n${_getBacInfo(globals.bac)}",
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           height: 1.3,
@@ -145,7 +145,7 @@ Widget popUpBody(BuildContext context) {
                   Text(
                       "Blood Alcohol Concentration (BAC) refers to the percent of "
                       "alcohol in a person's blood stream."
-                      "\n\nIn the U.S., a person is legally intoxicated if he/she has a BAC of .08% or higher.\n\n",
+                      "\n\nIn the U.S., a person is legally intoxicated if they have a BAC of .08% or higher.\n\n",
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           height: 1.3,
@@ -196,7 +196,7 @@ String _getBacInfo(double bac) {
 
   if ((bac >= .13) && (bac < 0.16)) {
     effects =
-        "Gross motor impairment and lack of physical control. Blurred vision and major loss of balance. Euphoria is reducing and beginning dysphoria (a state of feeling unwell)";
+        "Gross motor impairment and lack of physical control. Blurred vision and major loss of balance. Euphoria is reducing and beginning dysphoria (a state of feeling unwell).";
   }
 
   if ((bac >= .16) && (bac < 0.2)) {
@@ -210,11 +210,11 @@ String _getBacInfo(double bac) {
   }
 
   if ((bac >= .25) && (bac < 0.4)) {
-    effects = "Alcohol poisoning. Loss of consciousness";
+    effects = "Alcohol poisoning. Loss of consciousness.";
   }
 
-  if (bac >= .5) {
-    effects = "onset of come, possible death due to respiratory arrest";
+  if (bac >= .4) {
+    effects = "Onset of coma, possible death due to respiratory arrest.";
   }
 
   return effects;

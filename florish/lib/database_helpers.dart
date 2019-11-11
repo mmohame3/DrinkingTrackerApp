@@ -88,9 +88,6 @@ class Day {
   }
 
   double getMaxBac() {
-    if (this.maxBAC >= 0.12) {
-      return 0.12;
-    }
     return this.maxBAC;
   }
 

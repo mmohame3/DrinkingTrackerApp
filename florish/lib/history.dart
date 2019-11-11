@@ -121,7 +121,7 @@ class _CalendarState extends State<Calendar> {
   // 0.03—0.06 = Tipsy; Yellow
   // 0.06-0.09 = Drunk; Orange
   // 0.10-0.12 = Very Drunk; Red
-  List<DateTime> soberDates;
+  List<DateTime> soberDates = [DateTime(2019, 10, 30)];
   List<DateTime> tipsyDates = [DateTime(2019, 10, 30)];
   List<DateTime> drunkDates = [DateTime(2019, 10, 31)];
   List<DateTime> veryDrunkDates = [DateTime(2019, 11, 1)];
@@ -132,37 +132,37 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-//    for (int i = 0; i < soberDates.length; i++) {
-//      _markedDateMap.add(
-//          soberDates[i],
-//          new Event(
-//              date: soberDates[i],
-//              icon: _soberIcon(soberDates[i].day.toString())));
-//    }
-//
-//    for (int i = 0; i < tipsyDates.length; i++) {
-//      _markedDateMap.add(
-//          tipsyDates[i],
-//          new Event(
-//              date: tipsyDates[i],
-//              icon: _tipsyIcon(tipsyDates[i].day.toString())));
-//    }
-//
-//    for (int i = 0; i < drunkDates.length; i++) {
-//      _markedDateMap.add(
-//          drunkDates[i],
-//          new Event(
-//              date: drunkDates[i],
-//              icon: _drunkIcon(drunkDates[i].day.toString())));
-//    }
-//
-//    for (int i = 0; i < veryDrunkDates.length; i++) {
-//      _markedDateMap.add(
-//          veryDrunkDates[i],
-//          new Event(
-//              date: veryDrunkDates[i],
-//              icon: _veryDrunkIcon(veryDrunkDates[i].day.toString())));
-//    }
+    for (int i = 0; i < soberDates.length; i++) {
+      _markedDateMap.add(
+          soberDates[i],
+          new Event(
+              date: soberDates[i],
+              icon: _soberIcon(soberDates[i].day.toString())));
+    }
+
+    for (int i = 0; i < tipsyDates.length; i++) {
+      _markedDateMap.add(
+          tipsyDates[i],
+          new Event(
+              date: tipsyDates[i],
+              icon: _tipsyIcon(tipsyDates[i].day.toString())));
+    }
+
+    for (int i = 0; i < drunkDates.length; i++) {
+      _markedDateMap.add(
+          drunkDates[i],
+          new Event(
+              date: drunkDates[i],
+              icon: _drunkIcon(drunkDates[i].day.toString())));
+    }
+
+    for (int i = 0; i < veryDrunkDates.length; i++) {
+      _markedDateMap.add(
+          veryDrunkDates[i],
+          new Event(
+              date: veryDrunkDates[i],
+              icon: _veryDrunkIcon(veryDrunkDates[i].day.toString())));
+    }
 
     return CalendarCarousel(
         selectedDateTime: _currentDate,
@@ -180,7 +180,7 @@ class _CalendarState extends State<Calendar> {
           fontFamily: 'Montserrat',
           color: Colors.black,
         ),
-        minSelectedDate: DateTime(2019, 8, 1), // TODO: make these infinite!
+        minSelectedDate: DateTime(2019, 8, 1), // TODO: make these infinite
         maxSelectedDate: DateTime(2022, 12, 31),
         markedDatesMap: _markedDateMap,
         markedDateShowIcon: true,
@@ -218,9 +218,70 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   String typeToImageName(int type) {
-    String path = type == 1 ? 'assets/images/soloCup.png' : 'assets/images/waterDrop.png';
+    String path =
+        type == 1 ? 'assets/images/soloCup.png' : 'assets/images/waterDrop.png';
     return path;
+  }
 
+  int bacToPlant(double bac) {
+    bac = bac >= 0.12 ? 0.12 : bac; // sets BAC equal to 0.12 if >= 0.12
+    int plantNum = (5 * (bac / .12)).floor();
+    plantNum = plantNum > 4 ? 4 : plantNum;
+    return plantNum;
+  }
+
+  Widget dataReturn() {
+    if (day.typeList.length > 0) {
+    return Container(
+        padding: EdgeInsets.only(top: 10),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Column(children: <Widget>[
+                Container(
+                    padding:
+                        EdgeInsets.all(MediaQuery.of(context).size.width / 15),
+                    child: Image.asset(
+                      'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
+                      width: MediaQuery.of(context).size.width / 3,
+                    )),
+                // TODO: make function so that this doesnt require the edit in database_helpers.dart
+                Text(day.getDate()),
+              ]),
+              SingleChildScrollView(
+                  child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height / 3,
+                        maxWidth: MediaQuery.of(context).size.width / 4,
+                      ),
+                      child: Table(
+                          defaultVerticalAlignment:
+                              TableCellVerticalAlignment.middle,
+                          children: [
+                            for (int i = 0; day.getHours().length > i; i++)
+                              TableRow(children: [
+                                TableCell(
+                                    child: Text(day.getHours()[i].toString() +
+                                        ':' +
+                                        day
+                                            .getMinutes()[i]
+                                            .toString())), // TODO: make minutes 01 instead of 1
+                                TableCell(
+                                    child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        child: Image.asset(
+                                            typeToImageName(day.getTypes()[i]),
+                                            height: 15)))
+                              ])
+                          ])))
+            ]));
+  }
+  else {
+    return Container(
+    padding: EdgeInsets.only(top: MediaQuery.of(context).size.width/4),
+    child: Text('No data for this day',
+    style: TextStyle(color: Colors.grey[600]),));
+  }
   }
 
   @override
@@ -230,75 +291,36 @@ class _HistoryPageState extends State<HistoryPage> {
           title: new Text('Your Drinking History'),
           backgroundColor: Color(0xFF97B633),
         ),
-        body: Container(
-            // gives calendar space around it
-            padding: EdgeInsets.only(
-              top: 15,
-              left: 15,
-              right: 15,
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
+                ),
+                child: Container(
+                    // gives calendar space around it
+                    padding: EdgeInsets.only(
+                      top: 15,
+                      left: 15,
+                      right: 15,
 //                bottom: MediaQuery.of(context).size.width / 15
-            ),
-            color: Color(0xFFF2F2F2),
-            child: Column(children: [
-              Container(
-                  // white background
-                  padding: EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                  ),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                      color: Colors.white),
-                  child: Calendar(
-                    parentAction: _updateSelectedDay,
-                  )),
-              Container(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Column(children: <Widget>[
-                          Image.asset(
-                            // TODO: Turn day.getMaxBAC into a plant number
-                            'assets/images/plants/drink${day.getMaxBac().floor()}water${day.getWaterAtMax()}.png',
-                            width: 150,
-                          ), // TODO: make function so that this doesnt require the edit in database_helpers.dart
-                          Text(day.getDate()),
-                        ]),
-                        SingleChildScrollView(
-                            child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxHeight: 150,
-                                  maxWidth: 150,
-                                ),
-                                child: Table(
-                                    defaultVerticalAlignment:
-                                        TableCellVerticalAlignment.middle,
-                                    children: [
-                                      for (int i = 0;
-                                          day.getHours().length > i;
-                                          i++)
-                                        TableRow(children: [
-                                          TableCell(
-                                              child: Text(day
-                                                      .getHours()[i]
-                                                      .toString() +
-                                                  ':' +
-                                                  day
-                                                      .getMinutes()[i]
-                                                      .toString())), // TODO: make minutes 01 instead of 1
-                                          TableCell(
-                                              child: Container(
-                                                  padding: EdgeInsets.all(5),
-                                                  child: Image.asset(
-                                                      typeToImageName(
-                                                          day.getTypes()[i]),
-                                                      height: 15)))
-                                        ])
-                                    ])))
-                      ]))
-            ])));
+                    ),
+                    color: Color(0xFFF2F2F2),
+                    child: Column(children: [
+                      Container(
+                          // white background
+                          padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width / 15,
+                            right: MediaQuery.of(context).size.width / 15,
+                          ),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              color: Colors.white),
+                          child: Calendar(
+                            parentAction: _updateSelectedDay,
+                          )),
+                      dataReturn(),
+                    ])))));
   }
 }

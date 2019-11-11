@@ -1,9 +1,7 @@
-import 'package:Florish/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'database_helpers.dart' as database;
 
 import 'main.dart';
 
@@ -16,44 +14,15 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   SharedPreferences _prefs;
 
-  String _weight = "";
-  String _height = "";
-
   @override
   void initState() {
     super.initState();
     _initSharedPref();
-    // _getWeight();
-    // _getHeight();
   }
 
   _initSharedPref() async {
     _prefs = await SharedPreferences.getInstance();
   }
-
-  // _getWeight() {
-  //   int weight = _prefs?.getInt(globals.selectedWeightKey);
-  //   if(weight != null && weight > 0)
-  //     _weight = 'Weight:   $weight pounds';
-  //   else _weight = 'Weight:   ${globals.selectedWeight} pounds';
-  // }
-
-  // _getHeight() {
-  //   int height = _prefs?.getInt(globals.selectedHeightKey);
-  //   if(height != null && height > 0)
-  //     _height = 'Height:   $height inches';
-  //     // _height = 'Height:   ${globals.selectedFeet} feet, ${globals.selectedInches} inches';
-  //   else _height = 'Height:   ${globals.selectedHeight} inches';
-  // }
-
-//  int selectedFeet = 0;
-//  int selectedInches = 0;
-//  int totalSelectedFeet = 0;
-//
-//  int selectedWeight = 0;
-//  String selectedSex = '';
-  int initialFeet = 0;
-  database.Day day = globals.today;
 
   addIntToSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -63,16 +32,15 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
     prefs.setString("sex", globals.selectedSex);
   }
 
-  _showSnackBar(message) {
-    var _snackBar = SnackBar(
-      content: message,
-    );
-    _scaffoldKey.currentState.showSnackBar(_snackBar);
-  }
+//  _showSnackBar(message) {
+//    var _snackBar = SnackBar(
+//      content: message,
+//    );
+//    _scaffoldKey.currentState.showSnackBar(_snackBar);
+//  }
 
   getValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    //initialFeet = prefs.getInt('feet');
     globals.selectedFeet = prefs.getInt('feet');
     globals.selectedInches = prefs.getInt('inches');
     globals.selectedWeight = prefs.getInt('weight');
@@ -81,7 +49,6 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    //getValues();
     return new Scaffold(
         appBar: new AppBar(
           title: new Text('Your Personal Information'),
@@ -92,14 +59,6 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                     MaterialPageRoute(builder: (context) => AppHomeScreen()));
               },
               child: Icon(Icons.arrow_back_ios)),
-//          actions: [
-////            FutureBuilder<List>(
-////              future: SharedPreferencesHelper.getList(),
-////              initialData: [],
-////              builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-////              },
-////            )
-//          ],
         ),
         body: Scaffold(
             key: _scaffoldKey,
@@ -151,6 +110,8 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                             onSelectedItemChanged: (int index) {
                                               setState(() {
                                                 globals.selectedFeet = index;
+                                                save();
+                                                addIntToSF();
                                               });
                                             },
                                             children: new List<Widget>.generate(
@@ -172,6 +133,8 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                             onSelectedItemChanged: (int index) {
                                               setState(() {
                                                 globals.selectedInches = index;
+                                                save();
+                                                addIntToSF();
                                               });
                                             },
                                             children: new List<Widget>.generate(
@@ -217,6 +180,8 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                         setState(() {
                                           globals.selectedWeight =
                                               int.parse(globals.weights[index]);
+                                          save();
+                                          addIntToSF();
                                         });
                                       },
                                       children: new List<Widget>.generate(
@@ -259,6 +224,8 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                         setState(() {
                                           globals.selectedSex =
                                               globals.sexes[index];
+                                          save();
+                                          addIntToSF();
                                         });
                                       },
                                       children: new List<Widget>.generate(
@@ -271,22 +238,6 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                       },
                     ),
                   ), // sex
-                  Container(
-                    child: RaisedButton(
-                      child: Text("Save"),
-                      onPressed: () async {
-                        await save();
-
-                        _showSnackBar(Text('Saved successfully'));
-                        //print("Data are: " + selectedSex + "- " + selectedWeight.toString() + "- " + selectedFeet.toString());
-                        addIntToSF();
-                        // if(this._formKey.currentState.validate())
-                        // setState(() {
-                        // this._formKey.currentState.save();
-                        // });
-                      },
-                    ),
-                  ), // save button
                   Container(
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).size.width / 20,
@@ -313,19 +264,21 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                   children: <Widget>[
                                     GestureDetector(
                                         onTap: () {
-                                          if (day.totalDrinks > 0) {
-                                            setState(() => day.totalDrinks--);
+                                          if (globals.today.totalDrinks > 0) {
+                                            setState(() =>
+                                                globals.today.totalDrinks--);
                                           }
                                         },
                                         child: Icon(
                                           Icons.remove,
                                           color: Colors.black,
                                         )),
-                                    Text(day.totalDrinks.toString(),
+                                    Text(globals.today.totalDrinks.toString(),
                                         style: TextStyle(color: Colors.black)),
                                     GestureDetector(
                                         onTap: () {
-                                          setState(() => day.totalDrinks++);
+                                          setState(() =>
+                                              globals.today.totalDrinks++);
                                         },
                                         child: Icon(
                                           Icons.add,
@@ -355,19 +308,26 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                   children: <Widget>[
                                     GestureDetector(
                                         onTap: () {
-                                          if (day.totalWaters > 0) {
-                                            setState(() => day.totalWaters--);
+                                          if (globals.today.totalWaters > 0) {
+                                            setState(() {
+                                              globals.today.setTotalWaters(
+                                                  globals.today
+                                                          .getTotalWaters() +
+                                                      1);
+//                                            setState(() => globals.today.totalWaters++);
+                                            });
                                           }
                                         },
                                         child: Icon(
                                           Icons.remove,
                                           color: Colors.black,
                                         )),
-                                    Text(day.totalWaters.toString(),
+                                    Text(globals.today.totalWaters.toString(),
                                         style: TextStyle(color: Colors.black)),
                                     GestureDetector(
                                         onTap: () {
-                                          setState(() => day.totalWaters++);
+                                          setState(() =>
+                                              globals.today.totalWaters++);
                                         },
                                         child: Icon(
                                           Icons.add,
@@ -391,38 +351,3 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
     await prefs.setString(globals.selectedSexKey, globals.selectedSex);
   }
 }
-
-//class SharedPreferencesHelper {
-//  static final List<String> prefList = [];
-//
-//  static Future<List> getList() async {
-//    final SharedPreferences prefs = await SharedPreferences.getInstance();
-//    return prefs.getStringList("pref list");
-//  }
-//
-//  static Future<bool> setFeet(int feet) async {
-//    final SharedPreferences prefs = await SharedPreferences.getInstance();
-//    return prefs.setString(prefList[0], feet.toString());
-//  }
-//
-//  static Future<String> getFeet() async {
-//    final SharedPreferences prefs = await SharedPreferences.getInstance();
-//    return prefs.getString(prefList[0]);
-//  }
-//
-//  static Future<bool> setInches(int inches) async {
-//    final SharedPreferences prefs = await SharedPreferences.getInstance();
-//    return prefs.setString(prefList[1], inches.toString());
-//  }
-//
-//  static Future<bool> setWeight(int weight) async {
-//    final SharedPreferences prefs = await SharedPreferences.getInstance();
-//    return prefs.setString(prefList[2], weight.toString());
-//  }
-//
-//  static Future<bool> setSex(String sex) async {
-//    final SharedPreferences prefs = await SharedPreferences.getInstance();
-//    return prefs.setString(prefList[3], sex);
-//  }
-
-//}
