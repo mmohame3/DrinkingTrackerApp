@@ -14,7 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import './bacPopup.dart';
 import './alerts.dart';
 
-final int resetTime = 12;
+final int resetTime = 12; //resets counters on this hour
 
 void main() => runApp(MyApp());
 
@@ -50,9 +50,9 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
 //    if (time.hour < resetTime){
 //      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
 //    }
-
+//
 //    dbHelper.deleteDay(dateTimeToString(time));
-    //dbHelper.resetDay(dateTimeToString(time));
+//    dbHelper.resetDay(dateTimeToString(time));
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -222,11 +222,19 @@ class _PlantState extends State<Plant> {
   @override
   void initState() {
     super.initState();
-    _initSharedPref();
+    //getInputInformation();
   }
 
-  _initSharedPref() async {
-    _prefs = await SharedPreferences.getInstance();
+  getInputInformation() async {
+    var _inputInformation = await getInputInformation();
+    _inputInformation.forEach((input){
+
+      globals.selectedFeet = input['feet'];
+      globals.selectedInches = input['inch'];
+      globals.selectedWeight = input['weight'];
+      globals.selectedSex = input['gender'];
+
+    });
   }
 
 // Sets up the plant and BAC
@@ -250,29 +258,40 @@ class _PlantState extends State<Plant> {
   int waterToPlant() {
     DateTime current = DateTime.now();
     int first = 0;
-    for (int i = 0; i < globals.today.typeList.length; i++) {
-      if (globals.today.typeList[i] == 1) {
-        first = i;
-        break;
+    int plantNumWater;
+    if (globals.today.totalWaters > 0) {
+      for (int i = 0; i < globals.today.typeList.length; i++) {
+        if (globals.today.typeList[i] == 0) {
+          first = i;
+          break;
+        }
       }
+      DateTime firstWater = new DateTime(
+          current.year, current.month, current.day,
+          globals.today.hourList[first],
+          globals.today.minuteList[first]);
+      Duration diffDuration = current.difference(firstWater);
+      int diff = diffDuration.inMinutes;
+      diff = diff < 1 ? 1 : diff;
+      diff = diff < 0 ? -diff : diff;
+      double ratio = globals.today.totalWaters /
+          (diff / 60); // = drinks per hour
+      // here we have to assign ranges to different drinks per hour
+      // say you're awake 16 hours a day, 8 cups would be .5
+      // "max" water ratio will be .7 (11.2 cups of water per day)
+      plantNumWater = (5 * (ratio / .7)).floor();
+
+      ///TODO: phase out waters from past days hour by hour etc.?
+      /// .7 waters per 1 hour.
+      /// timeFromNoon = current.difference(today's date at noon)
+      /// rolloverWater = last plantNumWater from yesterday
+      /// plantNumwater = plantNumWater + (rolloverWater - (timeFromNoon * .7))
+      /// rolloverWater
+      plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
     }
-    DateTime firstWater = new DateTime(current.year, current.month, current.day, globals.today.hourList[first],
-        globals.today.minuteList[first]);
-    Duration diffDuration = current.difference(firstWater);
-    int diff = diffDuration.inMinutes;
-    diff = diff < 0 ? -diff : diff;
-    double ratio = globals.today.totalWaters / (diff / 60); // = drinks per hour
-    // here we have to assign ranges to different drinks per hour
-    // say you're awake 16 hours a day, 8 cups would be .5
-    // "max" water ratio will be .7 (11.2 cups of water per day)
-    int plantNumWater = (5 * (ratio / .7)).floor();
-///TODO: phase out waters from past days hour by hour etc.?
-    /// .7 waters per 1 hour.
-    /// timeFromNoon = current.difference(today's date at noon)
-    /// rolloverWater = last plantNumWater from yesterday
-    /// plantNumwater = plantNumWater + (rolloverWater - (timeFromNoon * .7))
-    /// rolloverWater
-    plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
+    else {
+      plantNumWater = 0;
+    }
     return plantNumWater;
   }
 
@@ -545,24 +564,34 @@ class _DrinkButtonState extends State<DrinkButton> {
   int waterToPlant() {
     DateTime current = DateTime.now();
     int first = 0;
-    for (int i = 0; i < globals.today.typeList.length; i++) {
-      if (globals.today.typeList[i] == 1) {
-        first = i;
-        break;
+    int plantNumWater;
+    if (globals.today.totalWaters > 0) {
+      for (int i = 0; i < globals.today.typeList.length; i++) {
+        if (globals.today.typeList[i] == 0) {
+          first = i;
+          break;
+        }
       }
-    }
-    DateTime firstWater = new DateTime(current.year, current.month, current.day, globals.today.hourList[first],
-        globals.today.minuteList[first]);
-    Duration diffDuration = current.difference(firstWater);
-    int diff = diffDuration.inMinutes;
-    diff = diff < 0 ? -diff : diff;
-    double ratio = globals.today.totalWaters / (diff / 60); // = drinks per hour
-    // here we have to assign ranges to different drinks per hour
-    // say you're awake 16 hours a day, 8 cups would be .5
-    // "max" water ratio will be .7 (11.2 cups of water per day)
-    int plantNumWater = (5 * (ratio / .7)).floor();
+      DateTime firstWater = new DateTime(
+          current.year, current.month, current.day,
+          globals.today.hourList[first],
+          globals.today.minuteList[first]);
+      Duration diffDuration = current.difference(firstWater);
+      int diff = diffDuration.inMinutes;
+      diff = diff < 1 ? 1 : diff;
+      diff = diff < 0 ? -diff : diff;
+      double ratio = globals.today.totalWaters /
+          (diff / 60); // = drinks per hour
+      // here we have to assign ranges to different drinks per hour
+      // say you're awake 16 hours a day, 8 cups would be .5
+      // "max" water ratio will be .7 (11.2 cups of water per day)
+      int plantNumWater = (5 * (ratio / .7)).floor();
 
-    plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
+      plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
+    }
+    else {
+      plantNumWater = 0;
+    }
     return plantNumWater;
   }
 }
@@ -656,24 +685,34 @@ class _WaterButtonState extends State<WaterButton> {
   int waterToPlant() {
     DateTime current = DateTime.now();
     int first = 0;
-    for (int i = 0; i < globals.today.typeList.length; i++) {
-      if (globals.today.typeList[i] == 1) {
-        first = i;
-        break;
+    int plantNumWater;
+    if (globals.today.totalWaters > 0) {
+      for (int i = 0; i < globals.today.typeList.length; i++) {
+        if (globals.today.typeList[i] == 0) {
+          first = i;
+          break;
+        }
       }
-    }
-    DateTime firstWater = new DateTime(current.year, current.month, current.day, globals.today.hourList[first],
-        globals.today.minuteList[first]);
-    Duration diffDuration = current.difference(firstWater);
-    int diff = diffDuration.inMinutes;
-    diff = diff < 0 ? -diff : diff;
-    double ratio = globals.today.totalWaters / (diff / 60); // = drinks per hour
-    // here we have to assign ranges to different drinks per hour
-    // say you're awake 16 hours a day, 8 cups would be .5
-    // "max" water ratio will be .7 (11.2 cups of water per day)
-    int plantNumWater = (5 * (ratio / .7)).floor();
+      DateTime firstWater = new DateTime(
+          current.year, current.month, current.day,
+          globals.today.hourList[first],
+          globals.today.minuteList[first]);
+      Duration diffDuration = current.difference(firstWater);
+      int diff = diffDuration.inMinutes;
+      diff = diff < 1 ? 1 : diff;
+      diff = diff < 0 ? -diff : diff;
+      double ratio = globals.today.totalWaters /
+          (diff / 60); // = drinks per hour
+      // here we have to assign ranges to different drinks per hour
+      // say you're awake 16 hours a day, 8 cups would be .5
+      // "max" water ratio will be .7 (11.2 cups of water per day)
+      int plantNumWater = (5 * (ratio / .7)).floor();
 
-    plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
+      plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
+    }
+    else {
+      plantNumWater = 0;
+    }
     return plantNumWater;
   }
 }
@@ -780,3 +819,5 @@ Future<void> getDayEnded() async {
     }
   }
 }
+
+
