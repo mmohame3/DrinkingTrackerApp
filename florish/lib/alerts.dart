@@ -38,7 +38,7 @@ Future<void> settingsAlert(BuildContext context) async {
   SharedPreferences _prefs;
   _prefs = await SharedPreferences.getInstance();
   if ((_prefs.getInt("feet") == 0) && (_prefs.getInt('inches') == 0)
-      && (_prefs.getInt('weight') == 150) && (_prefs.getString('sex') == "Other")) {
+      && (_prefs.getInt('weight') == 180) && (_prefs.getString('sex') == "Other")) {
     return showDialog<void>(
       context: context,
       barrierDismissible: true,
