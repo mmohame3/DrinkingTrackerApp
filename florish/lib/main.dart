@@ -276,9 +276,9 @@ class _PlantState extends State<Plant> {
     double sumBac = 0.0;
     double r = 0.615;
     Duration elapsedTime;
-    if (_prefs.getString(globals.selectedSexKey) == 'Male') {
+    if (globals.selectedSex == 'Male') {
       r = 0.68;
-    } else if (_prefs.getString(globals.selectedSexKey) == 'Female') {
+    } else if (globals.selectedSex == 'Female') {
       r = 0.55;
     } else {
       r = 0.615;
@@ -286,7 +286,7 @@ class _PlantState extends State<Plant> {
     for (int i = 0; i < drinkTimeList.length; i++) {
       elapsedTime = newTime.difference(drinkTimeList[i]);
 
-      runningBac = ((14 / ((_prefs.getInt(globals.selectedWeightKey) * 453.592 * r))) * 100) -
+      runningBac = ((14 / ((globals.selectedWeight * 453.592 * r))) * 100) -
           ((elapsedTime.inSeconds / 3600.0) * .015);
       runningBac = runningBac < 0 ? 0 : runningBac;
       sumBac += runningBac;
