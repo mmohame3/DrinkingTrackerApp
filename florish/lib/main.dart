@@ -306,7 +306,14 @@ class _PlantState extends State<Plant> {
         globals.today.setMaxBac(globals.bac);
         globals.today.setWatersAtMaxBac(globals.today.getTotalWaters());
       }
+
+
     }
+
+//    ssjsjsjsjs
+//  shshshshsh
+
+
 
   // takes in a list of DateTime objects and calculates the bac
   _bacMath(drinkTimeList) {
