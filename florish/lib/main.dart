@@ -271,8 +271,9 @@ class _PlantState extends State<Plant> {
           globals.today.minuteList[first]);
       Duration diffDuration = current.difference(firstWater);
       int diff = diffDuration.inMinutes;
-      diff = diff < 1 ? 1 : diff;
+
       diff = diff < 0 ? -diff : diff;
+      diff = diff < 1 ? 1 : diff;
       double ratio = globals.today.totalWaters /
           (diff / 60); // = drinks per hour
       // here we have to assign ranges to different drinks per hour
@@ -303,7 +304,7 @@ class _PlantState extends State<Plant> {
           'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
       if (globals.bac >= globals.today.getMaxBac()) {
         globals.today.setMaxBac(globals.bac);
-        globals.today.setWatersAtMaxBac(globals.today.getTotalWaters());
+        globals.today.setWatersAtMaxBac(waterToPlant());
       }
 
 
@@ -584,8 +585,9 @@ class _DrinkButtonState extends State<DrinkButton> {
           globals.today.minuteList[first]);
       Duration diffDuration = current.difference(firstWater);
       int diff = diffDuration.inMinutes;
-      diff = diff < 1 ? 1 : diff;
+
       diff = diff < 0 ? -diff : diff;
+      diff = diff < 1 ? 1 : diff;
       double ratio = globals.today.totalWaters /
           (diff / 60); // = drinks per hour
       // here we have to assign ranges to different drinks per hour
@@ -705,8 +707,9 @@ class _WaterButtonState extends State<WaterButton> {
           globals.today.minuteList[first]);
       Duration diffDuration = current.difference(firstWater);
       int diff = diffDuration.inMinutes;
-      diff = diff < 1 ? 1 : diff;
+
       diff = diff < 0 ? -diff : diff;
+      diff = diff < 1 ? 1 : diff;
       double ratio = globals.today.totalWaters /
           (diff / 60); // = drinks per hour
       // here we have to assign ranges to different drinks per hour
