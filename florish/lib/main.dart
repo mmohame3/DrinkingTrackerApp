@@ -265,11 +265,10 @@ class _PlantState extends State<Plant> {
           break;
         }
       }
-      DateTime firstWater = new DateTime(
+      DateTime noon = new DateTime(
           current.year, current.month, current.day,
-          globals.today.hourList[first],
-          globals.today.minuteList[first]);
-      Duration diffDuration = current.difference(firstWater);
+          resetTime);
+      Duration diffDuration = current.difference(noon);
       int diff = diffDuration.inMinutes;
 
       diff = diff < 0 ? -diff : diff;
@@ -298,7 +297,6 @@ class _PlantState extends State<Plant> {
   // sets the bac global to the new bac and updates the max bac
   // sets the plant's image name to a new path
   updateImageAndBAC(String path) {
-//    Timer timer;
       globals.bac = _bacMath(_dbListToTimeList());
       globals.imageName =
           'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
@@ -309,9 +307,6 @@ class _PlantState extends State<Plant> {
 
 
     }
-
-//    ssjsjsjsjs
-//  shshshshsh
 
 
 
@@ -579,11 +574,10 @@ class _DrinkButtonState extends State<DrinkButton> {
           break;
         }
       }
-      DateTime firstWater = new DateTime(
+      DateTime noon = new DateTime(
           current.year, current.month, current.day,
-          globals.today.hourList[first],
-          globals.today.minuteList[first]);
-      Duration diffDuration = current.difference(firstWater);
+          resetTime);
+      Duration diffDuration = current.difference(noon);
       int diff = diffDuration.inMinutes;
 
       diff = diff < 0 ? -diff : diff;
@@ -701,11 +695,10 @@ class _WaterButtonState extends State<WaterButton> {
           break;
         }
       }
-      DateTime firstWater = new DateTime(
+      DateTime noon = new DateTime(
           current.year, current.month, current.day,
-          globals.today.hourList[first],
-          globals.today.minuteList[first]);
-      Duration diffDuration = current.difference(firstWater);
+          resetTime);
+      Duration diffDuration = current.difference(noon);
       int diff = diffDuration.inMinutes;
 
       diff = diff < 0 ? -diff : diff;
