@@ -769,7 +769,7 @@ Future<Day> determineDay() async {
 
     return day;
   } else {
-    globals.dayEnded = false;
+    //globals.dayEnded = false;
 
 
     if (result[0]['hourlist'] == null) {
