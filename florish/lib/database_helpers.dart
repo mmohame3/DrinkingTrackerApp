@@ -26,7 +26,7 @@ class Day {
   int waterAtMaxBAC;
   int totalDrinks;
   int totalWaters;
-  List<int> session;
+  List<int> sessionList;
 
   Day(
       {this.date,
@@ -37,7 +37,7 @@ class Day {
       this.waterAtMaxBAC,
       this.totalDrinks,
       this.totalWaters,
-      this.session});
+      this.sessionList});
 
   Day.fromMap(Map<String, dynamic> map) {
     date = map[columnDay];
@@ -48,7 +48,7 @@ class Day {
     waterAtMaxBAC = map[columnMBWater];
     totalDrinks = map[columnDrinkCount];
     totalWaters = map[columnWaterCount];
-    session = map[columnSession];
+    sessionList = map[columnSession];
   }
 
   Map<String, dynamic> toMap() {
@@ -61,7 +61,7 @@ class Day {
       columnMBWater: waterAtMaxBAC,
       columnDrinkCount: totalDrinks,
       columnWaterCount: totalWaters,
-      columnSession: session,
+      columnSession: sessionList,
     };
 
     return map;
@@ -71,7 +71,7 @@ class Day {
   String toString() {
     return 'Day {date: $date, hourList: $hourList, minuteList: $minuteList, typeList: $typeList, '
         'maxBAC: $maxBAC, waterAtMaxBAC: $waterAtMaxBAC,'
-        'totalDrinks: $totalDrinks, totalWaters: $totalWaters, session: $session}';
+        'totalDrinks: $totalDrinks, totalWaters: $totalWaters, session: $sessionList}';
   }
 
   // NOTE: this many getters and setters CANNOT be efficient in a
@@ -126,6 +126,10 @@ class Day {
     this.typeList.add(type);
   }
 
+  void addStartEnd(int i){
+    this.sessionList.add(i);
+  }
+
   void setMaxBac(double mb) {
     this.maxBAC = mb;
   }
@@ -142,9 +146,9 @@ class Day {
     this.totalWaters = waters;
   }
 
-  void addSession(int start) {
-    this.session.add(start);
-  }
+//  void addSession(int start) {
+//    this.session.add(start);
+//  }
 }
 
 class DatabaseHelper {
@@ -228,7 +232,7 @@ class DatabaseHelper {
     print(new List<int>());
     print([]);
     Day newDay = Day(date: date, hourList: new List<int>(), minuteList: new List<int>(),
-        typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0, session: new List<int>());
+        typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0, sessionList: new List<int>());
     updateDay(newDay);
   }
 

@@ -20,6 +20,7 @@ int selectedWeight = 180;
 double weightGrams = selectedWeight * 453.592;
 int heightInches = 0;
 
+bool start = true;
 bool dayEnded = false;
 int yesterDrink = 0;
 int yesterWater = 0;
