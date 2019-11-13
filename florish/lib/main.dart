@@ -308,9 +308,7 @@ class _PlantState extends State<Plant> {
         globals.today.setMaxBac(globals.bac);
         globals.today.setWatersAtMaxBac(waterToPlant());
       }
-      if (globals.bac == 0) {
-        inSession = false;
-      }
+      endSession();
 
     }
 
