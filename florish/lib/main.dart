@@ -265,8 +265,11 @@ class _PlantState extends State<Plant> {
           break;
         }
       }
+
+      int day = current.hour < resetTime ? current.day - 1 : current.day;
+
       DateTime noon = new DateTime(
-          current.year, current.month, current.day,
+          current.year, current.month, day,
           resetTime);
       Duration diffDuration = current.difference(noon);
       int diff = diffDuration.inMinutes;
@@ -574,8 +577,9 @@ class _DrinkButtonState extends State<DrinkButton> {
           break;
         }
       }
+      int day = current.hour < resetTime ? current.day - 1 : current.day;
       DateTime noon = new DateTime(
-          current.year, current.month, current.day,
+          current.year, current.month, day,
           resetTime);
       Duration diffDuration = current.difference(noon);
       int diff = diffDuration.inMinutes;
@@ -695,8 +699,9 @@ class _WaterButtonState extends State<WaterButton> {
           break;
         }
       }
+      int day = current.hour < resetTime ? current.day - 1 : current.day;
       DateTime noon = new DateTime(
-          current.year, current.month, current.day,
+          current.year, current.month, day,
           resetTime);
       Duration diffDuration = current.difference(noon);
       int diff = diffDuration.inMinutes;
