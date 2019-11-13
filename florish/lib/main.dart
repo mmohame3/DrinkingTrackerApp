@@ -705,6 +705,8 @@ class _WaterButtonState extends State<WaterButton> {
     globals.today.addHour(DateTime.now().hour);
     globals.today.addMinute(DateTime.now().minute);
     globals.today.addType(0);
+    print(globals.today.sessionList);
+    print(globals.today.typeList);
 
     await dbHelper.updateDay(globals.today);
   }
@@ -804,7 +806,7 @@ Future<Day> determineDay() async {
 
     return day;
   } else {
-    //globals.dayEnded = false;
+    globals.dayEnded = false;
 
 
     if (result[0]['hourlist'] == null) {
