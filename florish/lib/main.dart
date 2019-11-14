@@ -15,7 +15,7 @@ import './bacPopup.dart';
 import './alerts.dart';
 
 final int resetTime = 12; //resets counters on this hour
-bool inSession = false;
+
 
 void main() => runApp(MyApp());
 
@@ -308,11 +308,9 @@ class _PlantState extends State<Plant> {
         globals.today.setMaxBac(globals.bac);
         globals.today.setWatersAtMaxBac(waterToPlant());
       }
-      endSession();
+      //endSession();
 
     }
-
-
 
   // takes in a list of DateTime objects and calculates the bac
   _bacMath(drinkTimeList) {
@@ -338,7 +336,7 @@ class _PlantState extends State<Plant> {
       elapsedTime = newTime.difference(drinkTimeList[i]);
 
       runningBac = ((14 / ((globals.selectedWeight * 453.592 * r))) * 100) -
-          ((elapsedTime.inSeconds / 3600.0) * .015);
+          ((elapsedTime.inSeconds / 3600.0) * .215);
       runningBac = runningBac < 0 ? 0 : runningBac;
       sumBac += runningBac;
     }
@@ -373,15 +371,21 @@ class _PlantState extends State<Plant> {
     return timeList;
   }
 
-  void endSession() async{
-    if (inSession && globals.bac == 0){
-      inSession = false;
+  Future<void> endSession() async{
+    if ((globals.today.sessionList.length != 0) && (globals.today.sessionList.length % 2 != 0)){
+      globals.inSession = true;
+    }
+    if ((globals.inSession) && (globals.bac == 0.0)){
+      print("inSession: ${globals.inSession}, start: ${globals.start}");
+      globals.inSession = false;
       DateTime now = DateTime.now();
       globals.today.addType(2);
       globals.today.addHour(now.hour);
       globals.today.addMinute(now.minute);
-      globals.today.addStartEnd(globals.today.typeList.length);
+      globals.today.addStartEnd(globals.today.typeList.length - 1);
       print(globals.today.sessionList);
+
+      await dbHelper.updateDay(globals.today);
     }
 
   }
@@ -395,9 +399,10 @@ class _PlantState extends State<Plant> {
       determineDay().then((day) => setState(() {
         globals.today = day;
         updateImageAndBAC('assets/images/plants/drink0water0.png');
-        endSession();
+        //endSession();
 
       }));
+      endSession();
       return Column(
       children: [
         Container(
@@ -521,10 +526,11 @@ class _DrinkButtonState extends State<DrinkButton> {
       // updates BAC, updates the plant image, and calls drinkButtonTap
       onTap: () {
         setState(() {
+          globals.inSession = true;
           if (globals.bac == 0.0){
             globals.start = true;
-            inSession = true;
-            print("ok");
+            //inSession = true;
+            print("inSession: ${globals.inSession}, start: ${globals.start}");
           }
           globals.today.setTotalDrinks(globals.today.getTotalDrinks() + 1);
           drinkString = globals.today.totalDrinks.toString();

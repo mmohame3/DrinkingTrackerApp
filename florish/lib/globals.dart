@@ -21,6 +21,7 @@ double weightGrams = selectedWeight * 453.592;
 int heightInches = 0;
 
 bool start = true;
+bool inSession = false;
 bool dayEnded = false;
 int yesterDrink = 0;
 int yesterWater = 0;
@@ -32,7 +33,7 @@ var weights = [
   '250', '255', '260', '265', '270', '275','280', '285', '290', '295',
   '300', '305', '310', '315', '320', '325', '330', '335', '340', '345',
   '350', '355', '360', '365', '370', '375','380', '385', '390', '395',
-  '400',
+  '400', '600'
 ];
 
 var sexes = [
