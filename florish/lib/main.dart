@@ -17,6 +17,7 @@ import './alerts.dart';
 
 final int resetTime = 12; //resets counters on this hour
 
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -270,7 +271,7 @@ class _PlantState extends State<Plant> {
 // turns the BAC to a plant stage
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
-    int plantNum = (5 * (globals.bac / .12)).floor();
+    int plantNum = (5 * (globals.bac / .12)).round();
     plantNum = plantNum > 4 ? 4 : plantNum;
 
     return plantNum;
@@ -288,20 +289,23 @@ class _PlantState extends State<Plant> {
           break;
         }
       }
-      DateTime firstWater = new DateTime(
-          current.year, current.month, current.day,
-          globals.today.hourList[first],
-          globals.today.minuteList[first]);
-      Duration diffDuration = current.difference(firstWater);
+
+      int day = current.hour < resetTime ? current.day - 1 : current.day;
+
+      DateTime noon = new DateTime(
+          current.year, current.month, day,
+          resetTime);
+      Duration diffDuration = current.difference(noon);
       int diff = diffDuration.inMinutes;
-      diff = diff < 1 ? 1 : diff;
+
       diff = diff < 0 ? -diff : diff;
+      diff = diff < 1 ? 1 : diff;
       double ratio = globals.today.totalWaters /
           (diff / 60); // = drinks per hour
       // here we have to assign ranges to different drinks per hour
       // say you're awake 16 hours a day, 8 cups would be .5
-      // "max" water ratio will be .7 (11.2 cups of water per day)
-      plantNumWater = (5 * (ratio / .7)).floor();
+      // "max" water ratio will be .4 (9.6 cups of water per day)
+      plantNumWater = (5 * (ratio / .4)).round();
 
       ///TODO: phase out waters from past days hour by hour etc.?
       /// .7 waters per 1 hour.
@@ -320,22 +324,16 @@ class _PlantState extends State<Plant> {
   // sets the bac global to the new bac and updates the max bac
   // sets the plant's image name to a new path
   updateImageAndBAC(String path) {
-//    Timer timer;
       globals.bac = _bacMath(_dbListToTimeList());
       globals.imageName =
           'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
       if (globals.bac >= globals.today.getMaxBac()) {
         globals.today.setMaxBac(globals.bac);
-        globals.today.setWatersAtMaxBac(globals.today.getTotalWaters());
+        globals.today.setWatersAtMaxBac(waterToPlant());
       }
-
+      //endSession();
 
     }
-
-//    ssjsjsjsjs
-//  shshshshsh
-
-
 
   // takes in a list of DateTime objects and calculates the bac
   _bacMath(drinkTimeList) {
@@ -361,7 +359,7 @@ class _PlantState extends State<Plant> {
       elapsedTime = newTime.difference(drinkTimeList[i]);
 
       runningBac = ((14 / ((globals.selectedWeight * 453.592 * r))) * 100) -
-          ((elapsedTime.inSeconds / 3600.0) * .015);
+          ((elapsedTime.inSeconds / 3600.0) * .215);
       runningBac = runningBac < 0 ? 0 : runningBac;
       sumBac += runningBac;
     }
@@ -396,6 +394,25 @@ class _PlantState extends State<Plant> {
     return timeList;
   }
 
+  Future<void> endSession() async{
+    if ((globals.today.sessionList.length != 0) && (globals.today.sessionList.length % 2 != 0)){
+      globals.inSession = true;
+    }
+    if ((globals.inSession) && (globals.bac == 0.0)){
+      print("inSession: ${globals.inSession}, start: ${globals.start}");
+      globals.inSession = false;
+      DateTime now = DateTime.now();
+      globals.today.addType(2);
+      globals.today.addHour(now.hour);
+      globals.today.addMinute(now.minute);
+      globals.today.addStartEnd(globals.today.typeList.length - 1);
+      print(globals.today.sessionList);
+
+      await dbHelper.updateDay(globals.today);
+    }
+
+  }
+
   // builds the "column" (almost our entire app)
   // with: bac counter, bac picture, plant image, and buttons
   @override
@@ -405,8 +422,10 @@ class _PlantState extends State<Plant> {
       determineDay().then((day) => setState(() {
         globals.today = day;
         updateImageAndBAC('assets/images/plants/drink0water0.png');
+        //endSession();
 
       }));
+      endSession();
       return Column(
       children: [
         Container(
@@ -530,10 +549,15 @@ class _DrinkButtonState extends State<DrinkButton> {
       // updates BAC, updates the plant image, and calls drinkButtonTap
       onTap: () {
         setState(() {
+          globals.inSession = true;
+          if (globals.bac == 0.0){
+            globals.start = true;
+            //inSession = true;
+            print("inSession: ${globals.inSession}, start: ${globals.start}");
+          }
           globals.today.setTotalDrinks(globals.today.getTotalDrinks() + 1);
           drinkString = globals.today.totalDrinks.toString();
-          DateTime currentTime = DateTime.now();
-          drinkButtonTap(currentTime);
+          drinkButtonTap();
           widget.parentActionUpdates('assets/images/plants/drink0water0.png');
           settingsAlert(context);
         });
@@ -571,18 +595,29 @@ class _DrinkButtonState extends State<DrinkButton> {
 // Updates today's time and type lists,
   // updates the database itself
 // and prints today's data (just for testing)
-  void drinkButtonTap(DateTime currentTime) async {
+  void drinkButtonTap() async {
+    print(globals.start);
+    if (globals.start){
+      globals.today.addStartEnd(globals.today.typeList.length);
+
+    }
+    globals.start = false;
+    DateTime currentTime = DateTime.now();
     globals.today.addHour(currentTime.hour);
     globals.today.addMinute(currentTime.minute);
     globals.today.addType(1);
 
     dbHelper.updateDay(globals.today);
+    print(globals.today.sessionList);
+    print(globals.today.toString());
   }
+
+
 
 // turns the BAC to a plant stage
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
-    int plantNum = (5 * (globals.bac / .12)).floor();
+    int plantNum = (5 * (globals.bac / .12)).round();
     plantNum = plantNum > 4 ? 4 : plantNum;
 
     return plantNum;
@@ -601,20 +636,21 @@ class _DrinkButtonState extends State<DrinkButton> {
           break;
         }
       }
-      DateTime firstWater = new DateTime(
-          current.year, current.month, current.day,
-          globals.today.hourList[first],
-          globals.today.minuteList[first]);
-      Duration diffDuration = current.difference(firstWater);
+      int day = current.hour < resetTime ? current.day - 1 : current.day;
+      DateTime noon = new DateTime(
+          current.year, current.month, day,
+          resetTime);
+      Duration diffDuration = current.difference(noon);
       int diff = diffDuration.inMinutes;
-      diff = diff < 1 ? 1 : diff;
+
       diff = diff < 0 ? -diff : diff;
+      diff = diff < 1 ? 1 : diff;
       double ratio = globals.today.totalWaters /
           (diff / 60); // = drinks per hour
       // here we have to assign ranges to different drinks per hour
       // say you're awake 16 hours a day, 8 cups would be .5
-      // "max" water ratio will be .7 (11.2 cups of water per day)
-      int plantNumWater = (5 * (ratio / .7)).floor();
+      // "max" water ratio will be .4 (9.6 cups of water per day)
+      int plantNumWater = (5 * (ratio / .4)).round();
 
       plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
     }
@@ -698,6 +734,8 @@ class _WaterButtonState extends State<WaterButton> {
     globals.today.addHour(DateTime.now().hour);
     globals.today.addMinute(DateTime.now().minute);
     globals.today.addType(0);
+    print(globals.today.sessionList);
+    print(globals.today.typeList);
 
     await dbHelper.updateDay(globals.today);
   }
@@ -705,7 +743,7 @@ class _WaterButtonState extends State<WaterButton> {
   // turns BAC into a plant stage
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
-    int plantNum = (5 * (globals.bac / .12)).floor();
+    int plantNum = (5 * (globals.bac / .12)).round();
     plantNum = plantNum > 4 ? 4 : plantNum;
     return plantNum;
   }
@@ -722,20 +760,21 @@ class _WaterButtonState extends State<WaterButton> {
           break;
         }
       }
-      DateTime firstWater = new DateTime(
-          current.year, current.month, current.day,
-          globals.today.hourList[first],
-          globals.today.minuteList[first]);
-      Duration diffDuration = current.difference(firstWater);
+      int day = current.hour < resetTime ? current.day - 1 : current.day;
+      DateTime noon = new DateTime(
+          current.year, current.month, day,
+          resetTime);
+      Duration diffDuration = current.difference(noon);
       int diff = diffDuration.inMinutes;
-      diff = diff < 1 ? 1 : diff;
+
       diff = diff < 0 ? -diff : diff;
+      diff = diff < 1 ? 1 : diff;
       double ratio = globals.today.totalWaters /
           (diff / 60); // = drinks per hour
       // here we have to assign ranges to different drinks per hour
       // say you're awake 16 hours a day, 8 cups would be .5
-      // "max" water ratio will be .7 (11.2 cups of water per day)
-      int plantNumWater = (5 * (ratio / .7)).floor();
+      // "max" water ratio will be .4 (9.6 cups of water per day)
+      int plantNumWater = (5 * (ratio / .4)).round();
 
       plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
     }
@@ -788,7 +827,7 @@ Future<Day> determineDay() async {
         waterAtMaxBAC: 0,
         totalDrinks: 0,
         totalWaters: 0,
-        session: new List<int>());
+        sessionList: new List<int>());
     await db.insert(tableDays, day.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     await getDayEnded();
@@ -809,11 +848,11 @@ Future<Day> determineDay() async {
       dbListH = new List<int>.from(result[0]['hourlist']);
       dbListM = new List<int>.from(result[0]['minutelist']);
       dbListT = new List<int>.from(result[0]['typelist']);
-      if (result[0]['session'] == null) {
+      if (result[0]['sessionlist'] == null) {
         dbListS = [];
       }
       else {
-        dbListS = new List<int>.from(result[0]['session']);
+        dbListS = new List<int>.from(result[0]['sessionlist']);
       }
     }
 
@@ -826,7 +865,7 @@ Future<Day> determineDay() async {
         waterAtMaxBAC: result[0]["WateratmaxBAC"],
         totalDrinks: result[0]["totaldrinkcount"],
         totalWaters: result[0]["totalwatercount"],
-        session: dbListS);
+        sessionList: dbListS);
 
     return day;
   }
