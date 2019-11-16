@@ -293,9 +293,11 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                     GestureDetector(
                                         onTap: () {
                                             setState(() {
+                                              print("totalDrinks = ${globals.today.totalDrinks}");
                                               if (globals.today.totalDrinks > 0) {
                                                 globals.today.totalDrinks--;
                                               }
+                                              print("totalDrinks = ${globals.today.totalDrinks}");
                                               drinkString = globals.today.totalDrinks.toString();
                                               drinkDec(DateTime.now());
                                             });
@@ -400,12 +402,15 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
 
   void drinkDec(DateTime currentTime) async {
     if (globals.today.totalDrinks >= 0) {
+      print(globals.today.typeList);
       int i = globals.today.typeList.lastIndexOf(1);
       if (i >= 0) {
         globals.today.typeList.removeAt(i);
         globals.today.hourList.removeAt(i);
         globals.today.minuteList.removeAt(i);
       }
+      print("after: ");
+      print(globals.today.typeList);
       await dbHelper.updateDay(globals.today);
     }
 
