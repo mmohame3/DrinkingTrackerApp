@@ -245,8 +245,6 @@ class _PlantState extends State<Plant> {
         }));
   }
 
-
-
   // sets the bac global to the new bac and updates the max bac
   // sets the plant's image name to a new path
   updateImageAndBAC(String path) {
@@ -351,9 +349,9 @@ class _PlantState extends State<Plant> {
       globals.today.addMinute(now.minute);
       globals.today.addStartEnd(globals.today.typeList.length - 1);
       //print(globals.today.sessionList);
-
+      await dbHelper.updateDay(globals.today);
     }
-    await dbHelper.updateDay(globals.today);
+
 
   }
 
@@ -366,6 +364,7 @@ class _PlantState extends State<Plant> {
       determineDay().then((day) => setState(() {
         globals.today = day;
         updateImageAndBAC('assets/images/plants/drink0water0.png');
+        dbHelper.updateDay(globals.today);
         //endSession();
 
       }));
@@ -592,11 +591,11 @@ class _WaterButtonState extends State<WaterButton> {
       // updates the plant image, and calls waterButtonTap()
       onTap: () {
         setState(() {
-          globals.today.setTotalWaters(globals.today.getTotalWaters() + 1);
+          globals.today.totalWaters++;
           waterString = globals.today.totalWaters.toString();
           waterButtonTap();
           widget.parentAction(
-              'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png');
+              'assets/images/plants/drink0water0.png');
         });
       },
       child: Stack(
