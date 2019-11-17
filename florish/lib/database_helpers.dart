@@ -272,8 +272,10 @@ class DatabaseHelper {
     Database db = await instance.database;
     List result =
         await db.query(tableDays, where: '$columnDay = ?', whereArgs: [date]);
-    Day dayone = result[0];
-    return dayone;
+    //Day dayone = result[0];
+    //print("day from map: ${Day.fromMap(result.first)}");
+    return result.isNotEmpty ? Day.fromMap(result.first) : Null ;
+    //return dayone;
   }
 
   getInputInformation() async {

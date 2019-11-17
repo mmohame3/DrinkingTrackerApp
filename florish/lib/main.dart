@@ -305,16 +305,18 @@ class _PlantState extends State<Plant> {
 
     Duration diffDuration = currentTime.difference(noon);
     int diff = diffDuration.inSeconds;
-    double totalYesterBAC = (yesterBAC - ((diff/3600) * 0.15));
+
+    double totalYesterBAC = (yesterBAC - ((diff/3600) * 0.015));
     totalYesterBAC = totalYesterBAC < 0 ? 0 : totalYesterBAC;
     double totalBAC = sumBac + totalYesterBAC;
+
     return totalBAC;
   }
 
   // turns today's hours and minute lists to a list of DateTimes
   // (for the ones that correspond to drinks not waters)
   _dbListToTimeList() {
-    List hours = globals.today.getHours();
+    List hours = globals.today.hourList;
     List minutes = globals.today.getMinutes();
     List types = globals.today.getTypes();
     int i;
@@ -361,14 +363,16 @@ class _PlantState extends State<Plant> {
   Widget build(context) {
     return TimerBuilder.periodic(Duration(seconds: 5),
         builder: (context) {
+
       determineDay().then((day) => setState(() {
         globals.today = day;
         updateImageAndBAC('assets/images/plants/drink0water0.png');
         dbHelper.updateDay(globals.today);
-        //endSession();
 
       }));
-      //endSession();
+
+        //endSession();
+
 
       return Column(
       children: [
@@ -578,10 +582,10 @@ class _WaterButtonState extends State<WaterButton> {
 
   // determines the day and sets variables before building
   _WaterButtonState() {
-    determineDay().then((day) => setState(() {
+    determineDay().then((day) {
           globals.today = day;
           waterString = day.totalWaters.toString();
-        }));
+        });
   }
 
   @override
@@ -660,25 +664,21 @@ String dateTimeToString(DateTime date) {
 // if there are two of the same day it just replaces the old one
 Future<Day> determineDay() async {
   DateTime time = DateTime.now();
-  DateTime yesterday;
-  //TODO duration !!!!!!!!!!
-  yesterday = new DateTime(time.year, time.month, time.day - 1, time.hour,
-      time.minute, time.second, time.millisecond, time.microsecond);
+  DateTime yesterday = time.subtract(Duration(days: 1));
+  Database db = await DatabaseHelper.instance.database;
+
   if (time.hour < resetTime) {
     time = yesterday;
   }
 
   String todayDate = dateTimeToString(time);
-
-  List<Map> result;
-
-  Database db = await DatabaseHelper.instance.database;
-  result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
+  List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
 
   Day day;
   List<int> dbListH, dbListM, dbListT, dbListS;
   double yesterHyd;
-  if (result.isEmpty) {
+
+  if (result == null || result.isEmpty) {
 
     day = new Day(
         date: todayDate,
@@ -710,36 +710,28 @@ Future<Day> determineDay() async {
   else {
     globals.dayEnded = false;
 
-    if (result[0]['hourlist'] == null) {
-      dbListH = [];
-      dbListM = [];
-      dbListT = [];
-      dbListS = [];
-    } else {
 
-      dbListH = new List<int>.from(result[0]['hourlist']);
-      dbListM = new List<int>.from(result[0]['minutelist']);
-      dbListT = new List<int>.from(result[0]['typelist']);
-      if (result[0]['sessionlist'] == null) {
-        dbListS = [];
-      }
-      else {
-        dbListS = new List<int>.from(result[0]['sessionlist']);
-      }
-    }
+// alternate (read: better) way #1
+//    dbHelper.getDay(todayDate).then((dbDay) {
+//      day = dbDay;
+//      print(day.toString());
+//      globals.today = day;
+//      return day;
+//    });
 
-    day = new Day(
-        date: result[0]["day"],
-        hourList: dbListH,
-        minuteList: dbListM,
-        typeList: dbListT,
-        maxBAC: result[0]['maxBAC'],
-        waterAtMaxBAC: result[0]["WateratmaxBAC"],
-        totalDrinks: result[0]["totaldrinkcount"],
-        totalWaters: result[0]["totalwatercount"],
-        sessionList: dbListS,
-        hydratio: result[0]['todayhydratio'],
-        yesterHydratio: result[0]['yesterhydratio']);
+// alternate (read: better) way #2
+    day = Day.fromMap(result[0]);
+
+    day.hourList = new List<int>.from(day.hourList);
+    day.minuteList = new List<int>.from(day.minuteList);
+    day.typeList = new List<int>.from(day.typeList);
+    day.sessionList = new List<int>.from(day.sessionList);
+
+    day.sessionList ??= new List<int>();
+    day.hourList ??= new List<int>();
+    day.minuteList ??= new List<int>();
+    day.typeList ??= new List<int>();
+
 
     return day;
   }
@@ -776,9 +768,9 @@ Future<List<double>> getYesterInfo() async {
 
   }
   else {
-    double w = yesterdayResult[0]['totalwatercount'];
+    double w = yesterdayResult[0]['totalwatercount'].toDouble();
     double yhr = yesterdayResult[0]['todayhydratio'];
-    double d = yesterdayResult[0]["totaldrinkcount"];
+    double d = yesterdayResult[0]["totaldrinkcount"].toDouble();
     //int ybac = yesterdayResult[0]['lastbac'];
     return [w, yhr, 0, d];
   }
@@ -800,8 +792,6 @@ int waterToPlant() {
   int yesterWater = 0;
   double yesterHyd = 0.0;
 
-  if (globals.today.totalWaters > 0) {
-
     DateTime noon = new DateTime(
         current.year, current.month, current.day,
         resetTime);
@@ -821,22 +811,12 @@ int waterToPlant() {
     });
     double ratio = (yesterWater - ((diff/60) * yesterHyd) + globals.today.totalWaters)/24;
 
-    // here we have to assign ranges to different drinks per hour
-    // say you're awake 16 hours a day, 8 cups would be .5
-    // "max" water ratio will be .4 (9.6 cups of water per day)
-    plantNumWater = (5 * (ratio / .4)).round();
+    globals.today.hydratio = ratio;
 
-    ///TODO: phase out waters from past days hour by hour etc.?
-    /// .7 waters per 1 hour.
-    /// timeFromNoon = current.difference(today's date at noon)
-    /// rolloverWater = last plantNumWater from yesterday
-    /// plantNumwater = plantNumWater + (rolloverWater - (timeFromNoon * .7))
-    /// rolloverWater
+    plantNumWater = (5 * (ratio / .4)).round();
     plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
-  }
-  else {
-    plantNumWater = 0;
-  }
+  plantNumWater = plantNumWater < 0 ? 0 : plantNumWater;
+
   return plantNumWater;
 }
 
