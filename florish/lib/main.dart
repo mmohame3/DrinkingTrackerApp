@@ -16,7 +16,6 @@ import './alerts.dart';
 
 final int resetTime = 12; //resets counters on this hour
 
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -58,12 +57,12 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await determineDay();
+      await getInputInformation();
       if (globals.dayEnded) {
         await getDayEnded();
         showDayEndPopup(context);
       }
     });
-
   }
 
   @override
@@ -226,13 +225,11 @@ class _PlantState extends State<Plant> {
 
   getInputInformation() async {
     var _inputInformation = await getInputInformation();
-    _inputInformation.forEach((input){
-
+    _inputInformation.forEach((input) {
       globals.selectedFeet = input['feet'];
       globals.selectedInches = input['inch'];
       globals.selectedWeight = input['weight'];
       globals.selectedSex = input['gender'];
-
     });
   }
 
@@ -248,16 +245,15 @@ class _PlantState extends State<Plant> {
   // sets the bac global to the new bac and updates the max bac
   // sets the plant's image name to a new path
   updateImageAndBAC(String path) {
-      globals.bac = _bacMath(_dbListToTimeList());
-      globals.imageName =
-          'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
-      if (globals.bac >= globals.today.getMaxBac()) {
-        globals.today.setMaxBac(globals.bac);
-        globals.today.setWatersAtMaxBac(waterToPlant());
-      }
-      endSession();
-
+    globals.bac = _bacMath(_dbListToTimeList());
+    globals.imageName =
+        'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
+    if (globals.bac >= globals.today.getMaxBac()) {
+      globals.today.setMaxBac(globals.bac);
+      globals.today.setWatersAtMaxBac(waterToPlant());
     }
+    endSession();
+  }
 
   // takes in a list of DateTime objects and calculates the bac
   _bacMath(drinkTimeList) {
@@ -266,8 +262,8 @@ class _PlantState extends State<Plant> {
     // resetting of counters and Day objects.
     DateTime currentTime = DateTime.now();
     int dayNum = currentTime.hour < resetTime ? 2 : 1;
-    DateTime newTime =
-        new DateTime(2019, 11, dayNum, currentTime.hour, currentTime.minute, currentTime.second);
+    DateTime newTime = new DateTime(2019, 11, dayNum, currentTime.hour,
+        currentTime.minute, currentTime.second);
 
     double runningBac = 0.0;
     double sumBac = 0.0;
@@ -302,12 +298,13 @@ class _PlantState extends State<Plant> {
 
     DateTime noon = new DateTime(
         currentTime.year, currentTime.month, currentTime.day, resetTime);
-    noon = currentTime.hour < resetTime ? noon.subtract(Duration(days:1)) : noon;
+    noon =
+        currentTime.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
 
     Duration diffDuration = currentTime.difference(noon);
     int diff = diffDuration.inSeconds;
 
-    double totalYesterBAC = (yesterBAC - ((diff/3600) * 0.015));
+    double totalYesterBAC = (yesterBAC - ((diff / 3600) * 0.015));
     totalYesterBAC = totalYesterBAC < 0 ? 0 : totalYesterBAC;
     double totalBAC = sumBac + totalYesterBAC;
 
@@ -339,11 +336,12 @@ class _PlantState extends State<Plant> {
     return timeList;
   }
 
-  Future<void> endSession() async{
-    if ((globals.today.sessionList.length != 0) && (globals.today.sessionList.length % 2 != 0)){
+  Future<void> endSession() async {
+    if ((globals.today.sessionList.length != 0) &&
+        (globals.today.sessionList.length % 2 != 0)) {
       globals.inSession = true;
     }
-    if ((globals.inSession) && (globals.bac == 0.0)){
+    if ((globals.inSession) && (globals.bac == 0.0)) {
       //print("inSession: ${globals.inSession}, start: ${globals.start}");
       globals.inSession = false;
       DateTime now = DateTime.now();
@@ -354,55 +352,49 @@ class _PlantState extends State<Plant> {
       //print(globals.today.sessionList);
       await dbHelper.updateDay(globals.today);
     }
-
-
   }
 
   // builds the "column" (almost our entire app)
   // with: bac counter, bac picture, plant image, and buttons
   @override
   Widget build(context) {
-    return TimerBuilder.periodic(Duration(seconds: 5),
-        builder: (context) {
-
+    return TimerBuilder.periodic(Duration(seconds: 5), builder: (context) {
       determineDay().then((day) => setState(() {
-        globals.today = day;
-        updateImageAndBAC('assets/images/plants/drink0water0.png');
-        dbHelper.updateDay(globals.today);
+            globals.today = day;
+            updateImageAndBAC('assets/images/plants/drink0water0.png');
+            dbHelper.updateDay(globals.today);
+          }));
 
-      }));
-
-        //endSession();
-
+      //endSession();
 
       return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.all(MediaQuery.of(context).size.width / 12),
-          child: Row(
-            children: [
-              Spacer(
-                flex: 2,
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    Container(
-                      child: Text(
-                        'BAC:',
-                        style: TextStyle(color: Colors.white, fontSize: 12),
-                      ),
-                    ),
-                    Text(
-                      '${globals.bac.toStringAsFixed(3)}%',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+        children: [
+          Container(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width / 12),
+            child: Row(
+              children: [
+                Spacer(
+                  flex: 2,
                 ),
-              ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Container(
+                        child: Text(
+                          'BAC:',
+                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                      ),
+                      Text(
+                        '${globals.bac.toStringAsFixed(3)}%',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 //            onPressed: () {
 //              Navigator.push(
 //                  context,
@@ -410,64 +402,64 @@ class _PlantState extends State<Plant> {
 //                      builder: (BuildContext context) =>
 //                      new PersonalInfoPage()));
 //            })
-              Container(
-                  decoration: new BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey[700],
-                        blurRadius: 5,
-                        spreadRadius: -MediaQuery.of(context).size.width / 70,
-                        offset: Offset(0, 0),
-                      )
-                    ],
-                    borderRadius: BorderRadius.circular(1000),
-                  ),
-                  child: IconButton(
-                      iconSize: MediaQuery.of(context).size.width / 7,
-                      icon: Image.asset(
-                        'assets/images/bacButton.png',
+                Container(
+                    decoration: new BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey[700],
+                          blurRadius: 5,
+                          spreadRadius: -MediaQuery.of(context).size.width / 70,
+                          offset: Offset(0, 0),
+                        )
+                      ],
+                      borderRadius: BorderRadius.circular(1000),
+                    ),
+                    child: IconButton(
+                        iconSize: MediaQuery.of(context).size.width / 7,
+                        icon: Image.asset(
+                          'assets/images/bacButton.png',
 //                    width: MediaQuery.of(context).size.width/,
-                      ),
-                      onPressed: () {
-                        showBACPopup(context);
-                      }))
-            ],
-          ),
-        ),
-        Spacer(
-          flex: 5,
-        ),
-        Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.width / 9),
-              child: Image.asset(globals.imageName,
-                  width: MediaQuery.of(context).size.width / 2),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Expanded(
-                  child: new DrinkButton(
-//                      parentAction: _updateImageName,
-//                      parentActionBAC: _updateBAC
-                      parentActionUpdates: updateImageAndBAC),
-                ),
-                Expanded(
-                  child: new WaterButton(
-                    parentAction: updateImageAndBAC,
-                  ),
-                ),
+                        ),
+                        onPressed: () {
+                          showBACPopup(context);
+                        }))
               ],
             ),
-          ],
-        ),
-        Container(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width / 25))
-      ],
-    );
-        });
+          ),
+          Spacer(
+            flex: 5,
+          ),
+          Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).size.width / 9),
+                child: Image.asset(globals.imageName,
+                    width: MediaQuery.of(context).size.width / 2),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Expanded(
+                    child: new DrinkButton(
+//                      parentAction: _updateImageName,
+//                      parentActionBAC: _updateBAC
+                        parentActionUpdates: updateImageAndBAC),
+                  ),
+                  Expanded(
+                    child: new WaterButton(
+                      parentAction: updateImageAndBAC,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Container(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width / 25))
+        ],
+      );
+    });
   }
 }
 
@@ -485,8 +477,7 @@ class _DrinkButtonState extends State<DrinkButton> {
 
   // determines the day and sets variables before building
   _DrinkButtonState() {
-    determineDay().then((day) =>
-        setState(() {
+    determineDay().then((day) => setState(() {
           globals.today = day;
           drinkString = day.totalDrinks.toString();
         }));
@@ -511,8 +502,6 @@ class _DrinkButtonState extends State<DrinkButton> {
           print(globals.today.totalDrinks.toString());
           widget.parentActionUpdates('assets/images/plants/drink0water0.png');
           settingsAlert(context);
-
-
         });
       },
       child: Stack(
@@ -531,10 +520,7 @@ class _DrinkButtonState extends State<DrinkButton> {
                 borderRadius: BorderRadius.circular(1000),
               ),
               child: Image.asset('assets/images/soloCupButton.png',
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width / 5)),
+                  width: MediaQuery.of(context).size.width / 5)),
           Text(
             drinkString,
             style: TextStyle(
@@ -566,7 +552,6 @@ class _DrinkButtonState extends State<DrinkButton> {
     //print(globals.today.sessionList);
     //print(globals.today.toString());
   }
-
 }
 
 class WaterButton extends StatefulWidget {
@@ -584,9 +569,9 @@ class _WaterButtonState extends State<WaterButton> {
   // determines the day and sets variables before building
   _WaterButtonState() {
     determineDay().then((day) {
-          globals.today = day;
-          waterString = day.totalWaters.toString();
-        });
+      globals.today = day;
+      waterString = day.totalWaters.toString();
+    });
   }
 
   @override
@@ -599,8 +584,7 @@ class _WaterButtonState extends State<WaterButton> {
           globals.today.totalWaters++;
           waterString = globals.today.totalWaters.toString();
           waterButtonTap();
-          widget.parentAction(
-              'assets/images/plants/drink0water0.png');
+          widget.parentAction('assets/images/plants/drink0water0.png');
         });
       },
       child: Stack(
@@ -647,7 +631,6 @@ class _WaterButtonState extends State<WaterButton> {
 
     await dbHelper.updateDay(globals.today);
   }
-
 }
 
 //takes a DateTime and makes it into the string format
@@ -673,13 +656,13 @@ Future<Day> determineDay() async {
   }
 
   String todayDate = dateTimeToString(time);
-  List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
+  List<Map> result =
+      await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
 
   Day day;
   double yesterHyd;
 
   if (result == null || result.isEmpty) {
-
     day = new Day(
         date: todayDate,
         hourList: new List<int>(),
@@ -706,10 +689,8 @@ Future<Day> determineDay() async {
     globals.dayEnded = true;
 
     return day;
-  }
-  else {
+  } else {
     globals.dayEnded = false;
-
 
 // alternate (read: better) way #1
 //    dbHelper.getDay(todayDate).then((dbDay) {
@@ -732,7 +713,6 @@ Future<Day> determineDay() async {
     day.minuteList ??= new List<int>();
     day.typeList ??= new List<int>();
 
-
     return day;
   }
 }
@@ -741,11 +721,11 @@ Future<Day> determineDay() async {
 // if the day has "ended" as indicated by determine day
 Future<void> getDayEnded() async {
   if (globals.dayEnded) {
-  Future<List> yesterInfo = getYesterInfo();
-  yesterInfo.then((list) {
-    globals.yesterWater = list[0].toInt();
-    globals.yesterDrink = list[2].toInt();
-  });
+    Future<List> yesterInfo = getYesterInfo();
+    yesterInfo.then((list) {
+      globals.yesterWater = list[0].toInt();
+      globals.yesterDrink = list[2].toInt();
+    });
   }
 }
 
@@ -756,18 +736,16 @@ Future<List<double>> getYesterInfo() async {
   Duration dayLength = Duration(days: 1);
   DateTime yester = time.subtract(dayLength);
 
-  String yesterDate =  dateTimeToString(yester);
+  String yesterDate = dateTimeToString(yester);
 
   Database db = await DatabaseHelper.instance.database;
 
   List<Map> yesterdayResult =
-  await db.rawQuery('SELECT * FROM days WHERE day=?', [yesterDate]);
+      await db.rawQuery('SELECT * FROM days WHERE day=?', [yesterDate]);
 
   if (yesterdayResult.isEmpty) {
     return [0.0, 0.0, 0.0, 0.0];
-
-  }
-  else {
+  } else {
     double w = yesterdayResult[0]['totalwatercount'].toDouble();
     double yhr = yesterdayResult[0]['todayhydratio'];
     double d = yesterdayResult[0]["totaldrinkcount"].toDouble();
@@ -792,32 +770,43 @@ int waterToPlant() {
   int yesterWater = 0;
   double yesterHyd = 0.0;
 
-    DateTime noon = new DateTime(
-        current.year, current.month, current.day,
-        resetTime);
-    noon = current.hour < resetTime ? noon.subtract(Duration(days:1)) : noon;
+  DateTime noon =
+      new DateTime(current.year, current.month, current.day, resetTime);
+  noon = current.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
 
+  Duration diffDuration = current.difference(noon);
+  int diff = diffDuration.inMinutes;
 
-    Duration diffDuration = current.difference(noon);
-    int diff = diffDuration.inMinutes;
+  diff = diff < 0 ? -diff : diff; //makes diff positive if it wasn't
+  diff = diff < 1 ? 1 : diff; //makes sure diff is at least 1 minute
 
-    diff = diff < 0 ? -diff : diff; //makes diff positive if it wasn't
-    diff = diff < 1 ? 1 : diff; //makes sure diff is at least 1 minute
+  Future<List> yesterInfo = getYesterInfo();
+  yesterInfo.then((list) {
+    yesterWater = list[0].toInt();
+    yesterHyd = list[1];
+  });
+  double ratio =
+      (yesterWater - ((diff / 60) * yesterHyd) + globals.today.totalWaters) /
+          24;
 
-    Future<List> yesterInfo = getYesterInfo();
-    yesterInfo.then((list) {
-      yesterWater = list[0].toInt();
-      yesterHyd = list[1];
-    });
-    double ratio = (yesterWater - ((diff/60) * yesterHyd) + globals.today.totalWaters)/24;
+  globals.today.hydratio = ratio;
 
-    globals.today.hydratio = ratio;
-
-    plantNumWater = (5 * (ratio / .4)).round();
-    plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
+  plantNumWater = (5 * (ratio / .4)).round();
+  plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
   plantNumWater = plantNumWater < 0 ? 0 : plantNumWater;
 
   return plantNumWater;
 }
 
-
+getInputInformation() async {
+  var _inputInformation = await dbHelper.getInputInformation();
+  _inputInformation.forEach((input) {
+//    setState(() {
+      globals.selectedFeet = input['feet'];
+      globals.selectedInches = input['inch'];
+      globals.selectedWeight = input['weight'];
+      globals.selectedSex = input['gender'];
+    //}
+    //);
+  });
+}

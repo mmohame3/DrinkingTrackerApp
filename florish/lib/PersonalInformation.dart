@@ -20,57 +20,14 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
   @override
   void initState() {
     super.initState();
-    // _initSharedPref();
     getInputInformation();
-    // _getWeight();
-    // _getHeight();
+
   }
-
-  // _initSharedPref() async {
-  //   _prefs = await SharedPreferences.getInstance();
-  //   _getHeight();
-  //   _getWeight();
-  // }
-
 
   int initialFeet = 0;
   database.Day day = globals.today;
   var _databaseHelper = database.DatabaseHelper.instance;
 
-  addIntToSF() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('weight', globals.selectedWeight);
-    prefs.setInt('feet', globals.selectedFeet);
-    prefs.setInt('inches', globals.selectedInches);
-    prefs.setString("sex", globals.selectedSex);
-  }
-
-  getInputInformation() async {
-    var _inputInformation = await _databaseHelper.getInputInformation();
-    _inputInformation.forEach((input){
-      setState(() {
-        globals.selectedFeet = input['feet'];
-        globals.selectedInches = input['inch'];
-        globals.selectedWeight = input['weight'];
-        globals.selectedSex = input['gender'];
-      });
-    });
-  }
-
-  _showSnackBar(message) {
-    var _snackBar = SnackBar(
-      content: message,
-    );
-    _scaffoldKey.currentState.showSnackBar(_snackBar);
-  }
-
-  getValues() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    globals.selectedFeet = prefs.getInt('feet');
-    globals.selectedInches = prefs.getInt('inches');
-    globals.selectedWeight = prefs.getInt('weight');
-    globals.selectedSex = prefs.getString('sex');
-  }
 
   String drinkString = globals.today.totalDrinks.toString();
   String waterString = globals.today.totalWaters.toString();
@@ -139,7 +96,6 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                               setState(() {
                                                 globals.selectedFeet = index;
                                                 save();
-                                                addIntToSF();
                                               });
                                             },
                                             children: new List<Widget>.generate(
@@ -162,7 +118,6 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                               setState(() {
                                                 globals.selectedInches = index;
                                                 save();
-                                                addIntToSF();
                                               });
                                             },
                                             children: new List<Widget>.generate(
@@ -209,7 +164,6 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                           globals.selectedWeight =
                                               int.parse(globals.weights[index]);
                                           save();
-                                          addIntToSF();
                                         });
                                       },
                                       children: new List<Widget>.generate(
@@ -253,7 +207,6 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                           globals.selectedSex =
                                               globals.sexes[index];
                                           save();
-                                          addIntToSF();
                                         });
                                       },
                                       children: new List<Widget>.generate(
@@ -411,8 +364,8 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
       }
       print("after: ");
       print(globals.today.typeList);
-      await dbHelper.updateDay(globals.today);
     }
+    await dbHelper.updateDay(globals.today);
 
   }
 
@@ -425,16 +378,23 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
         globals.today.minuteList.removeAt(i);
         print(globals.today.totalWaters);
         print(globals.today.typeList);
-        await dbHelper.updateDay(globals.today);
+
       }
     }
+    await dbHelper.updateDay(globals.today);
   }
 
+
+
   save() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(globals.selectedFeetKey, globals.selectedFeet);
-    await prefs.setInt(globals.selectedInchKey, globals.selectedInches);
-    await prefs.setInt(globals.selectedWeightKey, globals.selectedWeight);
-    await prefs.setString(globals.selectedSexKey, globals.selectedSex);
+    var inputModel = InputModel();
+    inputModel.feet = globals.selectedFeet;
+    inputModel.inch = globals.selectedInches;
+    inputModel.weight = globals.selectedWeight;
+    inputModel.sex = globals.selectedSex;
+
+
+    var result = await _databaseHelper.saveInputInformation(inputModel.toMap());
+    print(result);
   }
 }
