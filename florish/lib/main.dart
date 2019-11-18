@@ -283,7 +283,8 @@ class _PlantState extends State<Plant> {
     }
     for (int i = 0; i < drinkTimeList.length; i++) {
       elapsedTime = newTime.difference(drinkTimeList[i]);
-
+//TODO: Should the -elapsedTime * .015 part go after the summing? or somehow be adjusted?
+      // it seems weird to subtract that much from every drink
       runningBac = ((14 / ((globals.selectedWeight * 453.592 * r))) * 100) -
           ((elapsedTime.inSeconds / 3600.0) * .015);
       runningBac = runningBac < 0 ? 0 : runningBac;
@@ -675,7 +676,6 @@ Future<Day> determineDay() async {
   List<Map> result = await db.rawQuery('SELECT * FROM days WHERE day=?', [todayDate]);
 
   Day day;
-  List<int> dbListH, dbListM, dbListT, dbListS;
   double yesterHyd;
 
   if (result == null || result.isEmpty) {

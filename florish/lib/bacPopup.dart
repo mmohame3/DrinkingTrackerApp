@@ -12,7 +12,6 @@ class PopupLayout extends ModalRoute {
   double left;
   double right;
 
-
   @override
   Duration get transitionDuration => Duration(milliseconds: 0);
 
@@ -31,17 +30,19 @@ class PopupLayout extends ModalRoute {
   @override
   bool get maintainState => false;
 
-  PopupLayout({
-    Key key,
-    @required this.child,
-    this.top, this.bottom, this.left, this.right
-  });
+  PopupLayout(
+      {Key key,
+      @required this.child,
+      this.top,
+      this.bottom,
+      this.left,
+      this.right});
 
   @override
   Widget buildPage(
     BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
   ) {
     if (top == null) this.top = 50;
     if (bottom == null) this.bottom = 50;
@@ -63,7 +64,11 @@ class PopupLayout extends ModalRoute {
 
   Widget _buildOverlayContent(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: this.top, bottom: this.bottom, left: this.left, right: this.right),
+      margin: EdgeInsets.only(
+          top: this.top,
+          bottom: this.bottom,
+          left: this.left,
+          right: this.right),
       child: child,
     );
   }
@@ -95,33 +100,36 @@ showBACPopup(BuildContext context) {
   Navigator.push(
       context,
       PopupLayout(
-        top: 50,
-          bottom: 50,
-          left: 30,
-          right: 30,
+          top: 15,
+          bottom: 15,
+          left: 20,
+          right: 20,
           child: PopupContent(
-        content: Scaffold(
-          appBar: AppBar(
-            title: Text('BAC Information'),
-            backgroundColor: Color(0xFF97B633),
-            automaticallyImplyLeading: false,
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  try {
-                    Navigator.pop(context); //close the popup
-                  } catch (e) {}
-                },
-              )
-            ],
-          ),
-          body: BACpopUpBody(context),
-        ),
-      )));
+            content: Scaffold(
+              appBar: AppBar(
+                title: Text('BAC Information'),
+                backgroundColor: Color(0xFF97B633),
+                automaticallyImplyLeading: false,
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      try {
+                        Navigator.pop(context); //close the popup
+                      } catch (e) {}
+                    },
+                  )
+                ],
+              ),
+              body: BACpopUpBody(context),
+            ),
+          )));
 }
 
 Widget BACpopUpBody(BuildContext context) {
+  double bacLater = (globals.bac - .08 )/.015;
+  double bacToZero = globals.bac/.05;
+  bacLater = bacLater < 0 ? 0 : bacLater;
   return Container(
       color: Color(0xFFE6E7E8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -144,6 +152,14 @@ Widget BACpopUpBody(BuildContext context) {
                           fontFamily: 'Montserrat',
                           height: 1.3,
                           color: Colors.black)),
+                  Text(
+                      "\nGiven your current BAC it will take approximately ${bacToZero.toStringAsFixed(1)} "
+                          "hours for your BAC to fall to 0% and approximately ${bacLater.toStringAsFixed(1)}"
+                          "hours for your BAC to fall to .08%",
+                      style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          height: 1.3,
+                          color: Colors.black))
                 ]))),
         Container(
             padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
@@ -283,9 +299,8 @@ Widget dayEndPopUpBody(BuildContext context) {
                 padding: EdgeInsets.all(20),
                 child: Column(children: [
                   Text(
-                'Yesterday you had ${globals.yesterDrink} drinks and ${globals
-                    .yesterWater} waters. '
-                    '\n\n Check out your History to see more about your past drinking habits \n\n',
+                      'Yesterday you had ${globals.yesterDrink} drinks and ${globals.yesterWater} waters. '
+                      '\n\n Check out your History to see more about your past drinking habits \n\n',
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           height: 1.3,
@@ -297,14 +312,12 @@ Widget dayEndPopUpBody(BuildContext context) {
                           context,
                           new MaterialPageRoute(
                               builder: (BuildContext context) =>
-                              new HistoryPage()));
+                                  new HistoryPage()));
                     },
                     color: Color(0xFFA8C935),
-                    child: Text('History',
-                        style: TextStyle(color: Colors.white)),
-                  )]
+                    child:
+                        Text('History', style: TextStyle(color: Colors.white)),
                   )
-                )),
-
+                ]))),
       ]));
 }
