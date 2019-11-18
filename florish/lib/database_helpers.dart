@@ -16,6 +16,8 @@ final String columnMBWater = 'WateratmaxBAC';
 final String columnDrinkCount = "totaldrinkcount";
 final String columnWaterCount = "totalwatercount";
 final String columnSession = "sessionlist";
+final String columnHydratio = "todayhydratio";
+final String columnYesterHydratio = "yesterhydratio";
 
 class Day {
   String date;
@@ -27,6 +29,8 @@ class Day {
   int totalDrinks;
   int totalWaters;
   List<int> sessionList;
+  double hydratio;
+  double yesterHydratio;
 
   Day(
       {this.date,
@@ -37,7 +41,9 @@ class Day {
       this.waterAtMaxBAC,
       this.totalDrinks,
       this.totalWaters,
-      this.sessionList});
+      this.sessionList,
+      this.hydratio,
+      this.yesterHydratio});
 
   Day.fromMap(Map<String, dynamic> map) {
     date = map[columnDay];
@@ -49,6 +55,8 @@ class Day {
     totalDrinks = map[columnDrinkCount];
     totalWaters = map[columnWaterCount];
     sessionList = map[columnSession];
+    hydratio = map[columnHydratio];
+    yesterHydratio = map[columnYesterHydratio];
   }
 
   Map<String, dynamic> toMap() {
@@ -62,6 +70,8 @@ class Day {
       columnDrinkCount: totalDrinks,
       columnWaterCount: totalWaters,
       columnSession: sessionList,
+      columnHydratio: hydratio,
+      columnYesterHydratio: yesterHydratio
     };
 
     return map;
@@ -71,7 +81,8 @@ class Day {
   String toString() {
     return 'Day {date: $date, hourList: $hourList, minuteList: $minuteList, typeList: $typeList, '
         'maxBAC: $maxBAC, waterAtMaxBAC: $waterAtMaxBAC,'
-        'totalDrinks: $totalDrinks, totalWaters: $totalWaters, session: $sessionList}';
+        'totalDrinks: $totalDrinks, totalWaters: $totalWaters, '
+        'session: $sessionList, todayhydratio: $hydratio, yesterhydratio: $yesterHydratio}';
   }
 
   // NOTE: this many getters and setters CANNOT be efficient in a
@@ -107,7 +118,15 @@ class Day {
   }
 
   int getTotalWaters() {
-    return totalWaters;
+    return this.totalWaters;
+  }
+
+  double getHydratio() {
+    return this.hydratio;
+  }
+
+  double getYesterHydratio() {
+    return this.yesterHydratio;
   }
 
   void setDate(String date) {
@@ -146,6 +165,14 @@ class Day {
     this.totalWaters = waters;
   }
 
+  void setHydratio(double ratio) {
+    this.hydratio = ratio;
+  }
+
+  void setYesterHydratio(double ratio) {
+    this.yesterHydratio = ratio;
+  }
+
 //  void addSession(int start) {
 //    this.session.add(start);
 //  }
@@ -166,6 +193,8 @@ class DatabaseHelper {
   static final columnDrinkCount = "totaldrinkcount";
   static final columnWaterCount = "totalwatercount";
   static final columnSession = "sessionlist";
+  static final columnHydratio = "todayhydratio";
+  static final columnYesterHydratio = "yesterhydratio";
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -195,7 +224,9 @@ class DatabaseHelper {
                 $columnMBWater INTEGER NOT NULL,
                 $columnDrinkCount INTEGER NOT NULL,
                 $columnWaterCount INTEGER NOT NULL,
-                $columnSession BLOB NOT NULL 
+                $columnSession BLOB NOT NULL,
+                $columnHydratio REAL NOT NULL,
+                $columnYesterHydratio REAL NOT NULL 
               )
               ''');
     await db.execute('CREATE TABLE inputTable (id INTEGER PRIMARY KEY, feet INTEGER, inch INTEGER, weight INTEGER, gender TEXT)');
@@ -232,7 +263,8 @@ class DatabaseHelper {
     print(new List<int>());
     print([]);
     Day newDay = Day(date: date, hourList: new List<int>(), minuteList: new List<int>(),
-        typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0, totalWaters: 0, sessionList: new List<int>());
+        typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0,
+        totalWaters: 0, sessionList: new List<int>(), hydratio: 0.0, yesterHydratio: 0.0);
     updateDay(newDay);
   }
 
@@ -240,14 +272,15 @@ class DatabaseHelper {
     Database db = await instance.database;
     List result =
         await db.query(tableDays, where: '$columnDay = ?', whereArgs: [date]);
-    Day dayone = result[0];
-    return dayone;
+    //Day dayone = result[0];
+    //print("day from map: ${Day.fromMap(result.first)}");
+    return result.isNotEmpty ? Day.fromMap(result.first) : Null ;
+    //return dayone;
   }
 
   getInputInformation() async {
     var _connection = await database;
     return await _connection.query('inputTable');
   }
-
 
 }

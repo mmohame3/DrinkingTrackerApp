@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'database_helpers.dart' as database;
 import 'package:sqflite/sqflite.dart';
-
 import 'package:charts_flutter/flutter.dart' as charts;
 
 class AltHistoryPage extends StatefulWidget {
@@ -46,7 +45,7 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
     }
 
     return weekday;
-  }
+  } // TODO: DONE
 
   String dateToString(String date) {
     String monthName;
@@ -87,23 +86,27 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
     }
 
     return '$monthName ${parsedDate.day}, ${parsedDate.year}';
-  }
+  } // TODO: DONE
 
   int bacToPlant(double bac) {
     bac = bac >= 0.12 ? 0.12 : bac; // sets BAC equal to 0.12 if >= 0.12
     int plantNum = (5 * (bac / .12)).floor();
     plantNum = plantNum > 4 ? 4 : plantNum;
     return plantNum;
-  }
+  } // TODO: DONE
 
   Future<List<database.Day>> _makeDayList() async {
-    List<database.Day> dayList = List<database.Day>();
+    List<database.Day> dayList;
 
     Database db = await database.DatabaseHelper.instance.database;
     List<Map> result = await db.rawQuery('SELECT * FROM days');
+    print(result.toString());
 
-    result.forEach((map) => dayList.add(new database.Day.fromMap(map)));
+    print('adding day ...');
+    result.forEach((map) => dayList.add(database.Day.fromMap(map)));
+    print('day added');
 
+    print('DayList = ' + dayList.toString());
     return dayList;
   }
 
@@ -191,6 +194,7 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
   _updateWidgetList() async {
     List<database.Day> dayList = await _makeDayList();
     dayList.forEach((day) => widgetList.add(makeWidget(day)));
+    dayList.forEach((day) => print('Widget added for: ' + day.getDate()));
   }
 
   @override
