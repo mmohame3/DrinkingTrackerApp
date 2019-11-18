@@ -285,7 +285,7 @@ Widget dayEndPopUpBody(BuildContext context) {
                   Text(
                 'Yesterday you had ${globals.yesterDrink} drinks and ${globals
                     .yesterWater} waters. '
-                    '\n\n Check out your History to see more about your past drinking habits \n\n',
+                    '\n\nCheck out your History to see more about your past drinking habits \n\n',
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           height: 1.3,

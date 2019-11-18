@@ -16,7 +16,7 @@ import './bacPopup.dart';
 import './alerts.dart';
 
 final int resetTime = 12; //resets counters on this hour
-
+final double maxBac = 0.12;
 
 void main() => runApp(MyApp());
 
@@ -271,7 +271,7 @@ class _PlantState extends State<Plant> {
 // turns the BAC to a plant stage
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
-    int plantNum = (5 * (globals.bac / .12)).round();
+    int plantNum = (5 * (globals.bac / maxBac)).round();
     plantNum = plantNum > 4 ? 4 : plantNum;
 
     return plantNum;
@@ -617,7 +617,7 @@ class _DrinkButtonState extends State<DrinkButton> {
 // turns the BAC to a plant stage
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
-    int plantNum = (5 * (globals.bac / .12)).round();
+    int plantNum = (5 * (globals.bac / maxBac)).round();
     plantNum = plantNum > 4 ? 4 : plantNum;
 
     return plantNum;
@@ -743,7 +743,7 @@ class _WaterButtonState extends State<WaterButton> {
   // turns BAC into a plant stage
   // where 5 is the number of plant stages we have and .12 is our "max" BAC
   int bacToPlant() {
-    int plantNum = (5 * (globals.bac / .12)).round();
+    int plantNum = (5 * (globals.bac / maxBac)).round();
     plantNum = plantNum > 4 ? 4 : plantNum;
     return plantNum;
   }
@@ -901,5 +901,3 @@ Future<void> getDayEnded() async {
     }
   }
 }
-
-

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'database_helpers.dart' as database;
 import 'package:sqflite/sqflite.dart';
-import 'globals.dart' as globals;
+
+import 'package:charts_flutter/flutter.dart' as charts;
 
 class AltHistoryPage extends StatefulWidget {
   @override
@@ -9,7 +10,12 @@ class AltHistoryPage extends StatefulWidget {
 }
 
 class _AltHistoryPageState extends State<AltHistoryPage> {
+  // TODO: have to hot reload once in the page for anything to show up
   List<Widget> widgetList = [];
+
+  _AltHistoryPageState() {
+    _updateWidgetList();
+  }
 
   String getWeekday(String date) {
     String weekday;
@@ -42,7 +48,7 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
     return weekday;
   }
 
-  String displayDate(String date) {
+  String dateToString(String date) {
     String monthName;
 
     List<String> dateObjects = date.split("/");
@@ -50,7 +56,7 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
     String day = dateObjects[1];
     String year = dateObjects[2];
 
-    String dateStringToConvert = year + day + month;
+    String dateStringToConvert = year + month + day;
     DateTime parsedDate = DateTime.parse(dateStringToConvert);
 
     int monthInt = parsedDate.month;
@@ -83,78 +89,108 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
     return '$monthName ${parsedDate.day}, ${parsedDate.year}';
   }
 
-  Widget makeWidget(database.Day day) {
-    return ExpansionTile(
-        initiallyExpanded: false,
-        backgroundColor: Colors.white,
-        title: Container(
-            padding: EdgeInsets.only(top: 15, bottom: 15, left: 10),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text('${getWeekday(day.getDate())}',
-                          style: TextStyle(fontSize: 16, color: Colors.black)),
-                      Container(
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Text(displayDate(day.getDate()),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black))),
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(children: <Widget>[
-                              Image.asset(
-                                'assets/images/soloCup.png',
-                                width: 20,
-                              ),
-                              Text(
-                                  '    ' +
-                                      day.getTotalDrinks().toString() +
-                                      '          ',
-                                  style: TextStyle(
-                                      color:
-                                          Colors.black)), //space this with flex
-                              Image.asset(
-                                'assets/images/waterDrop.png',
-                                width: 20,
-                              ),
-                              Text('    ' + day.getTotalWaters().toString(),
-                                  style: TextStyle(color: Colors.black))
-                            ]),
-                          ])
-                    ],
-                  ),
-                  Image.asset('assets/images/plants/drink0water3.png',
-                      height: 80)
-                ])),
-        children: <Widget>[
-          // TODO: fill drop-down with more information
-        ]);
+  int bacToPlant(double bac) {
+    bac = bac >= 0.12 ? 0.12 : bac; // sets BAC equal to 0.12 if >= 0.12
+    int plantNum = (5 * (bac / .12)).floor();
+    plantNum = plantNum > 4 ? 4 : plantNum;
+    return plantNum;
   }
 
-  _makeDayList() async {
-    List<database.Day> dayList;
+  Future<List<database.Day>> _makeDayList() async {
+    List<database.Day> dayList = List<database.Day>();
 
     Database db = await database.DatabaseHelper.instance.database;
-    List<Map> result = await db.query(database.DatabaseHelper.tableDays);
-    result.forEach(
-        (map) => dayList.add(database.Day.fromMap(map)));
+    List<Map> result = await db.rawQuery('SELECT * FROM days');
+
+    result.forEach((map) => dayList.add(new database.Day.fromMap(map)));
+
     return dayList;
+  }
+
+  Widget makeWidget(database.Day day) {
+    return Container(
+        color: Colors.white,
+        child:
+//        BacChart()
+            ExpansionTile(
+                initiallyExpanded: false,
+                backgroundColor: Colors.white,
+                title: Container(
+                    padding: EdgeInsets.only(top: 5, bottom: 5, left: 5),
+                    child: Row(children: <Widget>[
+                      Container(
+                          width: 80,
+                          alignment: Alignment.centerLeft,
+                          child: Image.asset(
+                              'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getTotalWaters()}.png',
+                              height: 50,
+                              width: 50)),
+                      Row(children: [
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text('${getWeekday(day.getDate())}'),
+//                                style:
+//                                    TextStyle(fontSize: 16, color: Colors.black)),
+                              Container(
+//                                padding: EdgeInsets.only(bottom: 10),
+                                  child: Text(dateToString(day.getDate()),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+//                                        color: Colors.black)
+                                      )))
+                            ]),
+//                                Row(children: <Widget>[
+//                                  Image.asset(
+//                                    'assets/images/soloCup.png',
+//                                    width: 20,
+//                                  ),
+//                                  Text(
+//                                      '    ' +
+//                                          day.getTotalDrinks().toString() +
+//                                          '          ',
+//                                      style: TextStyle(color: Colors.black)), //TODO: space this with flex
+//                                  Image.asset(
+//                                    'assets/images/waterDrop.png',
+//                                    width: 20,
+//                                  ),
+//                                  Text('    ' + day.getTotalWaters().toString(),
+//                                      style: TextStyle(color: Colors.black))
+//                                ]),
+                      ])
+                    ])),
+                children: <Widget>[
+            Row(children: <Widget>[
+                                  Image.asset(
+                                    'assets/images/soloCup.png',
+                                    width: 20,
+                                  ),
+                                  Text(
+                                      '    ' +
+                                          day.getTotalDrinks().toString() +
+                                          '          ',
+                                      style: TextStyle(color: Colors.black)), //TODO: space this with flex
+                                  Image.asset(
+                                    'assets/images/waterDrop.png',
+                                    width: 20,
+                                  ),
+                                  Text('    ' + day.getTotalWaters().toString(),
+                                      style: TextStyle(color: Colors.black))
+                                ]),
+              Container(
+                  width: 2*MediaQuery.of(context).size.width / 3,
+                  height: 100,
+//                    width: MediaQuery.of(context).size.width / 2,
+//                    height MediaQuery.of(context).size.width / 3,
+                  child: BacChart())
+            ]
+                // TODO: fill drop-down with more information
+                ));
   }
 
   _updateWidgetList() async {
     List<database.Day> dayList = await _makeDayList();
     dayList.forEach((day) => widgetList.add(makeWidget(day)));
-  }
-
-  @override
-  initState() {
-    super.initState();
-    _updateWidgetList();
   }
 
   @override
@@ -165,10 +201,52 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
           backgroundColor: Color(0xFF97B633),
         ),
         backgroundColor: Color(0xFFF2F2F2),
-        body: Container(
-            padding: EdgeInsets.only(top: 5),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [makeWidget(globals.today)])));
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
+                ),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: widgetList))));
   }
+}
+
+class BacChart extends StatelessWidget {
+//  final List<charts.Series> seriesList;
+//  final bool animate;
+
+//  BacChart(this.seriesList, {this.animate});
+
+  @override
+  Widget build(BuildContext context) {
+    return new charts.TimeSeriesChart(
+      _createBacData(),
+      animate: false,
+    );
+  }
+
+  static List<charts.Series<TimeSeriesBac, DateTime>> _createBacData() {
+    final data = [
+      new TimeSeriesBac(new DateTime(20191104), 0.02),
+      new TimeSeriesBac(new DateTime(20191105), 0.09),
+      new TimeSeriesBac(new DateTime(20191106), 0.04)
+    ];
+    return [
+      new charts.Series<TimeSeriesBac, DateTime>(
+        id: 'BAC',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (TimeSeriesBac bac, _) => bac.time,
+        measureFn: (TimeSeriesBac bac, _) => bac.bac,
+        data: data,
+      )
+    ];
+  }
+}
+
+class TimeSeriesBac {
+  final DateTime time;
+  final double bac;
+
+  TimeSeriesBac(this.time, this.bac);
 }

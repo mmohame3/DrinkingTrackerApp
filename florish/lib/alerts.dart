@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart' as globals;
+import 'PersonalInformation.dart';
 
 
 
@@ -23,6 +24,16 @@ Future<void> settingsAlert(BuildContext context) async {
               child: Text('Got It'),
               onPressed: () {
                 Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('Settings', style: TextStyle(fontWeight: FontWeight.bold),),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                        new PersonalInfoPage()));
               },
             ),
           ],
