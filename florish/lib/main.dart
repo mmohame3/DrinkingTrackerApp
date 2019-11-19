@@ -726,15 +726,15 @@ Future<Day> determineDay() async {
 // alternate (read: better) way #2
     day = Day.fromMap(result[0]);
 
-    day.hourList = new List<int>.from(day.hourList);
-    day.minuteList = new List<int>.from(day.minuteList);
-    day.typeList = new List<int>.from(day.typeList);
-    day.sessionList = new List<int>.from(day.sessionList);
-
     day.sessionList ??= new List<int>();
     day.hourList ??= new List<int>();
     day.minuteList ??= new List<int>();
     day.typeList ??= new List<int>();
+
+    day.hourList = new List<int>.from(day.hourList);
+    day.minuteList = new List<int>.from(day.minuteList);
+    day.typeList = new List<int>.from(day.typeList);
+    day.sessionList = new List<int>.from(day.sessionList);
 
     return day;
   }
