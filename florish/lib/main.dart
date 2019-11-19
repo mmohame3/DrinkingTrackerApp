@@ -48,22 +48,22 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   @override
   void initState() {
     //uncomment to reset today's data to 0
-//    DateTime time = DateTime.now();
-//    if (time.hour < resetTime){
-//      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
-//    }
-////
-////    dbHelper.deleteDay(dateTimeToString(time));
+    DateTime time = DateTime.now();
+    if (time.hour < resetTime){
+      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+    }
+
+    dbHelper.deleteDay(dateTimeToString(time));
 //    dbHelper.resetDay(dateTimeToString(time));
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await determineDay();
-      await getInputInformation();
       if (globals.dayEnded) {
         await getDayEnded();
         showDayEndPopup(context);
       }
+      await getInputInformation();
     });
   }
 
@@ -312,22 +312,24 @@ class _PlantState extends State<Plant> {
     //print('from back math method sex : ${_prefs.getString(globals.selectedSexKey)}');
     //print('from back math method weight : ${_prefs.getInt(globals.selectedWeightKey)}');
 //    print('from back math method : $sumBac');
-    double yesterBAC;
-    Future<List> yesterInfo = getYesterInfo();
-    yesterInfo.then((list) {
-      yesterBAC = list[3];
+    double yesterBAC, drinkToNoonTime;
+    getYesterInfo().then((list) {
+            yesterBAC = list[3];
+            drinkToNoonTime = list[4];
+//            print(drinkToNoonTime);
     });
-    yesterBAC = yesterBAC == null ? 0.0 : yesterBAC;
+    yesterBAC ??= 0.0;
+    drinkToNoonTime ??= 0.0;
 
     DateTime noon = new DateTime(
         currentTime.year, currentTime.month, currentTime.day, resetTime);
     noon =
         currentTime.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
 
-    Duration diffDuration = currentTime.difference(noon);
-    int diff = diffDuration.inSeconds;
+    int diff = currentTime.difference(noon).inSeconds;
+    double beforeNoonDiff = drinkToNoonTime * 3600;
 
-    double totalYesterBAC = (yesterBAC - ((diff / 3600) * 0.015));
+    double totalYesterBAC = (yesterBAC - (((diff + beforeNoonDiff) / 3600) * 0.015));
     totalYesterBAC = totalYesterBAC < 0 ? 0 : totalYesterBAC;
     double totalBAC = sumBac + totalYesterBAC;
 
@@ -387,8 +389,6 @@ class _PlantState extends State<Plant> {
             updateImageAndBAC('assets/images/plants/drink0water0.png');
             dbHelper.updateDay(globals.today);
           }));
-
-      //endSession();
 
       return Column(
         children: [
@@ -570,7 +570,7 @@ class _DrinkButtonState extends State<DrinkButton> {
     globals.today.addHour(currentTime.hour);
     globals.today.addMinute(currentTime.minute);
     globals.today.addType(1);
-
+    globals.today.lastBAC = globals.bac;
     dbHelper.updateDay(globals.today);
     //print(globals.today.sessionList);
     //print(globals.today.toString());
@@ -686,6 +686,12 @@ Future<Day> determineDay() async {
   double yesterHyd;
 
   if (result == null || result.isEmpty) {
+    globals.dayEnded = true;
+    getYesterInfo().then((list) {
+      yesterHyd = list[1];
+    });
+    yesterHyd ??= 0.0;
+
     day = new Day(
         date: todayDate,
         hourList: new List<int>(),
@@ -697,19 +703,13 @@ Future<Day> determineDay() async {
         totalWaters: 0,
         sessionList: new List<int>(),
         hydratio: 0.0,
-        yesterHydratio: yesterHyd);
-
-    Future<List> yesterInfo = getYesterInfo();
-    yesterInfo.then((list) {
-      yesterHyd = list[1];
-    });
-    yesterHyd = yesterHyd == null ? 0.0 : yesterHyd;
-    day.setYesterHydratio(yesterHyd);
+        yesterHydratio: yesterHyd,
+        lastBAC: 0.0);
 
     await db.insert(tableDays, day.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     await getDayEnded();
-    globals.dayEnded = true;
+
 
     return day;
   } else {
@@ -753,7 +753,8 @@ Future<void> getDayEnded() async {
 }
 
 // gets yesterday's data about drinks and bac in the form:
-// [yesterday's total waters, yesterday's hydration ratio, yesterday's total drinks, yesterday's last bac]
+// [yesterday's total waters, yesterday's hydration ratio,
+// yesterday's total drinks, yesterday's last bac, hours between reset time and time of last drink]
 Future<List<double>> getYesterInfo() async {
   DateTime time = DateTime.now();
   Duration dayLength = Duration(days: 1);
@@ -765,15 +766,22 @@ Future<List<double>> getYesterInfo() async {
 
   List<Map> yesterdayResult =
       await db.rawQuery('SELECT * FROM days WHERE day=?', [yesterDate]);
-
-  if (yesterdayResult.isEmpty) {
-    return [0.0, 0.0, 0.0, 0.0];
+  double w, yhr, d, ybac, drinkToNoonHours;
+  int i;
+  if (yesterdayResult.isEmpty || yesterdayResult == null) {
+    return [0.0, 0.0, 0.0, 0.0, 0.0];
   } else {
-    double w = yesterdayResult[0]['totalwatercount'].toDouble();
-    double yhr = yesterdayResult[0]['todayhydratio'];
-    double d = yesterdayResult[0]["totaldrinkcount"].toDouble();
-    //int ybac = yesterdayResult[0]['lastbac'];
-    return [w, yhr, 0, d];
+    w = yesterdayResult[0]['totalwatercount'].toDouble();
+    yhr = yesterdayResult[0]['todayhydratio'];
+    d = yesterdayResult[0]["totaldrinkcount"].toDouble();
+    ybac = yesterdayResult[0]['lastBAC'];
+    i = yesterdayResult[0]['typelist'] == null ? -1 : yesterdayResult[0]['typelist'].lastIndexOf(1);
+//
+//    drinkToNoonHours = i >= 0 ?
+//          yesterdayResult[0]['hourlist'][i] + (yesterdayResult[0]['minutelist'][i]/60)
+//          : 0.0;
+
+    return [w, yhr, d, ybac, 0];
   }
 }
 
@@ -824,7 +832,6 @@ int waterToPlant() {
 getInputInformation() async {
   var _inputInformation = await dbHelper.getInputInformation();
   _inputInformation.forEach((input) {
-//    setState(() {
       globals.selectedFeet = input['feet'];
       globals.selectedInches = input['inch'];
       globals.selectedWeight = input['weight'];

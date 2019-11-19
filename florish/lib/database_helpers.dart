@@ -18,6 +18,8 @@ final String columnWaterCount = "totalwatercount";
 final String columnSession = "sessionlist";
 final String columnHydratio = "todayhydratio";
 final String columnYesterHydratio = "yesterhydratio";
+final String columnLastBAC = "lastBAC";
+
 
 class Day {
   String date;
@@ -31,6 +33,7 @@ class Day {
   List<int> sessionList;
   double hydratio;
   double yesterHydratio;
+  double lastBAC;
 
   Day(
       {this.date,
@@ -43,7 +46,8 @@ class Day {
       this.totalWaters,
       this.sessionList,
       this.hydratio,
-      this.yesterHydratio});
+      this.yesterHydratio,
+      this.lastBAC});
 
   Day.fromMap(Map<String, dynamic> map) {
     date = map[columnDay];
@@ -57,6 +61,7 @@ class Day {
     sessionList = map[columnSession];
     hydratio = map[columnHydratio];
     yesterHydratio = map[columnYesterHydratio];
+    lastBAC = map[columnLastBAC];
   }
 
   Map<String, dynamic> toMap() {
@@ -71,7 +76,8 @@ class Day {
       columnWaterCount: totalWaters,
       columnSession: sessionList,
       columnHydratio: hydratio,
-      columnYesterHydratio: yesterHydratio
+      columnYesterHydratio: yesterHydratio,
+      columnLastBAC: lastBAC,
     };
 
     return map;
@@ -82,7 +88,8 @@ class Day {
     return 'Day {date: $date, hourList: $hourList, minuteList: $minuteList, typeList: $typeList, '
         'maxBAC: $maxBAC, waterAtMaxBAC: $waterAtMaxBAC,'
         'totalDrinks: $totalDrinks, totalWaters: $totalWaters, '
-        'session: $sessionList, todayhydratio: $hydratio, yesterhydratio: $yesterHydratio}';
+        'session: $sessionList, todayhydratio: $hydratio, yesterhydratio: $yesterHydratio,'
+        'lasBAC: $lastBAC}';
   }
 
   // NOTE: this many getters and setters CANNOT be efficient in a
@@ -127,6 +134,10 @@ class Day {
 
   double getYesterHydratio() {
     return this.yesterHydratio;
+  }
+
+  double getLastBAC() {
+    return this.lastBAC;
   }
 
   void setDate(String date) {
@@ -195,6 +206,7 @@ class DatabaseHelper {
   static final columnSession = "sessionlist";
   static final columnHydratio = "todayhydratio";
   static final columnYesterHydratio = "yesterhydratio";
+  static final columnLastBAC = "lastBAC";
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -226,7 +238,8 @@ class DatabaseHelper {
                 $columnWaterCount INTEGER NOT NULL,
                 $columnSession BLOB NOT NULL,
                 $columnHydratio REAL NOT NULL,
-                $columnYesterHydratio REAL NOT NULL 
+                $columnYesterHydratio REAL NOT NULL,
+                $columnLastBAC REAL NOT NULL
               )
               ''');
     await db.execute('CREATE TABLE inputTable (id INTEGER PRIMARY KEY, feet INTEGER, inch INTEGER, weight INTEGER, gender TEXT)');
@@ -260,11 +273,10 @@ class DatabaseHelper {
 
   Future<void> resetDay(String date) async {
     Database db = await instance.database;
-    print(new List<int>());
-    print([]);
     Day newDay = Day(date: date, hourList: new List<int>(), minuteList: new List<int>(),
         typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0,
-        totalWaters: 0, sessionList: new List<int>(), hydratio: 0.0, yesterHydratio: 0.0);
+        totalWaters: 0, sessionList: new List<int>(), hydratio: 0.0, yesterHydratio: 0.0,
+          lastBAC: 0.0);
     updateDay(newDay);
   }
 
@@ -272,10 +284,7 @@ class DatabaseHelper {
     Database db = await instance.database;
     List result =
         await db.query(tableDays, where: '$columnDay = ?', whereArgs: [date]);
-    //Day dayone = result[0];
-    //print("day from map: ${Day.fromMap(result.first)}");
     return result.isNotEmpty ? Day.fromMap(result.first) : Null ;
-    //return dayone;
   }
 
   getInputInformation() async {
