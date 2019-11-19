@@ -127,40 +127,13 @@ showBACPopup(BuildContext context) {
 }
 
 Widget BACpopUpBody(BuildContext context) {
-  double bacLater = (globals.bac - .08 )/.015;
-  double bacToZero = globals.bac/.05;
-  bacLater = bacLater < 0 ? 0 : bacLater;
+//  double bacLater = (globals.bac - .08 )/.015;
+//  double bacToZero = globals.bac/.05;
+//  bacLater = bacLater < 0 ? 0 : bacLater;
   return Container(
       color: Color(0xFFE6E7E8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Container(
-            padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
-            child: Text(
-              'YOUR BAC',
-              style: TextStyle(letterSpacing: 1, height: 1.5),
-            )),
-        Container(
-            color: Colors.white,
-            alignment: Alignment.topCenter,
-            child: Container(
-                padding: EdgeInsets.all(20),
-                child: Column(children: [
-                  Text(
-                      "Your BAC is currently ${globals.bac.toStringAsFixed(3)} "
-                      "which means you may be feeling: \n\n${_getBacInfo(globals.bac)}",
-                      style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          height: 1.3,
-                          color: Colors.black)),
-                  Text(
-                      "\nGiven your current BAC it will take approximately ${bacToZero.toStringAsFixed(1)} "
-                          "hours for your BAC to fall to 0% and approximately ${bacLater.toStringAsFixed(1)}"
-                          "hours for your BAC to fall to .08%",
-                      style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          height: 1.3,
-                          color: Colors.black))
-                ]))),
+        bacText(context),
         Container(
             padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
             child: Text(
@@ -299,9 +272,8 @@ Widget dayEndPopUpBody(BuildContext context) {
                 padding: EdgeInsets.all(20),
                 child: Column(children: [
                   Text(
-                'Yesterday you had ${globals.yesterDrink} drinks and ${globals
-                    .yesterWater} waters. '
-                    '\n\nCheck out your History to see more about your past drinking habits \n\n',
+                      'Yesterday you had ${globals.yesterDrink} drinks and ${globals.yesterWater} waters. '
+                      '\n\nCheck out your History to see more about your past drinking habits \n\n',
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           height: 1.3,
@@ -321,4 +293,47 @@ Widget dayEndPopUpBody(BuildContext context) {
                   )
                 ]))),
       ]));
+}
+
+Widget bacText(BuildContext context) {
+  double bacLater = (globals.bac - .08) / .015;
+  double bacToZero = globals.bac / .05;
+  bacLater = bacLater < 0 ? 0 : bacLater;
+  var container = Column();
+  if (globals.bac > 0) {
+    container =
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+            padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
+            child: Text(
+              'YOUR BAC',
+              style: TextStyle(letterSpacing: 1, height: 1.5),
+            )),
+        Container(
+        color: Colors.white,
+        alignment: Alignment.topCenter,
+        child: Container(
+            padding: EdgeInsets.all(20),
+            child: Column(children: [
+              Text(
+                  "Your BAC is  ${globals.bac.toStringAsFixed(3)} "
+                  "so may be feeling: \n\t\t\t\t${_getBacInfo(globals.bac)}",
+                  style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      height: 1.3,
+                      color: Colors.black)),
+              Text(
+                  "\nGiven your current BAC, it will take about:"
+                      "\n• ${bacToZero.toStringAsFixed(1)} "
+                  "hours to fall to 0% "
+                      "\n• ${bacLater.toStringAsFixed(1)} "
+                  "hours to fall to .08%",
+                  style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      height: 1.3,
+                      color: Colors.black),)
+            ])))]);
+
+  }
+  return container;
 }
