@@ -24,17 +24,30 @@ class _CalendarState extends State<Calendar> {
   }
 
   Future<database.Day> determineDay(DateTime date) async {
-    String selectedDate = main.dateTimeToString(date);
-    List<Map> result;
+//    DateTime time = DateTime.now();
+//    DateTime yesterday = time.subtract(Duration(days: 1));
+//    Database db = await DatabaseHelper.instance.database;
+//
+//    if (time.hour < resetTime) {
+//      time = yesterday;
+//    }
 
     Database db = await database.DatabaseHelper.instance.database;
-    result =
-        await db.rawQuery('SELECT * FROM days WHERE day=?', [selectedDate]);
+    String selectedDate = main.dateTimeToString(date);
+    List<Map> result =
+    await db.rawQuery('SELECT * FROM days WHERE day=?', [selectedDate]);
 
     database.Day day;
+    double yesterHyd;
 
-    List<int> dbListH, dbListM, dbListT, dbListS;
-    if ((result == null) || (result.isEmpty)) {
+    if (result == null || result.isEmpty) {
+
+      Future<List> yesterInfo = main.getYesterInfo();
+      yesterInfo.then((list) {
+        yesterHyd = list[1];
+      });
+      yesterHyd ??= 0.0;
+
       day = new database.Day(
           date: selectedDate,
           hourList: new List<int>(),
@@ -44,37 +57,30 @@ class _CalendarState extends State<Calendar> {
           waterAtMaxBAC: 0,
           totalDrinks: 0,
           totalWaters: 0,
-          sessionList: new List<int>());
+          sessionList: new List<int>(),
+          hydratio: 0.0,
+          yesterHydratio: yesterHyd,
+          lastBAC: 0.0);
+
       await db.insert(database.tableDays, day.toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace);
       return day;
     } else {
-      if (result[0]['hourlist'] == null) {
-        dbListH = [];
-        dbListM = [];
-        dbListT = [];
-        dbListS = [];
-      } else {
-        dbListH = new List<int>.from(result[0]['hourlist']);
-        dbListM = new List<int>.from(result[0]['minutelist']);
-        dbListT = new List<int>.from(result[0]['typelist']);
-        if (result[0]['sessionlist'] == null){
-          dbListS = [];
-        }
-        else {
-          dbListS = new List<int>.from(result[0]['session']);
-        }
-      }
 
-      day = new database.Day(
-          date: result[0]["day"],
-          hourList: dbListH,
-          minuteList: dbListM,
-          typeList: dbListT,
-          maxBAC: result[0]['maxBAC'],
-          waterAtMaxBAC: result[0]["WateratmaxBAC"],
-          totalDrinks: result[0]["totaldrinkcount"],
-          totalWaters: result[0]["totalwatercount"]);
+
+// alternate (read: better) way #2
+      day = database.Day.fromMap(result[0]);
+
+      day.sessionList ??= new List<int>();
+      day.hourList ??= new List<int>();
+      day.minuteList ??= new List<int>();
+      day.typeList ??= new List<int>();
+
+      day.hourList = new List<int>.from(day.hourList);
+      day.minuteList = new List<int>.from(day.minuteList);
+      day.typeList = new List<int>.from(day.typeList);
+      day.sessionList = new List<int>.from(day.sessionList);
+
       return day;
     }
   }

@@ -3,6 +3,7 @@ import 'database_helpers.dart' as database;
 import 'package:sqflite/sqflite.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'globals.dart' as globals;
+import 'main.dart' as main;
 
 class AltHistoryPage extends StatefulWidget {
   @override
@@ -16,85 +17,6 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
   _AltHistoryPageState() {
     _updateWidgetList();
   }
-
-  String getWeekday(String date) {
-    String weekday;
-
-    List<String> dateObjects = date.split("/");
-    String month = dateObjects[0];
-    String day = dateObjects[1];
-    String year = dateObjects[2];
-
-    String dateStringToConvert = year + day + month;
-    DateTime parsedDate = DateTime.parse(dateStringToConvert);
-
-    int weekdayInt = parsedDate.weekday;
-    if (weekdayInt == 1) {
-      weekday = 'MONDAY';
-    } else if (weekdayInt == 2) {
-      weekday = 'TUESDAY';
-    } else if (weekdayInt == 3) {
-      weekday = 'WEDNESDAY';
-    } else if (weekdayInt == 4) {
-      weekday = 'THURSDAY';
-    } else if (weekdayInt == 5) {
-      weekday = 'FRIDAY';
-    } else if (weekdayInt == 6) {
-      weekday = 'SATURDAY';
-    } else if (weekdayInt == 7) {
-      weekday = 'SUNDAY';
-    }
-
-    return weekday;
-  } // TODO: DONE
-
-  String dateToString(String date) {
-    String monthName;
-
-    List<String> dateObjects = date.split("/");
-    String month = dateObjects[0];
-    String day = dateObjects[1];
-    String year = dateObjects[2];
-
-    String dateStringToConvert = year + month + day;
-    DateTime parsedDate = DateTime.parse(dateStringToConvert);
-
-    int monthInt = parsedDate.month;
-    if (monthInt == 1) {
-      monthName = 'January';
-    } else if (monthInt == 2) {
-      monthName = 'February';
-    } else if (monthInt == 3) {
-      monthName = 'March';
-    } else if (monthInt == 4) {
-      monthName = 'April';
-    } else if (monthInt == 5) {
-      monthName = 'May';
-    } else if (monthInt == 6) {
-      monthName = 'June';
-    } else if (monthInt == 7) {
-      monthName = 'July';
-    } else if (monthInt == 8) {
-      monthName = 'August';
-    } else if (monthInt == 9) {
-      monthName = 'September';
-    } else if (monthInt == 10) {
-      monthName = 'October';
-    } else if (monthInt == 11) {
-      monthName = 'November';
-    } else if (monthInt == 12) {
-      monthName = 'December';
-    }
-
-    return '$monthName ${parsedDate.day}, ${parsedDate.year}';
-  } // TODO: DONE
-
-  int bacToPlant(double bac) {
-    bac = bac >= 0.12 ? 0.12 : bac; // sets BAC equal to 0.12 if >= 0.12
-    int plantNum = (5 * (bac / .12)).floor();
-    plantNum = plantNum > 4 ? 4 : plantNum;
-    return plantNum;
-  } // TODO: DONE
 
   Future<List<database.Day>> _makeDayList() async {
     List<database.Day> dayList;
@@ -126,7 +48,7 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
                           width: 80,
                           alignment: Alignment.centerLeft,
                           child: Image.asset(
-                              'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getTotalWaters()}.png',
+                              'assets/images/plants/drink${main.bacToPlant(day.getMaxBac())}water${day.getTotalWaters()}.png',
                               height: 50,
                               width: 50)),
                       Row(children: [
@@ -231,8 +153,82 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
 //                child: Column(
 //                    crossAxisAlignment: CrossAxisAlignment.start,
 //                    children: widgetList))));
+
+  }
+
+  String getWeekday(String date) {
+    String weekday;
+
+    List<String> dateObjects = date.split("/");
+    String month = dateObjects[0];
+    String day = dateObjects[1];
+    String year = dateObjects[2];
+
+    String dateStringToConvert = year + day + month;
+    DateTime parsedDate = DateTime.parse(dateStringToConvert);
+
+    int weekdayInt = parsedDate.weekday;
+    if (weekdayInt == 1) {
+      weekday = 'MONDAY';
+    } else if (weekdayInt == 2) {
+      weekday = 'TUESDAY';
+    } else if (weekdayInt == 3) {
+      weekday = 'WEDNESDAY';
+    } else if (weekdayInt == 4) {
+      weekday = 'THURSDAY';
+    } else if (weekdayInt == 5) {
+      weekday = 'FRIDAY';
+    } else if (weekdayInt == 6) {
+      weekday = 'SATURDAY';
+    } else if (weekdayInt == 7) {
+      weekday = 'SUNDAY';
+    }
+
+    return weekday;
+  }
+
+  String dateToString(String date) {
+    String monthName;
+
+    List<String> dateObjects = date.split("/");
+    String month = dateObjects[0];
+    String day = dateObjects[1];
+    String year = dateObjects[2];
+
+    String dateStringToConvert = year + month + day;
+    DateTime parsedDate = DateTime.parse(dateStringToConvert);
+
+    int monthInt = parsedDate.month;
+    if (monthInt == 1) {
+      monthName = 'January';
+    } else if (monthInt == 2) {
+      monthName = 'February';
+    } else if (monthInt == 3) {
+      monthName = 'March';
+    } else if (monthInt == 4) {
+      monthName = 'April';
+    } else if (monthInt == 5) {
+      monthName = 'May';
+    } else if (monthInt == 6) {
+      monthName = 'June';
+    } else if (monthInt == 7) {
+      monthName = 'July';
+    } else if (monthInt == 8) {
+      monthName = 'August';
+    } else if (monthInt == 9) {
+      monthName = 'September';
+    } else if (monthInt == 10) {
+      monthName = 'October';
+    } else if (monthInt == 11) {
+      monthName = 'November';
+    } else if (monthInt == 12) {
+      monthName = 'December';
+    }
+
+    return '$monthName ${parsedDate.day}, ${parsedDate.year}';
   }
 }
+
 
 class BacChart extends StatelessWidget {
 //  final List<charts.Series> seriesList;
@@ -264,6 +260,7 @@ class BacChart extends StatelessWidget {
       )
     ];
   }
+
 }
 
 class TimeSeriesBac {
