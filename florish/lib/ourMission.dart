@@ -32,11 +32,11 @@ class _OurMissionPageState extends State<OurMissionPage> {
                   child: Container(
                     padding: EdgeInsets.all(MediaQuery.of(context).size.width / 20),
                     child: Text(
-                        "We aim to provide a mechanism to drink in a safe, "
-                            "healthy, and enticing way via a drinking tracker that gives a visual "
-                            "representation of Blood Alcohol Content. \n\n"
-                            "It's easy to binge drink and lose track of alcohol consumption and we hope "
-                            "to provide an emotional incentive to monitor well-being and drinking habits.",
+                        "FLORISH, as a college student developed app, provides a platform for increased "
+                            "awareness of drinking levels in any scenario.  Specifically, FLORISH is catered towards college students, who often binge drink and lose track of their Alcohol intake levels, jeopardizing their own safety, as well as that of those around them."
+                            " In turn, FLORISH provides a visual indicator of their BAC as an incentive to monitor their wellbeing and drinking habits. \n\n"
+                            "Through the plant icon, FLORISH seeks to create accountability amongst each user in keeping their plant healthy. The essential vision is"
+                            " to provide an emotional incentive to monitor well-being and Alcohol intake habits, through attachment to the plant's health in relation to BAC.",
                         style: TextStyle(
                             fontFamily: 'Montserrat',
                             height: 1.3,
