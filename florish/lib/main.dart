@@ -696,7 +696,7 @@ Future<Day> determineDay() async {
         totalDrinks: 0,
         totalWaters: 0,
         sessionList: new List<int>(),
-        hydratio: 0.0,
+        todayhydratio: 0.0,
         yesterHydratio: yesterHyd);
 
     Future<List> yesterInfo = getYesterInfo();
@@ -812,7 +812,7 @@ int waterToPlant() {
       (yesterWater - ((diff / 60) * yesterHyd) + globals.today.totalWaters) /
           24;
 
-  globals.today.hydratio = ratio;
+  globals.today.todayhydratio = ratio;
 
   plantNumWater = (5 * (ratio / .4)).round();
   plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;

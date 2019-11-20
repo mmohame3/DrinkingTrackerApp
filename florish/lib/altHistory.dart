@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'database_helpers.dart' as database;
 import 'package:sqflite/sqflite.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'globals.dart' as globals;
 
 class AltHistoryPage extends StatefulWidget {
   @override
@@ -163,25 +164,23 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
                       ])
                     ])),
                 children: <Widget>[
-            Row(children: <Widget>[
-                                  Image.asset(
-                                    'assets/images/soloCup.png',
-                                    width: 20,
-                                  ),
-                                  Text(
-                                      '    ' +
-                                          day.getTotalDrinks().toString() +
-                                          '          ',
-                                      style: TextStyle(color: Colors.black)), //TODO: space this with flex
-                                  Image.asset(
-                                    'assets/images/waterDrop.png',
-                                    width: 20,
-                                  ),
-                                  Text('    ' + day.getTotalWaters().toString(),
-                                      style: TextStyle(color: Colors.black))
-                                ]),
+              Row(children: <Widget>[
+                Image.asset(
+                  'assets/images/soloCup.png',
+                  width: 20,
+                ),
+                Text('    ' + day.getTotalDrinks().toString() + '          ',
+                    style: TextStyle(
+                        color: Colors.black)), //TODO: space this with flex
+                Image.asset(
+                  'assets/images/waterDrop.png',
+                  width: 20,
+                ),
+                Text('    ' + day.getTotalWaters().toString(),
+                    style: TextStyle(color: Colors.black))
+              ]),
               Container(
-                  width: 2*MediaQuery.of(context).size.width / 3,
+                  width: 2 * MediaQuery.of(context).size.width / 3,
                   height: 100,
 //                    width: MediaQuery.of(context).size.width / 2,
 //                    height MediaQuery.of(context).size.width / 3,
@@ -192,9 +191,9 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
   }
 
   _updateWidgetList() async {
-    List<database.Day> dayList = await _makeDayList();
-    dayList.forEach((day) => widgetList.add(makeWidget(day)));
-    dayList.forEach((day) => print('Widget added for: ' + day.getDate()));
+      List<database.Day> dayList = await _makeDayList();
+      dayList.forEach((day) => widgetList.add(makeWidget(day)));
+      dayList.forEach((day) => print('Widget added for: ' + day.getDate()));
   }
 
   @override
@@ -205,14 +204,33 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
           backgroundColor: Color(0xFF97B633),
         ),
         backgroundColor: Color(0xFFF2F2F2),
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height,
-                ),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: widgetList))));
+        body: FutureBuilder( //<List<Widget>>(
+            future: _updateWidgetList(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      return new Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[makeWidget(globals.today)]);
+                    });
+              } else if (snapshot.hasError) {
+                return new Text("${snapshot.error}");
+              }
+              return new Container(
+                alignment: AlignmentDirectional.center,
+                child: new CircularProgressIndicator(),
+              );
+            }));
+//        body: SingleChildScrollView(
+//            child: ConstrainedBox(
+//                constraints: BoxConstraints(
+//                  minHeight: MediaQuery.of(context).size.height,
+//                ),
+//                child: Column(
+//                    crossAxisAlignment: CrossAxisAlignment.start,
+//                    children: widgetList))));
   }
 }
 

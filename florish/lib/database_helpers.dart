@@ -16,7 +16,7 @@ final String columnMBWater = 'WateratmaxBAC';
 final String columnDrinkCount = "totaldrinkcount";
 final String columnWaterCount = "totalwatercount";
 final String columnSession = "sessionlist";
-final String columnHydratio = "todayhydratio";
+final String columnTodayHydratio = "todayhydratio";
 final String columnYesterHydratio = "yesterhydratio";
 
 class Day {
@@ -29,7 +29,7 @@ class Day {
   int totalDrinks;
   int totalWaters;
   List<int> sessionList;
-  double hydratio;
+  double todayhydratio;
   double yesterHydratio;
 
   Day(
@@ -42,7 +42,7 @@ class Day {
       this.totalDrinks,
       this.totalWaters,
       this.sessionList,
-      this.hydratio,
+      this.todayhydratio,
       this.yesterHydratio});
 
   Day.fromMap(Map<String, dynamic> map) {
@@ -55,7 +55,7 @@ class Day {
     totalDrinks = map[columnDrinkCount];
     totalWaters = map[columnWaterCount];
     sessionList = map[columnSession];
-    hydratio = map[columnHydratio];
+    todayhydratio = map[columnTodayHydratio];
     yesterHydratio = map[columnYesterHydratio];
   }
 
@@ -70,7 +70,7 @@ class Day {
       columnDrinkCount: totalDrinks,
       columnWaterCount: totalWaters,
       columnSession: sessionList,
-      columnHydratio: hydratio,
+      columnTodayHydratio: todayhydratio,
       columnYesterHydratio: yesterHydratio
     };
 
@@ -82,7 +82,7 @@ class Day {
     return 'Day {date: $date, hourList: $hourList, minuteList: $minuteList, typeList: $typeList, '
         'maxBAC: $maxBAC, waterAtMaxBAC: $waterAtMaxBAC,'
         'totalDrinks: $totalDrinks, totalWaters: $totalWaters, '
-        'session: $sessionList, todayhydratio: $hydratio, yesterhydratio: $yesterHydratio}';
+        'session: $sessionList, todayhydratio: $todayhydratio, yesterhydratio: $yesterHydratio}';
   }
 
   // NOTE: this many getters and setters CANNOT be efficient in a
@@ -121,8 +121,8 @@ class Day {
     return this.totalWaters;
   }
 
-  double getHydratio() {
-    return this.hydratio;
+  double getTodayHydratio() {
+    return this.todayhydratio;
   }
 
   double getYesterHydratio() {
@@ -165,8 +165,8 @@ class Day {
     this.totalWaters = waters;
   }
 
-  void setHydratio(double ratio) {
-    this.hydratio = ratio;
+  void setTodayHydratio(double ratio) {
+    this.todayhydratio = ratio;
   }
 
   void setYesterHydratio(double ratio) {
@@ -193,7 +193,7 @@ class DatabaseHelper {
   static final columnDrinkCount = "totaldrinkcount";
   static final columnWaterCount = "totalwatercount";
   static final columnSession = "sessionlist";
-  static final columnHydratio = "todayhydratio";
+  static final columnTodayHydratio = "todayhydratio";
   static final columnYesterHydratio = "yesterhydratio";
 
   DatabaseHelper._privateConstructor();
@@ -225,7 +225,7 @@ class DatabaseHelper {
                 $columnDrinkCount INTEGER NOT NULL,
                 $columnWaterCount INTEGER NOT NULL,
                 $columnSession BLOB NOT NULL,
-                $columnHydratio REAL NOT NULL,
+                $columnTodayHydratio REAL NOT NULL,
                 $columnYesterHydratio REAL NOT NULL 
               )
               ''');
@@ -264,7 +264,7 @@ class DatabaseHelper {
     print([]);
     Day newDay = Day(date: date, hourList: new List<int>(), minuteList: new List<int>(),
         typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0,
-        totalWaters: 0, sessionList: new List<int>(), hydratio: 0.0, yesterHydratio: 0.0);
+        totalWaters: 0, sessionList: new List<int>(), todayhydratio: 0.0, yesterHydratio: 0.0);
     updateDay(newDay);
   }
 
