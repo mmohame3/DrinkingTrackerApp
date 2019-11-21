@@ -64,6 +64,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
         showDayEndPopup(context);
       }
       await getInputInformation();
+      globals.bac = 0;
     });
   }
 
@@ -92,20 +93,6 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
         color: Color(0xFF97B633),
         child: ListView(
           children: <Widget>[
-//            ListTile(
-//              title: Text(
-//                "MY PLANT",
-//                style: TextStyle(
-//                    fontSize: 16,
-//                    color: Colors.white,
-//                    fontFamily: 'Montserrat',
-//                    letterSpacing: 1),
-//              ),
-//              onTap: () {
-//                Navigator.pop(context);
-//              },
-//              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
-//            ),
             ListTile(
 //              contentPadding: (top: MediaQuery.of(context).size.height/40),
               leading: Icon(
@@ -243,7 +230,6 @@ class _PlantState extends State<Plant> {
   @override
   void initState() {
     super.initState();
-    //getInputInformation();
   }
 
   getInputInformation() async {
@@ -268,7 +254,7 @@ class _PlantState extends State<Plant> {
   // sets the bac global to the new bac and updates the max bac
   // sets the plant's image name to a new path
   updateImageAndBAC(String path) {
-    globals.bac = _bacMath(_dbListToTimeList());
+    globals.bac = _bacMath();
     globals.imageName =
         'assets/images/plants/drink${bacToPlant(globals.bac)}water${waterToPlant()}.png';
     if (globals.bac >= globals.today.getMaxBac()) {
@@ -279,7 +265,7 @@ class _PlantState extends State<Plant> {
   }
 
   // takes in a list of DateTime objects and calculates the bac
-  _bacMath(drinkTimeList) {
+  double _bacMath() {
     // sets the "current" date to one of two dates depending on
     // the time of day. This is to avoid issues with the noon-to-noon
     // resetting of counters and Day objects.
@@ -288,78 +274,82 @@ class _PlantState extends State<Plant> {
     DateTime newTime = new DateTime(2019, 11, dayNum, currentTime.hour,
         currentTime.minute, currentTime.second);
 
-    double runningBac = 0.0;
-    double sumBac = 0.0;
 
-    double r = 0.615;
-    Duration elapsedTime;
-    if (globals.selectedSex == 'Male') {
-      r = 0.68;
-    } else if (globals.selectedSex == 'Female') {
-      r = 0.55;
-    } else {
-      r = 0.615;
-    }
-    for (int i = 0; i < drinkTimeList.length; i++) {
-      elapsedTime = newTime.difference(drinkTimeList[i]);
-//TODO: Should the -elapsedTime * .015 part go after the summing? or somehow be adjusted?
-      // it seems weird to subtract that much from every drink
-      runningBac = ((14 / ((globals.selectedWeight * 453.592 * r))) * 100) -
-          ((elapsedTime.inSeconds / 3600.0) * .015);
-      runningBac = runningBac < 0 ? 0 : runningBac;
-      sumBac += runningBac;
-    }
-    //print('from back math method sex : ${_prefs.getString(globals.selectedSexKey)}');
-    //print('from back math method weight : ${_prefs.getInt(globals.selectedWeightKey)}');
-//    print('from back math method : $sumBac');
+    int elapsedTimeS = newTime.difference(_dbTimeToDateTime()).inSeconds;
+    //int totalElapsedTimeS = elapsedTimeS + timeSinceReset + timeBetweenYesterdaysLastAndReset;
+    //print("elapsedTimeS: " + elapsedTimeS.toString());
+
+    double totalBAC = globals.today.lastBAC - ((elapsedTimeS/3600)* .015);
+
+    totalBAC = totalBAC < 0 ? 0.0 : totalBAC;
+
+
     double yesterBAC, drinkToNoonTime;
     getYesterInfo().then((list) {
             yesterBAC = list[3];
             drinkToNoonTime = list[4];
-//            print(drinkToNoonTime);
+
     });
     yesterBAC ??= 0.0;
     drinkToNoonTime ??= 0.0;
 
     DateTime noon = new DateTime(
         currentTime.year, currentTime.month, currentTime.day, resetTime);
-    noon =
-        currentTime.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
+    noon = currentTime.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
 
-    int diff = currentTime.difference(noon).inSeconds;
+    int afterNoonDiff = currentTime.difference(noon).inSeconds;
+
     double beforeNoonDiff = drinkToNoonTime * 3600;
 
-    double totalYesterBAC = (yesterBAC - (((diff + beforeNoonDiff) / 3600) * 0.015));
+    double totalYesterBAC = (yesterBAC - (((afterNoonDiff + beforeNoonDiff) / 3600) * 0.015));
     totalYesterBAC = totalYesterBAC < 0 ? 0 : totalYesterBAC;
-    double totalBAC = sumBac + totalYesterBAC;
 
+    totalBAC += totalYesterBAC;
+    // print("elapsed time w/ math: " + ((elapsedTimeS/3600)* .015).toString());
     return totalBAC;
+
   }
 
+  DateTime _dbTimeToDateTime() {
+    int hour, minute;
+    int i = globals.today.typeList.lastIndexOf(1);
+    if (i == -1) {
+      hour = DateTime.now().hour;
+      minute = DateTime.now().minute;
+    }
+    else{
+      hour = globals.today.hourList[i];
+      minute = globals.today.minuteList[i];
+    }
+    int seconds = DateTime.now().second;
+    int dayNum = hour < resetTime ? 2 : 1;
+    DateTime newTime = new DateTime(2019, 11, dayNum, hour, minute, seconds);
+    return newTime;
+  }
   // turns today's hours and minute lists to a list of DateTimes
   // (for the ones that correspond to drinks not waters)
-  _dbListToTimeList() {
-    List hours = globals.today.hourList;
-    List minutes = globals.today.getMinutes();
-    List types = globals.today.getTypes();
-    int i;
-    int dayNum;
-    DateTime newTime;
-    List<DateTime> timeList = [];
-    for (i = 0; i < types.length; i++) {
-      // if the drink type is alcohol, the corresponding info
-      // is added to the new list of DateTimes
-
-      if (types[i] == 1) {
-        // year and month are hard set bc issues arise because
-        // of our noon-to-noon system for resetting drinks
-        dayNum = hours[i] < resetTime ? 2 : 1;
-        newTime = new DateTime(2019, 11, dayNum, hours[i], minutes[i]);
-        timeList.add(newTime);
-      }
-    }
-    return timeList;
-  }
+//  _dbListToTimeList() {
+//    List hours = globals.today.hourList;
+//    List minutes = globals.today.getMinutes();
+//    List types = globals.today.getTypes();
+//    int i;
+//    int dayNum;
+//    DateTime newTime;
+//    List<DateTime> timeList = [];
+//    for (i = 0; i < types.length; i++) {
+//      // if the drink type is alcohol, the corresponding info
+//      // is added to the new list of DateTimes
+//
+//      if (types[i] == 1) {
+//        // year and month are hard set bc issues arise because
+//        // of our noon-to-noon system for resetting drinks
+//        dayNum = hours[i] < resetTime ? 2 : 1;
+//        newTime = new DateTime(2019, 11, dayNum, hours[i], minutes[i]);
+//        timeList.add(newTime);
+//      }
+//    }
+//    return timeList;
+//  }
 
   Future<void> endSession() async {
     if ((globals.today.sessionList.length != 0) &&
@@ -409,7 +399,7 @@ class _PlantState extends State<Plant> {
                         ),
                       ),
                       Text(
-                        '${globals.bac.toStringAsFixed(3)}%',
+                        '${globals.bac.toStringAsFixed(6)}%',
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.white,
@@ -521,6 +511,8 @@ class _DrinkButtonState extends State<DrinkButton> {
           }
           globals.today.totalDrinks++;
           drinkString = globals.today.totalDrinks.toString();
+          globals.bac += _oneDrink();
+          globals.today.lastBAC = globals.bac;
           drinkButtonTap();
           print(globals.today.totalDrinks.toString());
           widget.parentActionUpdates('assets/images/plants/drink0water0.png');
@@ -557,11 +549,20 @@ class _DrinkButtonState extends State<DrinkButton> {
     );
   }
 
+  double _oneDrink() {
+    double r = 0.615;
+    if (globals.selectedSex == 'Male') {
+      r = 0.68;
+    }
+    else if (globals.selectedSex == 'Female') {
+      r = 0.55;
+    }
+    return (14 / ((globals.selectedWeight * 453.592 * r))) * 100;
+  }
 // Updates today's time and type lists,
   // updates the database itself
 // and prints today's data (just for testing)
   Future<void> drinkButtonTap() async {
-    //print(globals.start);
     if (globals.start) {
       globals.today.addStartEnd(globals.today.typeList.length);
     }
@@ -570,7 +571,6 @@ class _DrinkButtonState extends State<DrinkButton> {
     globals.today.addHour(currentTime.hour);
     globals.today.addMinute(currentTime.minute);
     globals.today.addType(1);
-    globals.today.lastBAC = globals.bac;
     dbHelper.updateDay(globals.today);
     //print(globals.today.sessionList);
     //print(globals.today.toString());
@@ -715,15 +715,6 @@ Future<Day> determineDay() async {
   } else {
     globals.dayEnded = false;
 
-// alternate (read: better) way #1
-//    dbHelper.getDay(todayDate).then((dbDay) {
-//      day = dbDay;
-//      print(day.toString());
-//      globals.today = day;
-//      return day;
-//    });
-
-// alternate (read: better) way #2
     day = Day.fromMap(result[0]);
 
     day.sessionList ??= new List<int>();
