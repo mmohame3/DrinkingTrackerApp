@@ -20,7 +20,6 @@ final String columnHydratio = "hydratio";
 final String columnYesterHydratio = "yesterhydratio";
 final String columnLastBAC = "lastBAC";
 
-
 class Day {
   String date;
   List<int> hourList;

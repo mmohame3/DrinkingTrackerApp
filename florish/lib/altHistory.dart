@@ -104,18 +104,14 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
               Container(
                   width: 2 * MediaQuery.of(context).size.width / 3,
                   height: 100,
-//                    width: MediaQuery.of(context).size.width / 2,
-//                    height MediaQuery.of(context).size.width / 3,
                   child: BacChart())
-            ]
-                // TODO: fill drop-down with more information
-                ));
+            ]));
   }
 
   _updateWidgetList() async {
-      List<database.Day> dayList = await _makeDayList();
-      dayList.forEach((day) => widgetList.add(makeWidget(day)));
-      dayList.forEach((day) => print('Widget added for: ' + day.getDate()));
+    List<database.Day> dayList = await _makeDayList();
+    dayList.forEach((day) => widgetList.add(makeWidget(day)));
+    dayList.forEach((day) => print('Widget added for: ' + day.getDate()));
   }
 
   @override
@@ -126,7 +122,8 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
           backgroundColor: Color(0xFF97B633),
         ),
         backgroundColor: Color(0xFFF2F2F2),
-        body: FutureBuilder( //<List<Widget>>(
+        body: FutureBuilder(
+            //<List<Widget>>(
             future: _updateWidgetList(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -153,7 +150,6 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
 //                child: Column(
 //                    crossAxisAlignment: CrossAxisAlignment.start,
 //                    children: widgetList))));
-
   }
 
   String getWeekday(String date) {
@@ -229,7 +225,6 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
   }
 }
 
-
 class BacChart extends StatelessWidget {
 //  final List<charts.Series> seriesList;
 //  final bool animate;
@@ -260,7 +255,6 @@ class BacChart extends StatelessWidget {
       )
     ];
   }
-
 }
 
 class TimeSeriesBac {
