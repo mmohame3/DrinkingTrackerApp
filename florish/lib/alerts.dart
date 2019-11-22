@@ -18,20 +18,7 @@ Future<void> settingsAlert(BuildContext context) async {
         return CupertinoAlertDialog(
           title: Text('Input your height and sex for a more accurate BAC calculation'),
           content: Container(
-              padding: EdgeInsets.only(left: 20, right: 20, top: 15),
-              child: CupertinoButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                          new PersonalInfoPage()));
-                },
-                color: Color(0xFFA8C935),
-                child: Text('Settings',
-                    style: TextStyle(color: Colors.white)),
-              )),
+              padding: EdgeInsets.only(left: 20, right: 20, top: 15)),
           actions: <Widget>[
 
             FlatButton(

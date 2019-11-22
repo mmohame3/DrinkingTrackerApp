@@ -399,7 +399,7 @@ class _PlantState extends State<Plant> {
                         ),
                       ),
                       Text(
-                        '${globals.bac.toStringAsFixed(6)}%',
+                        '${globals.bac.toStringAsFixed(3)}%',
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.white,
@@ -514,7 +514,7 @@ class _DrinkButtonState extends State<DrinkButton> {
           globals.bac += _oneDrink();
           globals.today.lastBAC = globals.bac;
           drinkButtonTap();
-          print(globals.today.totalDrinks.toString());
+//          print(globals.today.totalDrinks.toString());
           widget.parentActionUpdates('assets/images/plants/drink0water0.png');
           settingsAlert(context);
         });

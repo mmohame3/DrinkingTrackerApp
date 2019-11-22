@@ -11,7 +11,6 @@ class AltHistoryPage extends StatefulWidget {
 }
 
 class _AltHistoryPageState extends State<AltHistoryPage> {
-  // TODO: have to hot reload once in the page for anything to show up
   List<Widget> widgetList = [];
 
   _AltHistoryPageState() {
@@ -19,17 +18,11 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
   }
 
   Future<List<database.Day>> _makeDayList() async {
-    List<database.Day> dayList;
+    List<database.Day> dayList = List<database.Day>();
 
     Database db = await database.DatabaseHelper.instance.database;
     List<Map> result = await db.rawQuery('SELECT * FROM days');
-    print(result.toString());
-
-    print('adding day ...');
     result.forEach((map) => dayList.add(database.Day.fromMap(map)));
-    print('day added');
-
-    print('DayList = ' + dayList.toString());
     return dayList;
   }
 
@@ -111,7 +104,6 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
   _updateWidgetList() async {
     List<database.Day> dayList = await _makeDayList();
     dayList.forEach((day) => widgetList.add(makeWidget(day)));
-    dayList.forEach((day) => print('Widget added for: ' + day.getDate()));
   }
 
   @override
@@ -123,17 +115,18 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
         ),
         backgroundColor: Color(0xFFF2F2F2),
         body: FutureBuilder(
-            //<List<Widget>>(
+//            <List<Widget>>(
             future: _updateWidgetList(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return new Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[makeWidget(globals.today)]);
-                    });
+                return SingleChildScrollView(
+                    child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: MediaQuery.of(context).size.height,
+                        ),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: widgetList)));
               } else if (snapshot.hasError) {
                 return new Text("${snapshot.error}");
               }
@@ -142,14 +135,7 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
                 child: new CircularProgressIndicator(),
               );
             }));
-//        body: SingleChildScrollView(
-//            child: ConstrainedBox(
-//                constraints: BoxConstraints(
-//                  minHeight: MediaQuery.of(context).size.height,
-//                ),
-//                child: Column(
-//                    crossAxisAlignment: CrossAxisAlignment.start,
-//                    children: widgetList))));
+//        body:
   }
 
   String getWeekday(String date) {

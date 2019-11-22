@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,6 +19,7 @@ final String columnHydratio = "hydratio";
 final String columnYesterHydratio = "yesterhydratio";
 final String columnLastBAC = "lastBAC";
 
+
 class Day {
   String date;
   List<int> hourList;
@@ -36,17 +36,17 @@ class Day {
 
   Day(
       {this.date,
-      this.hourList,
-      this.minuteList,
-      this.typeList,
-      this.maxBAC,
-      this.waterAtMaxBAC,
-      this.totalDrinks,
-      this.totalWaters,
-      this.sessionList,
-      this.hydratio,
-      this.yesterHydratio,
-      this.lastBAC});
+        this.hourList,
+        this.minuteList,
+        this.typeList,
+        this.maxBAC,
+        this.waterAtMaxBAC,
+        this.totalDrinks,
+        this.totalWaters,
+        this.sessionList,
+        this.hydratio,
+        this.yesterHydratio,
+        this.lastBAC});
 
   Day.fromMap(Map<String, dynamic> map) {
     date = map[columnDay];
@@ -175,7 +175,7 @@ class Day {
     this.totalWaters = waters;
   }
 
-  void setTodayHydratio(double ratio) {
+  void setHydratio(double ratio) {
     this.hydratio = ratio;
   }
 
@@ -203,7 +203,7 @@ class DatabaseHelper {
   static final columnDrinkCount = "totaldrinkcount";
   static final columnWaterCount = "totalwatercount";
   static final columnSession = "sessionlist";
-  static final columnTodayHydratio = "todayhydratio";
+  static final columnHydratio = "hydratio";
   static final columnYesterHydratio = "yesterhydratio";
   static final columnLastBAC = "lastBAC";
 
@@ -236,14 +236,9 @@ class DatabaseHelper {
                 $columnDrinkCount INTEGER NOT NULL,
                 $columnWaterCount INTEGER NOT NULL,
                 $columnSession BLOB NOT NULL,
-<<<<<<< HEAD
-                $columnTodayHydratio REAL NOT NULL,
-                $columnYesterHydratio REAL NOT NULL 
-=======
                 $columnHydratio REAL NOT NULL,
                 $columnYesterHydratio REAL NOT NULL,
                 $columnLastBAC REAL NOT NULL
->>>>>>> a83bcf8fa25f9c9fcf28288a8af9ba02f3a7c846
               )
               ''');
     await db.execute('CREATE TABLE inputTable (id INTEGER PRIMARY KEY, feet INTEGER, inch INTEGER, weight INTEGER, gender TEXT)');
@@ -280,14 +275,14 @@ class DatabaseHelper {
     Day newDay = Day(date: date, hourList: new List<int>(), minuteList: new List<int>(),
         typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0,
         totalWaters: 0, sessionList: new List<int>(), hydratio: 0.0, yesterHydratio: 0.0,
-          lastBAC: 0.0);
+        lastBAC: 0.0);
     updateDay(newDay);
   }
 
   Future<Day> getDay(String date) async {
     Database db = await instance.database;
     List result =
-        await db.query(tableDays, where: '$columnDay = ?', whereArgs: [date]);
+    await db.query(tableDays, where: '$columnDay = ?', whereArgs: [date]);
     return result.isNotEmpty ? Day.fromMap(result.first) : Null ;
   }
 
