@@ -285,22 +285,27 @@ class _PlantState extends State<Plant> {
 
     double oneDrink = (14 / (globals.selectedWeight * 453.592 * r) * 100);
     double fullBAC = globals.today.totalDrinks * oneDrink;
-    List timeList = _dbListToTimeList();
+//    List timeList = _dbListToTimeList();
     int i = 0;
+    double rolloverBAC = 0.0;
+    double toSubtract;
     if (globals.today.totalDrinks > 0) {
       for (i = 0; i < globals.today.totalDrinks - 1; i++) {
-        int timeDiff = timeList[i + 1].difference(timeList[i]).inSeconds;
-        double toSubtract = (timeDiff / 3600) * bacDropPerHour <= oneDrink ? (timeDiff / 3600) * bacDropPerHour : oneDrink;
+        int timeDiff = drinkTimeList[i + 1].difference(drinkTimeList[i]).inSeconds;
+        //rollover = amount of bac from drink[i] not digested
+        double cap = oneDrink;
+        //how to make cap
+        //time between 1st and 2nd is large: cap = oneDrink
+        //time between 1st and 2nd is short, between 3rd is larger: cap = oneDrink + bac not digested during 1st interval
+        toSubtract = (timeDiff / 3600) * bacDropPerHour <= oneDrink + rolloverBAC ? (timeDiff / 3600) * bacDropPerHour : oneDrink + rolloverBAC;
+        rolloverBAC = rolloverBAC + (oneDrink - toSubtract);
+
         fullBAC = fullBAC - toSubtract;
 
       }
 
-      if ((currentTime
-          .difference(timeList[i])
-          .inSeconds / 3600) * bacDropPerHour <= oneDrink) {
-        fullBAC = fullBAC - ((currentTime
-            .difference(timeList[i])
-            .inSeconds / 3600) * bacDropPerHour);
+      if ((currentTime.difference(drinkTimeList.last).inSeconds / 3600) * bacDropPerHour <= oneDrink + rolloverBAC) {
+        fullBAC = fullBAC - ((currentTime.difference(drinkTimeList.last).inSeconds / 3600) * bacDropPerHour);
       }
     }
 
@@ -315,7 +320,7 @@ class _PlantState extends State<Plant> {
             yesterBAC = list[3];
             drinkToNoonTime = list[4];
 //            print(drinkToNoonTime);
-    });
+        });
     yesterBAC ??= 0.0;
     drinkToNoonTime ??= 0.0;
 
@@ -329,6 +334,8 @@ class _PlantState extends State<Plant> {
     totalYesterBAC = totalYesterBAC < 0 ? 0 : totalYesterBAC;
 
     double totalBAC = fullBAC + totalYesterBAC;
+//    print("fullBAC: " + fullBAC.toString());
+//    print("totalBAC: " + totalBAC.toString());
     return totalBAC;
   }
 
