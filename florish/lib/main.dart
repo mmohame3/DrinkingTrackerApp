@@ -290,9 +290,9 @@ class _PlantState extends State<Plant> {
     if (globals.today.totalDrinks > 0) {
       for (i = 0; i < globals.today.totalDrinks - 1; i++) {
         int timeDiff = timeList[i + 1].difference(timeList[i]).inSeconds;
-        if ((timeDiff / 3600) * bacDropPerHour <= oneDrink) {
-          fullBAC = fullBAC - ((timeDiff / 3600) * bacDropPerHour);
-        }
+        double toSubtract = (timeDiff / 3600) * bacDropPerHour <= oneDrink ? (timeDiff / 3600) * bacDropPerHour : oneDrink;
+        fullBAC = fullBAC - toSubtract;
+
       }
 
       if ((currentTime
