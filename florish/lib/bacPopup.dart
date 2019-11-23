@@ -175,7 +175,7 @@ String _getBacInfo(double bac) {
   //switch statements.....
   String effects;
   if (bac < .02) {
-    effects = "";
+    effects = "Relaxed with few obvious effects other than a slight intensification of mood";
   }
 
   if ((bac >= 0.020) && (bac < 0.04)) {
@@ -306,7 +306,7 @@ Widget dayEndPopUpBody(BuildContext context) {
 
 Widget bacText(BuildContext context) {
   double bacLater = (globals.bac - .08) / .015;
-  double bacToZero = globals.bac / .05;
+  double bacToZero = globals.bac / .015;
   bacLater = bacLater < 0 ? 0 : bacLater;
   var container = Column();
   if (globals.bac > 0) {
