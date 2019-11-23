@@ -16,7 +16,10 @@ import './bacPopup.dart';
 import './alerts.dart';
 
 final int resetTime = 12; //resets counters on this hour
-final double maxBac = 0.12;
+final double maxBAC = 0.12;
+final int numberOfDrinkPlants = 5;
+final int numberOfWaterPlants = 6;
+final double bacDropPerHour = .015;
 
 void main() => runApp(MyApp());
 
@@ -48,12 +51,12 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
   @override
   void initState() {
     //uncomment to reset today's data to 0
-    DateTime time = DateTime.now();
-    if (time.hour < resetTime){
-      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
-    }
-
-    dbHelper.deleteDay(dateTimeToString(time));
+//    DateTime time = DateTime.now();
+//    if (time.hour < resetTime){
+//      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+//    }
+//
+//    dbHelper.deleteDay(dateTimeToString(time));
 //    dbHelper.resetDay(dateTimeToString(time));
 
     super.initState();
@@ -92,20 +95,6 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
         color: Color(0xFF97B633),
         child: ListView(
           children: <Widget>[
-//            ListTile(
-//              title: Text(
-//                "MY PLANT",
-//                style: TextStyle(
-//                    fontSize: 16,
-//                    color: Colors.white,
-//                    fontFamily: 'Montserrat',
-//                    letterSpacing: 1),
-//              ),
-//              onTap: () {
-//                Navigator.pop(context);
-//              },
-//              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
-//            ),
             ListTile(
 //              contentPadding: (top: MediaQuery.of(context).size.height/40),
               leading: Icon(
@@ -270,7 +259,7 @@ class _PlantState extends State<Plant> {
   updateImageAndBAC(String path) {
     globals.bac = _bacMath(_dbListToTimeList());
     globals.imageName =
-        'assets/images/plants/drink${bacToPlant()}water${waterToPlant()}.png';
+        'assets/images/plants/drink${bacToPlant(globals.bac)}water${waterToPlant()}.png';
     if (globals.bac >= globals.today.getMaxBac()) {
       globals.today.setMaxBac(globals.bac);
       globals.today.setWatersAtMaxBac(waterToPlant());
@@ -284,34 +273,43 @@ class _PlantState extends State<Plant> {
     // the time of day. This is to avoid issues with the noon-to-noon
     // resetting of counters and Day objects.
     DateTime currentTime = DateTime.now();
-    int dayNum = currentTime.hour < resetTime ? 2 : 1;
-    DateTime newTime = new DateTime(2019, 11, dayNum, currentTime.hour,
-        currentTime.minute, currentTime.second);
-
-    double runningBac = 0.0;
-    double sumBac = 0.0;
+//    currentTime = currentTime.hour < resetTime ? currentTime
+//        : currentTime.subtract(Duration(days: 1));
 
     double r = 0.615;
-    Duration elapsedTime;
     if (globals.selectedSex == 'Male') {
       r = 0.68;
     } else if (globals.selectedSex == 'Female') {
       r = 0.55;
-    } else {
-      r = 0.615;
     }
-    for (int i = 0; i < drinkTimeList.length; i++) {
-      elapsedTime = newTime.difference(drinkTimeList[i]);
-//TODO: Should the -elapsedTime * .015 part go after the summing? or somehow be adjusted?
-      // it seems weird to subtract that much from every drink
-      runningBac = ((14 / ((globals.selectedWeight * 453.592 * r))) * 100) -
-          ((elapsedTime.inSeconds / 3600.0) * .015);
-      runningBac = runningBac < 0 ? 0 : runningBac;
-      sumBac += runningBac;
+
+    double oneDrink = (14 / (globals.selectedWeight * 453.592 * r) * 100);
+    double fullBAC = globals.today.totalDrinks * oneDrink;
+    List timeList = _dbListToTimeList();
+    int i = 0;
+    if (globals.today.totalDrinks > 0) {
+      for (i = 0; i < globals.today.totalDrinks - 1; i++) {
+        int timeDiff = timeList[i + 1].difference(timeList[i]).inSeconds;
+        if ((timeDiff / 3600) * bacDropPerHour <= oneDrink) {
+          fullBAC = fullBAC - ((timeDiff / 3600) * bacDropPerHour);
+        }
+      }
+
+      if ((currentTime
+          .difference(timeList[i])
+          .inSeconds / 3600) * bacDropPerHour <= oneDrink) {
+        fullBAC = fullBAC - ((currentTime
+            .difference(timeList[i])
+            .inSeconds / 3600) * bacDropPerHour);
+      }
     }
-    //print('from back math method sex : ${_prefs.getString(globals.selectedSexKey)}');
-    //print('from back math method weight : ${_prefs.getInt(globals.selectedWeightKey)}');
-//    print('from back math method : $sumBac');
+
+
+        // fullBAC = fullBAC - (timeDiffHours * .015)
+      // if i = 0: diffBT drinks 0 and 1
+      //i =1: diffBT drinks 1 and 2
+      // i = 2: diffBT drinks 2 and 3
+
     double yesterBAC, drinkToNoonTime;
     getYesterInfo().then((list) {
             yesterBAC = list[3];
@@ -321,18 +319,16 @@ class _PlantState extends State<Plant> {
     yesterBAC ??= 0.0;
     drinkToNoonTime ??= 0.0;
 
-    DateTime noon = new DateTime(
-        currentTime.year, currentTime.month, currentTime.day, resetTime);
-    noon =
-        currentTime.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
+    DateTime noon = new DateTime(currentTime.year, currentTime.month, currentTime.day, resetTime);
+    noon = currentTime.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
 
-    int diff = currentTime.difference(noon).inSeconds;
+    int afterNoonDiff = currentTime.difference(noon).inSeconds;
     double beforeNoonDiff = drinkToNoonTime * 3600;
 
-    double totalYesterBAC = (yesterBAC - (((diff + beforeNoonDiff) / 3600) * 0.015));
+    double totalYesterBAC = (yesterBAC - (((afterNoonDiff + beforeNoonDiff) / 3600) * bacDropPerHour));
     totalYesterBAC = totalYesterBAC < 0 ? 0 : totalYesterBAC;
-    double totalBAC = sumBac + totalYesterBAC;
 
+    double totalBAC = fullBAC + totalYesterBAC;
     return totalBAC;
   }
 
@@ -340,10 +336,10 @@ class _PlantState extends State<Plant> {
   // (for the ones that correspond to drinks not waters)
   _dbListToTimeList() {
     List hours = globals.today.hourList;
-    List minutes = globals.today.getMinutes();
-    List types = globals.today.getTypes();
+    List minutes = globals.today.minuteList;
+    List types = globals.today.typeList;
     int i;
-    int dayNum;
+    DateTime currentTime = DateTime.now();
     DateTime newTime;
     List<DateTime> timeList = [];
     for (i = 0; i < types.length; i++) {
@@ -353,13 +349,19 @@ class _PlantState extends State<Plant> {
       if (types[i] == 1) {
         // year and month are hard set bc issues arise because
         // of our noon-to-noon system for resetting drinks
-        dayNum = hours[i] < resetTime ? 2 : 1;
-        newTime = new DateTime(2019, 11, dayNum, hours[i], minutes[i]);
+        if (currentTime.hour < 12 && hours[i] >= 12) {
+            newTime = currentTime.subtract(Duration(days: 1));
+        }
+        else {
+            newTime = currentTime;
+          }
+        newTime = new DateTime(newTime.year, newTime.month, newTime.day, hours[i], minutes[i]);
         timeList.add(newTime);
       }
     }
     return timeList;
   }
+
 
   Future<void> endSession() async {
     if ((globals.today.sessionList.length != 0) &&
@@ -787,9 +789,9 @@ Future<List<double>> getYesterInfo() async {
 
 // turns the BAC to a plant stage
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
-int bacToPlant() {
-  int plantNum = (5 * (globals.bac / .12)).round();
-  plantNum = plantNum > 4 ? 4 : plantNum;
+int bacToPlant(double bac) {
+  int plantNum = (numberOfDrinkPlants * (bac / maxBAC)).round();
+  plantNum = plantNum > numberOfDrinkPlants - 1 ? numberOfDrinkPlants - 1 : plantNum;
 
   return plantNum;
 }
@@ -822,8 +824,8 @@ int waterToPlant() {
 
   globals.today.hydratio = ratio;
 
-  plantNumWater = (5 * (ratio / .4)).round();
-  plantNumWater = plantNumWater > 5 ? 5 : plantNumWater;
+  plantNumWater = (numberOfWaterPlants * (ratio / .4)).round();
+  plantNumWater = plantNumWater > numberOfWaterPlants - 1 ? numberOfWaterPlants - 1 : plantNumWater;
   plantNumWater = plantNumWater < 0 ? 0 : plantNumWater;
 
   return plantNumWater;
