@@ -305,21 +305,18 @@ class _PlantState extends State<Plant> {
     if (globals.today.totalDrinks > 0) {
       for (i = 0; i < globals.today.totalDrinks - 1; i++) {
         int timeDiff = drinkTimeList[i + 1].difference(drinkTimeList[i]).inSeconds;
+
         //rollover = amount of bac from drink[i] not digested
-        double cap = oneDrink;
-        //how to make cap
-        //time between 1st and 2nd is large: cap = oneDrink
-        //time between 1st and 2nd is short, between 3rd is larger: cap = oneDrink + bac not digested during 1st interval
         toSubtract = (timeDiff / 3600) * bacDropPerHour <= oneDrink + rolloverBAC ? (timeDiff / 3600) * bacDropPerHour : oneDrink + rolloverBAC;
         rolloverBAC = rolloverBAC + (oneDrink - toSubtract);
 
         fullBAC = fullBAC - toSubtract;
-
       }
+      double timeSinceLastDrinkHours = (currentTime.difference(drinkTimeList.last).inSeconds / 3600);
 
-      if ((currentTime.difference(drinkTimeList.last).inSeconds / 3600) * bacDropPerHour <= oneDrink + rolloverBAC) {
-        fullBAC = fullBAC - ((currentTime.difference(drinkTimeList.last).inSeconds / 3600) * bacDropPerHour);
-      }
+      fullBAC = timeSinceLastDrinkHours * bacDropPerHour <= oneDrink + rolloverBAC ?
+          fullBAC - (timeSinceLastDrinkHours * bacDropPerHour) : fullBAC - (oneDrink + rolloverBAC);
+
     }
 
 
