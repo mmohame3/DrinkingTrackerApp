@@ -11,9 +11,10 @@ import './altHistory.dart';
 import './standardDrink.dart';
 import './ourMission.dart';
 import './PersonalInformation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import './bacPopup.dart';
 import './alerts.dart';
+import 'helpers/notifications.dart';
+
 
 final int resetTime = 12; //resets counters on this hour
 final double maxBAC = 0.12;
@@ -233,6 +234,8 @@ class _PlantState extends State<Plant> {
   void initState() {
     super.initState();
     //getInputInformation();
+        initializeNotifications();
+
   }
 
   getInputInformation() async {
@@ -249,6 +252,16 @@ class _PlantState extends State<Plant> {
   _PlantState() {
     determineDay().then((day) => setState(() {
           globals.today = day;
+
+          DateTime now = DateTime.now().toUtc().add(
+            Duration(seconds:30),
+          );
+          singleNotification(
+            now,
+            "Notification",
+            "This is a notification",
+            98123871,
+          );
           updateImageAndBAC('assets/images/plants/drink0water0.png');
           getDayEnded();
         }));
