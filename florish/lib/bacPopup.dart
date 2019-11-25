@@ -150,7 +150,7 @@ Widget BACpopUpBody(BuildContext context) {
                       "Blood Alcohol Concentration (BAC) refers to the percent of "
                       "alcohol in a person's blood stream."
                       "\n\nIn the U.S., a person is legally intoxicated if they have a BAC of .08% or higher.\n\n",
-                      style: TextStyle(
+                      style: TextStyle( fontSize: 16,
                           fontFamily: 'Montserrat',
                           height: 1.3,
                           color: Colors.black)),
@@ -180,54 +180,45 @@ String _getBacInfo(double bac) {
 
   if ((bac >= 0.020) && (bac < 0.04)) {
     effects =
-        "No loss of coordination, slight euphoria, and loss of shyness. Relaxation, but depressant effects are not apparent."
         "You still have balance! Relaxed is the vibe you are in.";
   }
 
   if ((bac >= .04) && (bac < 0.06)) {
     effects =
-        "Feeling of well-being, relaxation, lower inhibitions, and sensation of warmth. Euphoria. Some minor impairment of judgment and memory, lowering of caution.";
         "You still have balance but you are starting to forget the manners people expect of you. Impaired judgement and explosions of joy describe your current state.";
   }
 
   if ((bac >= .06) && (bac < 0.1)) {
     effects =
-        "Slight impairment of balance, speech, vision, reaction time, and hearing. Euphoria. Reduced judgment and self-control. Impaired reasoning and memory.";
         "Oh oh! You might be tumbling now. Slurring words, slowed reactions, and out of pocket actions describe your current state. Find a sober friend!";
   }
 
   if ((bac >= .1) && (bac < 0.13)) {
     effects =
-        "Significant impairment of motor coordination and loss of good judgment. Speech may be slurred; balance, peripheral vision, reaction time, and hearing will be impaired.";
         "Seek support! You have lost balance, clear speech, and sense of judgment.";
   }
 
   if ((bac >= .13) && (bac < 0.16)) {
     effects =
-        "Gross motor impairment and lack of physical control. Blurred vision and major loss of balance. Euphoria is reducing and beginning dysphoria (a state of feeling unwell).";
         "You are impaired in all physical and mental functions. Depression begins to set in at this stage, find support.";
   }
 
   if ((bac >= .16) && (bac < 0.2)) {
     effects =
-        "Dysphoria predominates, nausea may appear. The drinker has the appearance of a sloppy drunk.";
         " So called sloppy drunk stage, nausea initiates, and negative feelings begin at this stage. Seek help.";
   }
 
   if ((bac >= .2) && (bac < 0.25)) {
     effects =
-        "Needs assistance in walking; total mental confusion. Dysphoria with nausea and vomiting; possible blackout.";
         "Mental confusion, blackout level, memory impairment. User needs support as soon as possible.";
   }
 
   if ((bac >= .25) && (bac < 0.4)) {
-    effects = "Alcohol poisoning. Loss of consciousness.";
-    "Alcohol poisoning stage, take user to hospital! Notifcations sent to emergency contacts.";
+    effects = "Alcohol poisoning stage, take user to hospital! Notifcations sent to emergency contacts.";
   }
 
   if (bac >= .4) {
-    effects = "Onset of coma, possible death due to respiratory arrest.";
-    "Deadly level, emergency attention demanded";
+    effects = "Deadly level, emergency attention demanded";
   }
 
   return effects;
@@ -327,7 +318,7 @@ Widget bacText(BuildContext context) {
               Text(
                   "Your BAC is  ${globals.bac.toStringAsFixed(3)} "
                   "so may be feeling: \n\t\t\t\t${_getBacInfo(globals.bac)}",
-                  style: TextStyle(
+                  style: TextStyle( fontSize: 16,
                       fontFamily: 'Montserrat',
                       height: 1.3,
                       color: Colors.black)),
@@ -337,7 +328,7 @@ Widget bacText(BuildContext context) {
                   "hours to fall to 0% "
                       "\n• ${bacLater.toStringAsFixed(1)} "
                   "hours to fall to .08%",
-                  style: TextStyle(
+                  style: TextStyle( fontSize: 16,
                       fontFamily: 'Montserrat',
                       height: 1.3,
                       color: Colors.black),)
