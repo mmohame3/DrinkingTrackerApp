@@ -88,113 +88,123 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
     );
 
 // Builds the drawer menu
-    Widget menu = Drawer(
-      child: Container(
-        padding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width / 60,
-            top: MediaQuery.of(context).size.height / 30),
-        color: Color(0xFF97B633),
-        child: ListView(
-          children: <Widget>[
-            ListTile(
-//              contentPadding: (top: MediaQuery.of(context).size.height/40),
-              leading: Icon(
-                Icons.calendar_today,
-                color: Colors.white,
-              ),
-              title: Text(
-                "HISTORY",
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 1),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (BuildContext context) => new HistoryPage()));
-              },
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
-            ),
-            ListTile(
-//              contentPadding: (top: MediaQuery.of(context).size.height/40),
-              leading: Icon(
-                Icons.calendar_today,
-                color: Colors.white,
-              ),
-              title: Text(
-                "ALT HISTORY",
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 1),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (BuildContext context) => new AltHistoryPage()));
-              },
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.info_outline,
-                color: Colors.white,
-              ),
-              title: Text(
-                'INFORMATION',
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 1),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            new StandardDrinkPage()));
-              },
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.message,
-                color: Colors.white,
-              ),
-              title: Text(
-                "OUR MISSION",
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                    fontFamily: 'Montserrat',
-                    letterSpacing: 1),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                    context,
-                    new MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            new OurMissionPage()));
-              },
-              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-    );
+//    Widget menu = Drawer(
+//      child: Container(
+//        padding: EdgeInsets.only(
+//            left: MediaQuery.of(context).size.width / 60,
+//            top: MediaQuery.of(context).size.height / 30),
+//        color: Color(0xFF97B633),
+//        child: ListView(
+//          children: <Widget>[
+//            ListTile(
+////              contentPadding: (top: MediaQuery.of(context).size.height/40),
+//              leading: Icon(
+//                Icons.calendar_today,
+//                color: Colors.white,
+//              ),
+//              title: Text(
+//                "HISTORY",
+//                style: TextStyle(
+//                    fontSize: 16,
+//                    color: Colors.white,
+//                    fontFamily: 'Montserrat',
+//                    letterSpacing: 1),
+//              ),
+//              onTap: () {
+//                Navigator.of(context).pop();
+//                Navigator.push(
+//                    context,
+//                    new MaterialPageRoute(
+//                        builder: (BuildContext context) => new HistoryPage()));
+//              },
+//              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+//            ),
+//            ListTile(
+////              contentPadding: (top: MediaQuery.of(context).size.height/40),
+//              leading: Icon(
+//                Icons.calendar_today,
+//                color: Colors.white,
+//              ),
+//              title: Text(
+//                "ALT HISTORY",
+//                style: TextStyle(
+//                    fontSize: 16,
+//                    color: Colors.white,
+//                    fontFamily: 'Montserrat',
+//                    letterSpacing: 1),
+//              ),
+//              onTap: () {
+//                Navigator.of(context).pop();
+//                Navigator.push(
+//                    context,
+//                    new MaterialPageRoute(
+//                        builder: (BuildContext context) => new AltHistoryPage()));
+//              },
+//              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+//            ),
+//            ListTile(
+//              leading: Icon(
+//                Icons.info_outline,
+//                color: Colors.white,
+//              ),
+//              title: Text(
+//                'INFORMATION',
+//                style: TextStyle(
+//                    fontSize: 16,
+//                    color: Colors.white,
+//                    fontFamily: 'Montserrat',
+//                    letterSpacing: 1),
+//              ),
+//              onTap: () {
+//                Navigator.of(context).pop();
+//                Navigator.push(
+//                    context,
+//                    new MaterialPageRoute(
+//                        builder: (BuildContext context) =>
+//                            new StandardDrinkPage()));
+//              },
+//              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+//            ),
+//            ListTile(
+//              leading: Icon(
+//                Icons.message,
+//                color: Colors.white,
+//              ),
+//              title: Text(
+//                "OUR MISSION",
+//                style: TextStyle(
+//                    fontSize: 16,
+//                    color: Colors.white,
+//                    fontFamily: 'Montserrat',
+//                    letterSpacing: 1),
+//              ),
+//              onTap: () {
+//                Navigator.of(context).pop();
+//                Navigator.push(
+//                    context,
+//                    new MaterialPageRoute(
+//                        builder: (BuildContext context) =>
+//                            new OurMissionPage()));
+//              },
+//              trailing: Icon(Icons.arrow_forward_ios, color: Colors.white),
+//            ),
+//          ],
+//        ),
+//      ),
+//    );
 
     return Scaffold(
       appBar: AppBar(
+          leading:
+      IconButton(
+      icon: Icon(Icons.calendar_today, color: Colors.white),
+        onPressed: () {
+          Navigator.push(
+              context,
+              new MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                  new HistoryPage()));
+        }),
         title: Text(
           "FLORISH",
           style: TextStyle(
@@ -202,7 +212,17 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
             letterSpacing: 3,
           ),
         ),
+          centerTitle: true,
         actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.info_outline, color: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                        new StandardDrinkPage()));
+              }),
           IconButton(
               icon: Icon(Icons.settings, color: Colors.white),
               onPressed: () {
@@ -215,7 +235,8 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
         ],
         backgroundColor: Color(0xFF97B633),
       ),
-      drawer: menu,
+      //drawer: menu,
+
       backgroundColor: Colors.grey[600],
       body: plant,
     );
