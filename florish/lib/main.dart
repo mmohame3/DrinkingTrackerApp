@@ -252,16 +252,7 @@ class _PlantState extends State<Plant> {
   _PlantState() {
     determineDay().then((day) => setState(() {
           globals.today = day;
-
-          DateTime now = DateTime.now().toUtc().add(
-            Duration(seconds:30),
-          );
-          singleNotification(
-            now,
-            "Notification",
-            "This is a notification",
-            98123871,
-          );
+          
           updateImageAndBAC('assets/images/plants/drink0water0.png');
           getDayEnded();
         }));
@@ -531,6 +522,17 @@ class _DrinkButtonState extends State<DrinkButton> {
       // when tapped: updates today's counts, updates the drinkString,
       // updates BAC, updates the plant image, and calls drinkButtonTap
       onTap: () {
+        
+        DateTime now = DateTime.now().toUtc().add(
+            Duration(seconds:10),
+          );
+          singleNotification(
+            now,
+            "Updated",
+            "This is an updated notifications",
+            98123871,
+          );
+
         setState(() {
           globals.inSession = true;
           if (globals.bac == 0.0) {

@@ -18,6 +18,9 @@ FlutterLocalNotificationsPlugin localNotificationsPlugin =
       'channel-description',
       importance: Importance.Max,
       priority: Priority.Max,
+      playSound: true,
+      sound: sound
+      // sound: sound
     );
 
     var iosChannel = IOSNotificationDetails();
