@@ -190,7 +190,7 @@ String _getBacInfo(double bac) {
 
   if ((bac >= .06) && (bac < 0.1)) {
     effects =
-        "Oh oh! You might be tumbling now. Slurring words, slowed reactions, and out of pocket actions describe your current state. Find a sober friend!";
+        "Oh oh! You might be tumbling now. Slurring words, slowed reactions, ssssand out of pocket actions describe your current state. Find a sober friend!";
   }
 
   if ((bac >= .1) && (bac < 0.13)) {
