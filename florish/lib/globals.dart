@@ -1,5 +1,5 @@
 library globals;
-import 'database_helpers.dart';
+import 'package:Florish/helpers/database_helpers.dart';
 
 Day today;
 double bac = 0.00;

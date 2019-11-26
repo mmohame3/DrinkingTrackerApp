@@ -3,10 +3,10 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
-import 'database_helpers.dart' as database;
-import 'main.dart' as main;
-import 'globals.dart' as globals;
+import 'package:Florish/helpers/database_helpers.dart' as database;
+import 'package:Florish/globals.dart' as globals;
 import 'package:sqflite/sqflite.dart';
+import 'package:Florish/homeScreen/homeScreenLayout.dart' as mainPage;
 
 class Calendar extends StatefulWidget {
   final ValueChanged<database.Day> parentAction;
@@ -33,16 +33,15 @@ class _CalendarState extends State<Calendar> {
 //    }
 
     Database db = await database.DatabaseHelper.instance.database;
-    String selectedDate = main.dateTimeToString(date);
+    String selectedDate = mainPage.dateTimeToString(date);
     List<Map> result =
-    await db.rawQuery('SELECT * FROM days WHERE day=?', [selectedDate]);
+        await db.rawQuery('SELECT * FROM days WHERE day=?', [selectedDate]);
 
     database.Day day;
     double yesterHyd;
 
     if (result == null || result.isEmpty) {
-
-      Future<List> yesterInfo = main.getYesterInfo();
+      Future<List> yesterInfo = mainPage.getYesterInfo();
       yesterInfo.then((list) {
         yesterHyd = list[1];
       });
@@ -66,8 +65,6 @@ class _CalendarState extends State<Calendar> {
           conflictAlgorithm: ConflictAlgorithm.replace);
       return day;
     } else {
-
-
 // alternate (read: better) way #2
       day = database.Day.fromMap(result[0]);
 
@@ -246,56 +243,57 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget dataReturn() {
     if (day.typeList.length > 0) {
-    return Container(
-        padding: EdgeInsets.only(top: 10),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Column(children: <Widget>[
-                Container(
-                    padding:
-                        EdgeInsets.all(MediaQuery.of(context).size.width / 15),
-                    child: Image.asset(
-                      'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
-                      width: MediaQuery.of(context).size.width / 3,
-                    )),
-                // TODO: make function so that this doesnt require the edit in database_helpers.dart
-                Text(day.getDate()),
-              ]),
-              SingleChildScrollView(
-                  child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height / 3,
-                        maxWidth: MediaQuery.of(context).size.width / 4,
-                      ),
-                      child: Table(
-                          defaultVerticalAlignment:
-                              TableCellVerticalAlignment.middle,
-                          children: [
-                            for (int i = 0; day.getHours().length > i; i++)
-                              TableRow(children: [
-                                TableCell(
-                                    child: Text(day.getHours()[i].toString() +
-                                        ':' +
-                                        day
-                                            .getMinutes()[i]
-                                            .toString())), // TODO: make minutes 01 instead of 1
-                                TableCell(
-                                    child: Container(
-                                        padding: EdgeInsets.all(5),
-                                        child: Image.asset(
-                                            typeToImageName(day.getTypes()[i]),
-                                            height: 15)))
-                              ])
-                          ])))
-            ]));
-  }
-  else {
-    return Container(
-    padding: EdgeInsets.only(top: MediaQuery.of(context).size.width/4),
-    child: Text('No data for this day',
-    style: TextStyle(color: Colors.grey[600]),));
-  }
+      return Container(
+          padding: EdgeInsets.only(top: 10),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
+                  Widget>[
+            Column(children: <Widget>[
+              Container(
+                  padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width / 15),
+                  child: Image.asset(
+                    'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
+                    width: MediaQuery.of(context).size.width / 3,
+                  )),
+              // TODO: make function so that this doesnt require the edit in database_helpers.dart
+              Text(day.getDate()),
+            ]),
+            SingleChildScrollView(
+                child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height / 3,
+                      maxWidth: MediaQuery.of(context).size.width / 4,
+                    ),
+                    child: Table(
+                        defaultVerticalAlignment:
+                            TableCellVerticalAlignment.middle,
+                        children: [
+                          for (int i = 0; day.getHours().length > i; i++)
+                            TableRow(children: [
+                              TableCell(
+                                  child: Text(day.getHours()[i].toString() +
+                                      ':' +
+                                      day
+                                          .getMinutes()[i]
+                                          .toString())), // TODO: make minutes 01 instead of 1
+                              TableCell(
+                                  child: Container(
+                                      padding: EdgeInsets.all(5),
+                                      child: Image.asset(
+                                          typeToImageName(day.getTypes()[i]),
+                                          height: 15)))
+                            ])
+                        ])))
+          ]));
+    } else {
+      return Container(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
+          child: Text(
+            'No data for this day',
+            style: TextStyle(color: Colors.grey[600]),
+          ));
+    }
   }
 
   @override

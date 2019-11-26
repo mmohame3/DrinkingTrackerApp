@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'database_helpers.dart' as database;
-import 'globals.dart' as globals;
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'main.dart';
-import 'models/inputModel.dart';
+import 'package:Florish/helpers/database_helpers.dart' as database;
+import 'package:Florish/globals.dart' as globals;
+import 'package:Florish/homeScreen/homeScreenLayout.dart';
+import 'package:Florish/homeScreen/homeScreen.dart';
+import 'package:Florish/helpers/inputModel.dart';
 
 final dbHelper = database.DatabaseHelper.instance;
 
@@ -21,19 +20,17 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
   void initState() {
     super.initState();
     getInputInformation();
-
   }
 
   int initialFeet = 0;
   database.Day day = globals.today;
   var _databaseHelper = database.DatabaseHelper.instance;
 
-
   String drinkString = globals.today.totalDrinks.toString();
   String waterString = globals.today.totalWaters.toString();
+
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold(
         appBar: new AppBar(
           title: new Text('Your Personal Information'),
@@ -245,16 +242,19 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                   children: <Widget>[
                                     GestureDetector(
                                         onTap: () {
-                                            setState(() {
-                                              print("totalDrinks = ${globals.today.totalDrinks}");
-                                              if (globals.today.totalDrinks > 0) {
-                                                globals.today.totalDrinks--;
-                                              }
-                                              print("totalDrinks = ${globals.today.totalDrinks}");
-                                              drinkString = globals.today.totalDrinks.toString();
-                                              drinkDec(DateTime.now());
-                                            });
-
+                                          setState(() {
+                                            print(
+                                                "totalDrinks = ${globals.today.totalDrinks}");
+                                            if (globals.today.totalDrinks > 0) {
+                                              globals.today.totalDrinks--;
+                                            }
+                                            print(
+                                                "totalDrinks = ${globals.today.totalDrinks}");
+                                            drinkString = globals
+                                                .today.totalDrinks
+                                                .toString();
+                                            drinkDec(DateTime.now());
+                                          });
                                         },
                                         child: Icon(
                                           Icons.remove,
@@ -266,10 +266,11 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                         onTap: () {
                                           setState(() {
                                             globals.today.totalDrinks++;
-                                            drinkString = globals.today.totalDrinks.toString();
+                                            drinkString = globals
+                                                .today.totalDrinks
+                                                .toString();
                                             drinkInc(DateTime.now());
                                           });
-
                                         },
                                         child: Icon(
                                           Icons.add,
@@ -299,14 +300,15 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                   children: <Widget>[
                                     GestureDetector(
                                         onTap: () {
-                                            setState(() {
-                                                if (globals.today.totalWaters > 0) {
-                                                  globals.today.totalWaters--;
-                                                }
-                                              waterString = globals.today.totalWaters.toString();
-                                                waterDec();
+                                          setState(() {
+                                            if (globals.today.totalWaters > 0) {
+                                              globals.today.totalWaters--;
                                             }
-                                              );
+                                            waterString = globals
+                                                .today.totalWaters
+                                                .toString();
+                                            waterDec();
+                                          });
                                         },
                                         child: Icon(
                                           Icons.remove,
@@ -316,13 +318,13 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                         style: TextStyle(color: Colors.black)),
                                     GestureDetector(
                                         onTap: () {
-                                          setState((){
+                                          setState(() {
                                             globals.today.totalWaters++;
-                                            waterString = globals.today.totalWaters.toString();
+                                            waterString = globals
+                                                .today.totalWaters
+                                                .toString();
                                             waterInc();
-                                          }
-                                          );
-
+                                          });
                                         },
                                         child: Icon(
                                           Icons.add,
@@ -337,6 +339,7 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
               ),
             )));
   }
+
   void drinkInc(DateTime currentTime) async {
     globals.today.addHour(currentTime.hour);
     globals.today.addMinute(currentTime.minute);
@@ -366,11 +369,10 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
       print(globals.today.typeList);
     }
     await dbHelper.updateDay(globals.today);
-
   }
 
   void waterDec() async {
-    if (globals.today.totalWaters >= 0 ){
+    if (globals.today.totalWaters >= 0) {
       int i = globals.today.typeList.lastIndexOf(0);
       if (i >= 0) {
         globals.today.typeList.removeAt(i);
@@ -378,13 +380,10 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
         globals.today.minuteList.removeAt(i);
         print(globals.today.totalWaters);
         print(globals.today.typeList);
-
       }
     }
     await dbHelper.updateDay(globals.today);
   }
-
-
 
   save() async {
     var inputModel = InputModel();
@@ -392,7 +391,6 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
     inputModel.inch = globals.selectedInches;
     inputModel.weight = globals.selectedWeight;
     inputModel.sex = globals.selectedSex;
-
 
     var result = await _databaseHelper.saveInputInformation(inputModel.toMap());
     print(result);

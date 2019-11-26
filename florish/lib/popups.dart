@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
 
-import './standardDrink.dart';
-import './history.dart';
+import 'package:Florish/pages/drinkInformation.dart';
+import 'package:Florish/pages/history.dart';
 
 class PopupLayout extends ModalRoute {
   final Widget child;
@@ -150,7 +150,8 @@ Widget BACpopUpBody(BuildContext context) {
                       "Blood Alcohol Concentration (BAC) refers to the percent of "
                       "alcohol in a person's blood stream."
                       "\n\nIn the U.S., a person is legally intoxicated if they have a BAC of .08% or higher.\n\n",
-                      style: TextStyle( fontSize: 16,
+                      style: TextStyle(
+                          fontSize: 16,
                           fontFamily: 'Montserrat',
                           height: 1.3,
                           color: Colors.black)),
@@ -175,12 +176,12 @@ String _getBacInfo(double bac) {
   //switch statements.....
   String effects;
   if (bac < .02) {
-    effects = "Relaxed with few obvious effects other than a slight intensification of mood";
+    effects =
+        "Relaxed with few obvious effects other than a slight intensification of mood";
   }
 
   if ((bac >= 0.020) && (bac < 0.04)) {
-    effects =
-        "You still have balance! Relaxed is the vibe you are in.";
+    effects = "You still have balance! Relaxed is the vibe you are in.";
   }
 
   if ((bac >= .04) && (bac < 0.06)) {
@@ -214,7 +215,8 @@ String _getBacInfo(double bac) {
   }
 
   if ((bac >= .25) && (bac < 0.4)) {
-    effects = "Alcohol poisoning stage, take user to hospital! Notifcations sent to emergency contacts.";
+    effects =
+        "Alcohol poisoning stage, take user to hospital! Notifcations sent to emergency contacts.";
   }
 
   if (bac >= .4) {
@@ -222,6 +224,51 @@ String _getBacInfo(double bac) {
   }
 
   return effects;
+}
+
+Widget bacText(BuildContext context) {
+  double bacLater = (globals.bac - .08) / .015;
+  double bacToZero = globals.bac / .015;
+  bacLater = bacLater < 0 ? 0 : bacLater;
+  var container = Column();
+  if (globals.bac > 0) {
+    container = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Container(
+          padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
+          child: Text(
+            'YOUR BAC',
+            style: TextStyle(letterSpacing: 1, height: 1.5),
+          )),
+      Container(
+          color: Colors.white,
+          alignment: Alignment.topCenter,
+          child: Container(
+              padding: EdgeInsets.all(20),
+              child: Column(children: [
+                Text(
+                    "Your BAC is  ${globals.bac.toStringAsFixed(3)} "
+                    "so may be feeling: \n\t\t\t\t${_getBacInfo(globals.bac)}",
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Montserrat',
+                        height: 1.3,
+                        color: Colors.black)),
+                Text(
+                  "\nGiven your current BAC, it will take about:"
+                  "\n• ${bacToZero.toStringAsFixed(1)} "
+                  "hours to fall to 0% "
+                  "\n• ${bacLater.toStringAsFixed(1)} "
+                  "hours to fall to .08%",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Montserrat',
+                      height: 1.3,
+                      color: Colors.black),
+                )
+              ])))
+    ]);
+  }
+  return container;
 }
 
 showDayEndPopup(BuildContext context) {
@@ -293,47 +340,4 @@ Widget dayEndPopUpBody(BuildContext context) {
                   )
                 ]))),
       ]));
-}
-
-Widget bacText(BuildContext context) {
-  double bacLater = (globals.bac - .08) / .015;
-  double bacToZero = globals.bac / .015;
-  bacLater = bacLater < 0 ? 0 : bacLater;
-  var container = Column();
-  if (globals.bac > 0) {
-    container =
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Container(
-            padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
-            child: Text(
-              'YOUR BAC',
-              style: TextStyle(letterSpacing: 1, height: 1.5),
-            )),
-        Container(
-        color: Colors.white,
-        alignment: Alignment.topCenter,
-        child: Container(
-            padding: EdgeInsets.all(20),
-            child: Column(children: [
-              Text(
-                  "Your BAC is  ${globals.bac.toStringAsFixed(3)} "
-                  "so may be feeling: \n\t\t\t\t${_getBacInfo(globals.bac)}",
-                  style: TextStyle( fontSize: 16,
-                      fontFamily: 'Montserrat',
-                      height: 1.3,
-                      color: Colors.black)),
-              Text(
-                  "\nGiven your current BAC, it will take about:"
-                      "\n• ${bacToZero.toStringAsFixed(1)} "
-                  "hours to fall to 0% "
-                      "\n• ${bacLater.toStringAsFixed(1)} "
-                  "hours to fall to .08%",
-                  style: TextStyle( fontSize: 16,
-                      fontFamily: 'Montserrat',
-                      height: 1.3,
-                      color: Colors.black),)
-            ])))]);
-
-  }
-  return container;
 }

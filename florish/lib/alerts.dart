@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart' as globals;
-import 'PersonalInformation.dart';
+import 'package:Florish/pages/PersonalInformation.dart';
 
 
 

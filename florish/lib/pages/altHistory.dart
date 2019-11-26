@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'database_helpers.dart' as database;
+import 'package:Florish/helpers/database_helpers.dart' as database;
 import 'package:sqflite/sqflite.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'globals.dart' as globals;
-import 'main.dart' as main;
+import 'package:Florish/globals.dart' as globals;
+import 'package:Florish/homeScreen/homeScreenLayout.dart' as mainPage;
 
 class AltHistoryPage extends StatefulWidget {
   @override
@@ -41,7 +41,7 @@ class _AltHistoryPageState extends State<AltHistoryPage> {
                           width: 80,
                           alignment: Alignment.centerLeft,
                           child: Image.asset(
-                              'assets/images/plants/drink${main.bacToPlant(day.getMaxBac())}water${day.getTotalWaters()}.png',
+                              'assets/images/plants/drink${mainPage.bacToPlant(day.getMaxBac())}water${day.getTotalWaters()}.png',
                               height: 50,
                               width: 50)),
                       Row(children: [
