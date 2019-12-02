@@ -5,6 +5,8 @@ import 'dart:async';
 import 'package:Florish/alerts.dart';
 import 'package:Florish/homeScreen/homeScreenLayout.dart';
 
+import '../helpers/notifications.dart';
+
 class DrinkButton extends StatefulWidget {
   final ValueChanged<String> parentActionUpdates;
   const DrinkButton({Key key, this.parentActionUpdates}) : super(key: key);
@@ -79,6 +81,16 @@ class _DrinkButtonState extends State<DrinkButton> {
 // Updates today's time and type lists,
   // updates the database itself
   Future<void> drinkButtonTap() async {
+     DateTime now = DateTime.now().toUtc().add(
+        Duration(seconds:30),
+      );
+      singleNotification(
+        now,
+        "Notification",
+        "This is a notification",
+        98123871,
+      );
+     
     if (globals.start) {
       globals.today.addStartEnd(globals.today.typeList.length);
     }

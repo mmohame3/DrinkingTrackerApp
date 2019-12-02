@@ -49,15 +49,15 @@ class _PlantState extends State<Plant> {
     determineDay().then((day) => setState(() {
       globals.today = day;
 
-      DateTime now = DateTime.now().toUtc().add(
-        Duration(seconds:30),
-      );
-      singleNotification(
-        now,
-        "Notification",
-        "This is a notification",
-        98123871,
-      );
+      // DateTime now = DateTime.now().toUtc().add(
+      //   Duration(seconds:30),
+      // );
+      // singleNotification(
+      //   now,
+      //   "Notification",
+      //   "This is a notification",
+      //   98123871,
+      // );
       updateImageAndBAC('assets/images/plants/drink0water0.png');
       getDayEnded();
     }));
