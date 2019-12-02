@@ -15,7 +15,7 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
           title: new Text('Information'),
           backgroundColor: Color(0xFF97B633),
         ),
-        body: Container(
+        body: SingleChildScrollView(child:Container(
             color: Color(0xFFF2F2F2),
             child:
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -48,6 +48,36 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
               Container(
                   padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
                   child: Text(
+                    'Our Mission',
+                    style: TextStyle(letterSpacing: 1, height: 1.5),
+                  )),
+              Container(
+                  color: Colors.white,
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                      padding: EdgeInsets.all(20),
+                      child:
+                        Text(
+                            "FLORISH, as a college student developed app, provides a platform for increased "
+                      "awareness of drinking levels in any scenario.  Specifically, FLORISH is catered towards college students, who often binge drink and lose track of their Alcohol intake levels, jeopardizing their own safety, as well as that of those around them."
+                      " In turn, FLORISH provides a visual indicator of their BAC as an incentive to monitor their wellbeing and drinking habits. \n\n"
+                      "Through the plant icon, FLORISH seeks to create accountability amongst each user in keeping their plant healthy. The essential vision is"
+                      " to provide an emotional incentive to monitor well-being and Alcohol intake habits, through attachment to the plant's health in relation to BAC.\n",
+                            style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                height: 1.3,
+                                color: Colors.black)),
+//                        CupertinoButton(
+//                          onPressed: _launchURL,
+//                          color: Color(0xFFA8C935),
+//                          child: Text('Macalester Alcohol Resources',
+//                              style: TextStyle(color: Colors.white)),
+//                        )
+                      )),
+
+              Container(
+                  padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
+                  child: Text(
                     'HELP & RESOURCES',
                     style: TextStyle(letterSpacing: 1, height: 1.5),
                   )),
@@ -71,7 +101,7 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                               style: TextStyle(color: Colors.white)),
                         ),
                       ]))),
-            ])));
+            ]))));
   }
 
   _launchURL() async {
