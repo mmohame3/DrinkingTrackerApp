@@ -278,7 +278,6 @@ Future<void> endSession() async {
     globals.today.addHour(now.hour);
     globals.today.addMinute(now.minute);
     globals.today.addStartEnd(globals.today.typeList.length - 1);
-    //print(globals.today.sessionList);
     await dbHelper.updateDay(globals.today);
   }
 }
@@ -362,15 +361,9 @@ Future<Day> determineDay() async {
 // sets the global variables for yesterday's drinks and waters
 // if the day has "ended" as indicated by determine day
 Future<void> getDayEnded() async {
-  if (globals.dayEnded) {
-    Future<List> yesterInfo = getYesterInfo();
-    yesterInfo.then((list) {
-      globals.yesterWater = list[0].toInt();
-      globals.yesterDrink = list[2].toInt();
-    });
-    print(globals.yesterWater);
-    print(globals.yesterDrink);
-  }
+    List yesterList = await getYesterInfo();
+    globals.yesterWater = yesterList[0].toInt();
+    globals.yesterDrink = yesterList[2].toInt();
 }
 
 // gets yesterday's data about drinks and bac in the form:
@@ -387,8 +380,8 @@ Future<List<double>> getYesterInfo() async {
 
   List<Map> yesterdayResult =
   await db.rawQuery('SELECT * FROM days WHERE day=?', [yesterDate]);
-  double w, yhr, d, ybac, drinkToNoonHours;
-  int i;
+  double w, yhr, d, ybac;// drinkToNoonHours;
+  //int i;
   if (yesterdayResult.isEmpty || yesterdayResult == null) {
     return [0.0, 0.0, 0.0, 0.0, 0.0];
   }
@@ -397,11 +390,11 @@ Future<List<double>> getYesterInfo() async {
     yhr = yesterdayResult[0]['todayhydratio'];
     d = yesterdayResult[0]["totaldrinkcount"].toDouble();
     ybac = yesterdayResult[0]['lastBAC'];
-    i = yesterdayResult[0]['typelist'] == null ? -1 : yesterdayResult[0]['typelist'].lastIndexOf(1);
+    //i = yesterdayResult[0]['typelist'] == null ? -1 : yesterdayResult[0]['typelist'].lastIndexOf(1);
 
-    drinkToNoonHours = i >= 0 ?
-          yesterdayResult[0]['hourlist'][i] + (yesterdayResult[0]['minutelist'][i]/60)
-          : 0.0;
+//    drinkToNoonHours = i >= 0 ?
+//          yesterdayResult[0]['hourlist'][i] + (yesterdayResult[0]['minutelist'][i]/60)
+//          : 0.0;
 
     return [w, yhr, d, ybac, 0];
   }
