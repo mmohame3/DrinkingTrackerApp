@@ -52,7 +52,7 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                           padding:
                               EdgeInsets.only(top: 15, left: 20, bottom: 5),
                           child: Text(
-                            'Our Mission',
+                            'OUR MISSION',
                             style: TextStyle(letterSpacing: 1, height: 1.5),
                           )),
                       Container(
