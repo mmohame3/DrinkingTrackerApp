@@ -378,18 +378,22 @@ Future<List<double>> getYesterInfo() async {
 
   Database db = await DatabaseHelper.instance.database;
 
-  List<Map> yesterdayResult =
-  await db.rawQuery('SELECT * FROM days WHERE day=?', [yesterDate]);
+  List<Map> yesterdayResult = await db.rawQuery('SELECT * FROM days WHERE day=?', [yesterDate]);
+  Day yesterday = Day.fromMap(yesterdayResult[0]);
   double w, yhr, d, ybac;// drinkToNoonHours;
   //int i;
-  if (yesterdayResult.isEmpty || yesterdayResult == null) {
+  if (yesterday == null) {
     return [0.0, 0.0, 0.0, 0.0, 0.0];
   }
   else {
-    w = yesterdayResult[0]['totalwatercount'].toDouble();
-    yhr = yesterdayResult[0]['todayhydratio'];
-    d = yesterdayResult[0]["totaldrinkcount"].toDouble();
-    ybac = yesterdayResult[0]['lastBAC'];
+    w = yesterday.totalWaters.toDouble();
+    yhr = yesterday.hydratio;
+    d = yesterday.totalDrinks.toDouble();
+    ybac = yesterday.lastBAC;
+//    w = yesterdayResult[0]['totalwatercount'].toDouble();
+//    yhr = yesterdayResult[0]['todayhydratio'];
+//    d = yesterdayResult[0]["totaldrinkcount"].toDouble();
+//    ybac = yesterdayResult[0]['lastBAC'];
     //i = yesterdayResult[0]['typelist'] == null ? -1 : yesterdayResult[0]['typelist'].lastIndexOf(1);
 
 //    drinkToNoonHours = i >= 0 ?
