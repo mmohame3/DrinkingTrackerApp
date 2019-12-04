@@ -418,8 +418,8 @@ class _HistoryPageState extends State<HistoryPage> {
                       color: Colors.white),
                   child: Carousel(
                     images: [
-                      Container(color: Colors.red), Container(color: Colors.yellow),
-//                      dataReturn(), graphReturn()
+//                      Container(color: Colors.red), Container(color: Colors.yellow),
+                      dataReturn(), graphReturn()
                     ],
                     dotSize: 4.0,
                     dotSpacing: 15.0,
@@ -427,8 +427,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     dotIncreasedColor: Colors.black,
                     dotIncreaseSize: 0,
                     indicatorBgPadding: 5.0,
-//                    dotBgColor: Colors.white,
-//moveIndicatorFromBottom: 100,
+moveIndicatorFromBottom: 100,
 //MediaQuery.of(context).size.height/3,
 //                    borderRadius: true,
                   )),

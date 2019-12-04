@@ -41,9 +41,8 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                                 "\n •  1.5 oz of liquor(40% alcohol)"
                                 "\n\nIn Florish, by clicking the drink button, you are indicating "
                                 "that you just had one standard drink."
-                                "\n\nPlease remember that Florish's calculations are an estimation and not an"
-                                "exact science.",
-                                style: TextStyle(
+                                ,
+                                style: TextStyle( fontSize: 16,
                                     fontFamily: 'Montserrat',
                                     height: 1.3,
                                     color: Colors.black)),
@@ -61,12 +60,11 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                           child: Container(
                             padding: EdgeInsets.all(20),
                             child: Text(
-                                "FLORISH, as a college student developed app, provides a platform for increased "
-                                "awareness of drinking levels in any scenario.  Specifically, FLORISH is catered towards college students, who often binge drink and lose track of their Alcohol intake levels, jeopardizing their own safety, as well as that of those around them."
-                                " In turn, FLORISH provides a visual indicator of their BAC as an incentive to monitor their wellbeing and drinking habits. \n\n"
-                                "Through the plant icon, FLORISH seeks to create accountability amongst each user in keeping their plant healthy. The essential vision is"
-                                " to provide an emotional incentive to monitor well-being and Alcohol intake habits, through attachment to the plant's health in relation to BAC.\n",
-                                style: TextStyle(
+                                "FLORISH,  provides a platform for increased "
+                                "awareness of drinking levels in any scenario.  FLORISH is catered towards college students, who often binge drink and lose track of their Alcohol intake levels, jeopardizing their own safety, as well as that of those around them.\n\n"
+                                "FLORISH provides a visual indicator of their BAC as an emotional and accountability incentive to monitor their wellbeing and drinking habits. "
+                                ,
+                                style: TextStyle( fontSize: 16,
                                     fontFamily: 'Montserrat',
                                     height: 1.3,
                                     color: Colors.black)),
@@ -93,7 +91,7 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                                 Text(
                                     "Below is a link to Macalester resources to help "
                                     "with alcohol abuse and how to get help.\n",
-                                    style: TextStyle(
+                                    style: TextStyle( fontSize: 16,
                                         fontFamily: 'Montserrat',
                                         height: 1.3,
                                         color: Colors.black)),
