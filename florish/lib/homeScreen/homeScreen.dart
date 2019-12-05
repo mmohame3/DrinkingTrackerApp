@@ -48,7 +48,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
       await getInputInformation();
     });
 
-    drinkRiseAnimationController = new AnimationController(duration: new Duration(milliseconds: 2500), vsync: this);
+    drinkRiseAnimationController = new AnimationController(duration: new Duration(milliseconds: 1500), vsync: this);
     drinkRisePositionAnimation = new CurvedAnimation(parent: drinkRiseAnimationController,
         curve: Interval(0.0, 1.0, curve: Curves.slowMiddle));
 
@@ -59,7 +59,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
       setState(() {});
     });
 
-    waterRiseAnimationController = new AnimationController(duration: new Duration(milliseconds: 2500), vsync: this);
+    waterRiseAnimationController = new AnimationController(duration: new Duration(milliseconds: 1500), vsync: this);
     waterRisePositionAnimation = new CurvedAnimation(parent: waterRiseAnimationController,
         curve: Curves.slowMiddle);
 
