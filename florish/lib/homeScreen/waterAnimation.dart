@@ -10,12 +10,12 @@ Widget waterAnimation(){
   return new Positioned(
     child: new Opacity(opacity: waterDropOpacity,
     child: new Container(
-      height: 30,
-      width: 30,
+      height: 40,
+      width: 40,
       child: Image.asset('assets/images/waterDrop.png'),
     )),
     bottom: waterDropPosition + 50,
-    left: 325,
+    left: 300,
   );
 
 

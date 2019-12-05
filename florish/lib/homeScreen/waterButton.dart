@@ -4,6 +4,7 @@ import 'package:Florish/globals.dart' as globals;
 import 'package:Florish/helpers/database_helpers.dart';
 import 'package:Florish/homeScreen/homeScreenLayout.dart';
 import 'package:Florish/homeScreen/waterAnimation.dart';
+import 'package:Florish/functions/speedAlert.dart';
 
 class WaterButton extends StatefulWidget {
   final ValueChanged<String> parentAction;
@@ -78,5 +79,6 @@ class _WaterButtonState extends State<WaterButton> {
     globals.today.addMinute(DateTime.now().minute);
     globals.today.addType(0);
     await dbHelper.updateDay(globals.today);
+    //speedAlert(context);
   }
 }
