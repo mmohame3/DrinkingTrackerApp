@@ -3,6 +3,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:Florish/helpers/database_helpers.dart' as database;
 import 'package:Florish/globals.dart' as globals;
 import 'package:sqflite/sqflite.dart';
@@ -132,17 +133,44 @@ class _CalendarState extends State<Calendar> {
   // 0.03—0.06 = Tipsy; Yellow
   // 0.06-0.09 = Drunk; Orange
   // 0.10-0.12 = Very Drunk; Red
-  List<DateTime> soberDates = [DateTime(2019, 10, 30)];
-  List<DateTime> tipsyDates = [DateTime(2019, 10, 30)];
-  List<DateTime> drunkDates = [DateTime(2019, 10, 31)];
-  List<DateTime> veryDrunkDates = [DateTime(2019, 11, 1)];
+  List<DateTime> soberDates = [];
+  List<DateTime> tipsyDates = [];
+  List<DateTime> drunkDates = [];
+  List<DateTime> veryDrunkDates = [];
 
-//  List<List<DateTime>> sortDates() {
-//    // TODO: write this function
-//  }
+  Future<List<database.Day>> _makeDayList() async {
+    List<database.Day> dayList = List<database.Day>();
+
+    Database db = await database.DatabaseHelper.instance.database;
+    List<Map> result = await db.rawQuery('SELECT * FROM days');
+    result.forEach((map) => dayList.add(database.Day.fromMap(map)));
+    return dayList;
+  }
+
+  _sortDates() async {
+    double max = mainPage.maxBAC;
+    double threeQuartersMax = (3 * mainPage.maxBAC) / 4;
+    double halfMax = mainPage.maxBAC / 2;
+    double quarterMax = mainPage.maxBAC / 4;
+
+    List<database.Day> dayList = await _makeDayList();
+
+    for (int i = 0; i < dayList.length; i++)
+      if (dayList[i].maxBAC > 0.00 && dayList[i].maxBAC < quarterMax)
+        soberDates.add(stringToDateTime(dayList[i].getDate()));
+      else if (dayList[i].maxBAC >= quarterMax && dayList[i].maxBAC < halfMax)
+        tipsyDates.add(stringToDateTime(dayList[i].getDate()));
+      else if (dayList[i].maxBAC >= halfMax &&
+          dayList[i].maxBAC < threeQuartersMax)
+        drunkDates.add(stringToDateTime(dayList[i].getDate()));
+      else if (dayList[i].maxBAC >= threeQuartersMax &&
+          dayList[i].maxBAC <= max)
+        veryDrunkDates.add(stringToDateTime(dayList[i].getDate()));
+  }
 
   @override
   Widget build(BuildContext context) {
+    _sortDates();
     for (int i = 0; i < soberDates.length; i++) {
       _markedDateMap.add(
           soberDates[i],
@@ -179,8 +207,8 @@ class _CalendarState extends State<Calendar> {
         selectedDateTime: _currentDate,
         selectedDayButtonColor: Color(0xFF97B633),
         selectedDayTextStyle: TextStyle(color: Colors.black),
-        height: 350,
-        width: 300,
+        height: MediaQuery.of(context).size.height / 2,
+        width: MediaQuery.of(context).size.width,
         daysHaveCircularBorder: null,
         weekendTextStyle: TextStyle(color: Colors.black),
         weekdayTextStyle: TextStyle(color: Colors.black),
@@ -207,6 +235,18 @@ class _CalendarState extends State<Calendar> {
             widget.parentAction(day);
           });
         });
+  }
+
+  DateTime stringToDateTime(String date) {
+    List<String> dateObjects = date.split("/");
+    String month = dateObjects[0];
+    String day = minutesStringToString(dateObjects[1]);
+    String year = dateObjects[2];
+
+    String dateStringToConvert = year + month + day;
+    DateTime parsedDate = DateTime.parse(dateStringToConvert);
+
+    return parsedDate;
   }
 }
 
@@ -241,6 +281,47 @@ class _HistoryPageState extends State<HistoryPage> {
     return plantNum;
   }
 
+  String dateToString(String date) {
+    String monthName;
+
+    List<String> dateObjects = date.split("/");
+    String month = dateObjects[0];
+    String day = dateObjects[1];
+    String year = dateObjects[2];
+
+    String dateStringToConvert = year + month + day;
+    DateTime parsedDate = DateTime.parse(dateStringToConvert);
+
+    int monthInt = parsedDate.month;
+    if (monthInt == 1) {
+      monthName = 'JANUARY';
+    } else if (monthInt == 2) {
+      monthName = 'FEBRUARY';
+    } else if (monthInt == 3) {
+      monthName = 'MARCH';
+    } else if (monthInt == 4) {
+      monthName = 'APRIL';
+    } else if (monthInt == 5) {
+      monthName = 'MAY';
+    } else if (monthInt == 6) {
+      monthName = 'JUNE';
+    } else if (monthInt == 7) {
+      monthName = 'JULY';
+    } else if (monthInt == 8) {
+      monthName = 'AUGUST';
+    } else if (monthInt == 9) {
+      monthName = 'SEPTEMBER';
+    } else if (monthInt == 10) {
+      monthName = 'OCTOBER';
+    } else if (monthInt == 11) {
+      monthName = 'NOVEMBER';
+    } else if (monthInt == 12) {
+      monthName = 'DECEMBER';
+    }
+
+    return '$monthName ${parsedDate.day}, ${parsedDate.year}';
+  }
+
   Widget dataReturn() {
     if (day.typeList.length > 0) {
       return Container(
@@ -256,7 +337,6 @@ class _HistoryPageState extends State<HistoryPage> {
                     'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
                     width: MediaQuery.of(context).size.width / 3,
                   )),
-              // TODO: make function so that this doesnt require the edit in database_helpers.dart
               Text(day.getDate()),
             ]),
             SingleChildScrollView(
@@ -274,9 +354,7 @@ class _HistoryPageState extends State<HistoryPage> {
                               TableCell(
                                   child: Text(day.getHours()[i].toString() +
                                       ':' +
-                                      day
-                                          .getMinutes()[i]
-                                          .toString())), // TODO: make minutes 01 instead of 1
+                                      minutesIntToString(day.getMinutes()[i]))),
                               TableCell(
                                   child: Container(
                                       padding: EdgeInsets.all(5),
@@ -296,6 +374,8 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
+  Widget graphReturn() {}
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -303,36 +383,71 @@ class _HistoryPageState extends State<HistoryPage> {
           title: new Text('Your Drinking History'),
           backgroundColor: Color(0xFF97B633),
         ),
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height,
-                ),
-                child: Container(
-                    // gives calendar space around it
-                    padding: EdgeInsets.only(
-                      top: 15,
-                      left: 15,
-                      right: 15,
-//                bottom: MediaQuery.of(context).size.width / 15
-                    ),
-                    color: Color(0xFFF2F2F2),
-                    child: Column(children: [
-                      Container(
-                          // white background
-                          padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width / 15,
-                            right: MediaQuery.of(context).size.width / 15,
-                          ),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                              color: Colors.white),
-                          child: Calendar(
-                            parentAction: _updateSelectedDay,
-                          )),
-                      dataReturn(),
-                    ])))));
+        body: Container(
+            // gives calendar space around it
+            padding: EdgeInsets.only(
+              top: 15,
+              left: 15,
+              right: 15,
+            ),
+            color: Color(0xFFF2F2F2),
+            child: Column(children: [
+              Container(
+                  // white background
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width / 20,
+                    right: MediaQuery.of(context).size.width / 20,
+                  ),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      color: Colors.white),
+                  child: Calendar(
+                    parentAction: _updateSelectedDay,
+                  )),
+              SizedBox(height: MediaQuery.of(context).size.height / 70),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height/3,
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      color: Colors.white),
+                  child: Carousel(
+                    images: [
+//                      Container(color: Colors.red), Container(color: Colors.yellow),
+                      dataReturn(), graphReturn()
+                    ],
+                    dotSize: 4.0,
+                    dotSpacing: 15.0,
+                    dotColor: Colors.blue,
+                    dotIncreasedColor: Colors.black,
+                    dotIncreaseSize: 0,
+                    indicatorBgPadding: 5.0,
+moveIndicatorFromBottom: 100,
+//MediaQuery.of(context).size.height/3,
+//                    borderRadius: true,
+                  )),
+//                  dataReturn()),
+            ])));
   }
+}
+
+String minutesIntToString(int minutes) {
+  String minuteString = minutes.toString();
+  if (minuteString.length < 2) {
+    minuteString = '0' + minutes.toString()[0];
+  }
+  return minuteString;
+}
+
+String minutesStringToString(String minutes) {
+  String minuteString = minutes.toString();
+  if (minuteString.length < 2) {
+    minuteString = '0' + minutes.toString()[0];
+  }
+  return minuteString;
 }
