@@ -4,6 +4,9 @@ import 'package:Florish/helpers/database_helpers.dart';
 import 'dart:async';
 import 'package:Florish/alerts.dart';
 import 'package:Florish/homeScreen/homeScreenLayout.dart';
+import 'package:Florish/functions/speedAlert.dart';
+import 'package:Florish/homeScreen/homeScreen.dart';
+
 
 import '../helpers/notifications.dart';
 
@@ -80,7 +83,9 @@ class _DrinkButtonState extends State<DrinkButton> {
 // Updates today's time and type lists,
   // updates the database itself
   Future<void> drinkButtonTap() async {
-     DateTime now = DateTime.now().toUtc().add(
+    drinkRiseAnimationController.forward(from: 0.0);
+
+    DateTime now = DateTime.now().toUtc().add(
         Duration(seconds:30),
       );
       singleNotification(
@@ -100,5 +105,6 @@ class _DrinkButtonState extends State<DrinkButton> {
     globals.today.addType(1);
     globals.today.lastBAC = globals.bac;
     dbHelper.updateDay(globals.today);
+    //speedAlert(context);
   }
 }

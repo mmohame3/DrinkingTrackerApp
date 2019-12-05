@@ -9,6 +9,7 @@ import 'package:Florish/popups.dart';
 import 'package:Florish/helpers/notifications.dart';
 import 'package:Florish/homeScreen/drinkButton.dart';
 import 'package:Florish/homeScreen/waterButton.dart';
+import 'package:Florish/homeScreen/waterAnimation.dart';
 
 
 final int resetTime = 12; //resets counters on this hour
@@ -149,6 +150,7 @@ class _PlantState extends State<Plant> {
                       parentAction: updateImageAndBAC,
                     ),
                   ),
+                  //waterAnimation(),
                 ],
               ),
             ],
