@@ -69,6 +69,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
     waterRiseAnimationController.addListener(() {
       setState(() {});
     });
+
   }
 
   @override

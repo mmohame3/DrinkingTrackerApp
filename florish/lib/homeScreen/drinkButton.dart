@@ -104,7 +104,7 @@ class _DrinkButtonState extends State<DrinkButton> {
     globals.today.addMinute(currentTime.minute);
     globals.today.addType(1);
     globals.today.lastBAC = globals.bac;
-    dbHelper.updateDay(globals.today);
     speedAlert(context);
+    dbHelper.updateDay(globals.today);
   }
 }
