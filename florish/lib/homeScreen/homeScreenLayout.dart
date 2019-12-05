@@ -49,18 +49,8 @@ class _PlantState extends State<Plant> {
   _PlantState() {
     determineDay().then((day) => setState(() {
       globals.today = day;
-
-      // DateTime now = DateTime.now().toUtc().add(
-      //   Duration(seconds:30),
-      // );
-      // singleNotification(
-      //   now,
-      //   "Notification",
-      //   "This is a notification",
-      //   98123871,
-      // );
       updateImageAndBAC('assets/images/plants/drink0water0.png');
-      getDayEnded();
+      //getDayEnded();
     }));
   }
 
@@ -338,7 +328,7 @@ Future<Day> determineDay() async {
 
     await db.insert(tableDays, day.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
-    await getDayEnded();
+    //await getDayEnded();
 
 
     return day;
@@ -362,10 +352,11 @@ Future<Day> determineDay() async {
 
 // sets the global variables for yesterday's drinks and waters
 // if the day has "ended" as indicated by determine day
-Future<void> getDayEnded() async {
+Future<void> getDayEndedPopupInfo() async {
     List yesterList = await getYesterInfo();
     globals.yesterWater = yesterList[0].toInt();
     globals.yesterDrink = yesterList[2].toInt();
+    //globals.dayEnded = false;
 }
 
 // gets yesterday's data about drinks and bac in the form:

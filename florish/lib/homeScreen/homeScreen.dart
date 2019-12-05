@@ -39,14 +39,6 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
 //    dbHelper.resetDay(dateTimeToString(time));
 
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await determineDay();
-      if (globals.dayEnded) {
-        await getDayEnded();
-        showDayEndPopup(context);
-      }
-      await getInputInformation();
-    });
 
     drinkRiseAnimationController = new AnimationController(duration: new Duration(milliseconds: 1500), vsync: this);
     drinkRisePositionAnimation = new CurvedAnimation(parent: drinkRiseAnimationController,
@@ -74,6 +66,14 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await determineDay();
+      if (globals.dayEnded) {
+        await getDayEndedPopupInfo();
+        showDayEndPopup(context);
+      }
+      await getInputInformation();
+    });
     Widget plant = Stack(
       alignment: Alignment.bottomCenter,
       children: [
