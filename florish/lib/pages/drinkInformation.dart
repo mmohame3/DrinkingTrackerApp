@@ -76,33 +76,54 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
 //                        )
                           )),
                       Container(
-                          padding:
-                              EdgeInsets.only(top: 15, left: 20, bottom: 5),
+                          padding: EdgeInsets.only(top: 15, left: 20, bottom: 5
+                              ),
                           child: Text(
-                            'HELP & RESOURCES',
+                            'DISCLAIMER',
                             style: TextStyle(letterSpacing: 1, height: 1.5),
                           )),
-                      Container(
-                          color: Colors.white,
-                          alignment: Alignment.topCenter,
-                          child: Container(
-                              padding: EdgeInsets.all(20),
-                              child: Column(children: [
-                                Text(
-                                    "Below is a link to Macalester resources to help "
-                                    "with alcohol abuse and how to get help.\n",
+
+                       Container(
+                         color: Colors.white,
+                           alignment: Alignment.topCenter,
+                                padding: EdgeInsets.all(20),
+                           child: Container(
+                                child: Text(
+                                    "Florish is an app to help people keep track of their drinking. "
+                                        "It is not a scientific or precise way to monitor your BAC.",
                                     style: TextStyle( fontSize: 16,
                                         fontFamily: 'Montserrat',
                                         height: 1.3,
-                                        color: Colors.black)),
-                                CupertinoButton(
-                                  onPressed: _launchURL,
-                                  color: Color(0xFFA8C935),
-                                  child: Text('Macalester Alcohol Resources',
-                                      style: TextStyle(color: Colors.white)),
-                                ),
-                              ]))),
-                    ]))));
+                                        color: Colors.black)))),
+                        Container(
+                            padding:
+                                EdgeInsets.only(top: 15, left: 20, bottom: 5),
+                            child: Text(
+                              'HELP & RESOURCES',
+                              style: TextStyle(letterSpacing: 1, height: 1.5),
+                            )),
+                        Container(
+                            color: Colors.white,
+                            alignment: Alignment.topCenter,
+                            child: Container(
+                                padding: EdgeInsets.all(20),
+                                child: Column(children: [
+                                  Text(
+                                      "Below is a link to Macalester resources to help "
+                                      "with alcohol abuse and how to get help.\n",
+                                      style: TextStyle( fontSize: 16,
+                                          fontFamily: 'Montserrat',
+                                          height: 1.3,
+                                          color: Colors.black)),
+                                  CupertinoButton(
+                                    onPressed: _launchURL,
+                                    color: Color(0xFFA8C935),
+                                    child: Text('Macalester Alcohol Resources',
+                                        style: TextStyle(color: Colors.white)),
+                                  ),
+                                ]))),
+
+                      ]))));
   }
 
 _launchURL() async {
