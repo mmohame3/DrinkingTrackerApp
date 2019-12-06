@@ -12,7 +12,7 @@ Widget waterAnimation(){
     child: new Container(
       height: 50,
       width: 50,
-      child: Image.asset('assets/images/WaterDropDrop Shadow.png'),
+      child: Image.asset('assets/images/WaterDropDropShadow.png'),
     )),
     bottom: waterDropPosition + 105,
     left: 255,

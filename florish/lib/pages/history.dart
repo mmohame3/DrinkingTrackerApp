@@ -3,7 +3,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
-import 'package:carousel_pro/carousel_pro.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:Florish/helpers/database_helpers.dart' as database;
 import 'package:Florish/globals.dart' as globals;
 import 'package:sqflite/sqflite.dart';
@@ -285,8 +285,8 @@ class _HistoryPageState extends State<HistoryPage> {
     String monthName;
 
     List<String> dateObjects = date.split("/");
-    String month = dateObjects[0];
-    String day = dateObjects[1];
+    String month = minutesStringToString(dateObjects[0]);
+    String day = minutesStringToString(dateObjects[1]);
     String year = dateObjects[2];
 
     String dateStringToConvert = year + month + day;
@@ -323,58 +323,68 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget dataReturn() {
+    Container container;
     if (day.typeList.length > 0) {
-      return Container(
+      container = Container(
           padding: EdgeInsets.only(top: 10),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
-                  Widget>[
-            Column(children: <Widget>[
-              Container(
-                  padding:
-                      EdgeInsets.all(MediaQuery.of(context).size.width / 15),
-                  child: Image.asset(
-                    'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
-                    width: MediaQuery.of(context).size.width / 3,
-                  )),
-              Text(day.getDate()),
-            ]),
-            SingleChildScrollView(
-                child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height / 3,
-                      maxWidth: MediaQuery.of(context).size.width / 4,
-                    ),
-                    child: Table(
-                        defaultVerticalAlignment:
-                            TableCellVerticalAlignment.middle,
-                        children: [
-                          for (int i = 0; day.getHours().length > i; i++)
-                            TableRow(children: [
-                              TableCell(
-                                  child: Text(day.getHours()[i].toString() +
-                                      ':' +
-                                      minutesIntToString(day.getMinutes()[i]))),
-                              TableCell(
-                                  child: Container(
-                                      padding: EdgeInsets.all(5),
-                                      child: Image.asset(
-                                          typeToImageName(day.getTypes()[i]),
-                                          height: 15)))
-                            ])
-                        ])))
+          child: Column(children: [
+            Text(dateToString(day.getDate())),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
+                Widget>[
+              Column(children: <Widget>[
+                Container(
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.width / 15,
+                        left: MediaQuery.of(context).size.width / 15,
+                        right: MediaQuery.of(context).size.width / 15),
+                    child: Image.asset(
+                      'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
+                      width: MediaQuery.of(context).size.width / 3,
+                      height: MediaQuery.of(context).size.height / 6,
+                    )),
+              ]),
+              SingleChildScrollView(
+                  child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height / 3,
+                        maxWidth: MediaQuery.of(context).size.width / 4,
+                      ),
+                      child: Table(
+                          defaultVerticalAlignment:
+                              TableCellVerticalAlignment.middle,
+                          children: [
+                            for (int i = 0; day.getHours().length > i; i++)
+                              TableRow(children: [
+                                TableCell(
+                                    child: Text(day.getHours()[i].toString() +
+                                        ':' +
+                                        minutesIntToString(
+                                            day.getMinutes()[i]))),
+                                TableCell(
+                                    child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        child: Image.asset(
+                                            typeToImageName(day.getTypes()[i]),
+                                            height: 15)))
+                              ])
+                          ])))
+            ])
           ]));
     } else {
-      return Container(
+      container = Container(
           padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
           child: Text(
             'No data for this day',
             style: TextStyle(color: Colors.grey[600]),
           ));
     }
+    return container;
   }
 
-  Widget graphReturn() {}
+  Widget graphReturn() {
+    Container container = Container(color: Colors.orange); // TODO: make widget
+    return container;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -408,31 +418,19 @@ class _HistoryPageState extends State<HistoryPage> {
                   )),
               SizedBox(height: MediaQuery.of(context).size.height / 70),
               Container(
-                width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height/3,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height / 3,
                   padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(
                         Radius.circular(10),
                       ),
                       color: Colors.white),
-                  child: Carousel(
-                    images: [
-//                      Container(color: Colors.red), Container(color: Colors.yellow),
-                      dataReturn(), graphReturn()
-                    ],
-                    dotSize: 4.0,
-                    dotSpacing: 15.0,
-                    dotColor: Colors.blue,
-                    dotIncreasedColor: Colors.black,
-                    dotIncreaseSize: 0,
-                    indicatorBgPadding: 5.0,
-moveIndicatorFromBottom: 100,
-//MediaQuery.of(context).size.height/3,
-//                    borderRadius: true,
-                  )),
-//                  dataReturn()),
-            ])));
+                  child: CarouselWithIndicator(
+                      widgetList: [dataReturn(), graphReturn()]))
+            ])
+//                  dataReturn())
+            ));
   }
 }
 
@@ -450,4 +448,59 @@ String minutesStringToString(String minutes) {
     minuteString = '0' + minutes.toString()[0];
   }
   return minuteString;
+}
+
+List<T> map<T>(List list, Function handler) {
+  List<T> result = [];
+  for (var i = 0; i < list.length; i++) {
+    result.add(handler(i, list[i]));
+  }
+  return result;
+}
+
+class CarouselWithIndicator extends StatefulWidget {
+  final List<Widget> widgetList;
+  const CarouselWithIndicator({Key key, this.widgetList}) : super(key: key);
+
+  @override
+  _CarouselWithIndicatorState createState() => _CarouselWithIndicatorState();
+}
+
+class _CarouselWithIndicatorState extends State<CarouselWithIndicator> {
+  int _current = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: map<Widget>(
+          widget.widgetList,
+          (index, url) {
+            return Container(
+              width: 4.0,
+              height: 4.0,
+              margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 3.0),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _current == index
+                      ? Color.fromRGBO(0, 0, 0, 0.9)
+                      : Color.fromRGBO(0, 0, 0, 0.3)),
+            );
+          },
+        ),
+      ),
+      CarouselSlider(
+        items: widget.widgetList,
+        aspectRatio: 1.7,
+        viewportFraction: 1.0,
+        enableInfiniteScroll: false,
+        onPageChanged: (index) {
+          setState(() {
+            _current = index;
+          });
+        },
+      ),
+    ]);
+  }
 }
