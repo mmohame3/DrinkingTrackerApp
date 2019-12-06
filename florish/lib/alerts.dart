@@ -7,8 +7,6 @@ import 'package:Florish/pages/PersonalInformation.dart';
 
 
 Future<void> settingsAlert(BuildContext context) async {
-  SharedPreferences _prefs;
-  _prefs = await SharedPreferences.getInstance();
   if ((globals.selectedFeet == 0) && (globals.selectedInches == 0)
       && (globals.selectedWeight == 180) && (globals.selectedSex == "Other")) {
     return showDialog<void>(

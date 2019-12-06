@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:Florish/globals.dart' as globals;
 import 'package:Florish/helpers/database_helpers.dart';
 import 'package:Florish/pages/history.dart';
@@ -6,20 +7,25 @@ import 'package:Florish/pages/drinkInformation.dart';
 import 'package:Florish/pages/PersonalInformation.dart';
 import 'package:Florish/popups.dart';
 import 'package:Florish/homeScreen/homeScreenLayout.dart';
+import 'package:Florish/homeScreen/waterAnimation.dart';
+import 'package:Florish/homeScreen/drinkAnimation.dart';
 
 final int resetTime = 12; //resets counters on this hour
 final double maxBAC = 0.12;
 final int numberOfDrinkPlants = 5;
 final int numberOfWaterPlants = 6;
 final double bacDropPerHour = .015;
+AnimationController drinkRiseAnimationController, waterRiseAnimationController;
+Animation drinkRisePositionAnimation, waterRisePositionAnimation;
 
 class AppHomeScreen extends StatefulWidget {
   @override
   _AppHomeScreenState createState() => _AppHomeScreenState();
 }
 
-class _AppHomeScreenState extends State<AppHomeScreen> {
+class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateMixin{
   DatabaseHelper dbHelper = DatabaseHelper.instance;
+
 
   @override
   void initState() {
@@ -33,18 +39,41 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
 //    dbHelper.resetDay(dateTimeToString(time));
 
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await determineDay();
-      if (globals.dayEnded) {
-        await getDayEnded();
-        showDayEndPopup(context);
-      }
-      await getInputInformation();
+
+    drinkRiseAnimationController = new AnimationController(duration: new Duration(milliseconds: 1500), vsync: this);
+    drinkRisePositionAnimation = new CurvedAnimation(parent: drinkRiseAnimationController,
+        curve: Interval(0.0, 1.0, curve: Curves.slowMiddle));
+
+    drinkRisePositionAnimation.addListener((){
+      setState(() {});
     });
+    drinkRiseAnimationController.addListener(() {
+      setState(() {});
+    });
+
+    waterRiseAnimationController = new AnimationController(duration: new Duration(milliseconds: 1500), vsync: this);
+    waterRisePositionAnimation = new CurvedAnimation(parent: waterRiseAnimationController,
+        curve: Curves.slowMiddle);
+
+    waterRisePositionAnimation.addListener((){
+      setState(() {});
+    });
+    waterRiseAnimationController.addListener(() {
+      setState(() {});
+    });
+
   }
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await determineDay();
+      if (globals.dayEnded) {
+        await getDayEndedPopupInfo();
+        showDayEndPopup(context);
+      }
+      await getInputInformation();
+    });
     Widget plant = Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -100,7 +129,14 @@ class _AppHomeScreenState extends State<AppHomeScreen> {
         backgroundColor: Color(0xFF97B633),
       ),
       backgroundColor: Colors.grey[600],
-      body: plant,
+      body: Stack(
+          children: <Widget>[
+            plant,
+//            waterAnimation(),
+//            drinkAnimation(),
+          ],
+
+      ),
     );
   }
 }

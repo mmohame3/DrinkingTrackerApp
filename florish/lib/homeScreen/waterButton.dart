@@ -1,7 +1,9 @@
+import 'package:Florish/homeScreen/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:Florish/globals.dart' as globals;
 import 'package:Florish/helpers/database_helpers.dart';
 import 'package:Florish/homeScreen/homeScreenLayout.dart';
+import 'package:Florish/functions/speedAlert.dart';
 
 class WaterButton extends StatefulWidget {
   final ValueChanged<String> parentAction;
@@ -71,9 +73,11 @@ class _WaterButtonState extends State<WaterButton> {
   // updates today's time and type lists,
   // updates the database itself,
   void waterButtonTap() async {
+    waterRiseAnimationController.forward(from: 0.0);
     globals.today.addHour(DateTime.now().hour);
     globals.today.addMinute(DateTime.now().minute);
     globals.today.addType(0);
+    speedAlert(context);
     await dbHelper.updateDay(globals.today);
   }
 }

@@ -176,7 +176,10 @@ Widget BACpopUpBody(BuildContext context) {
                               Text(
                                   "Blood Alcohol Concentration (BAC) refers to the percent of "
                                       "alcohol in a person's blood stream."
-                                      "\n\nIn the U.S., a person is legally intoxicated if they have a BAC of .08% or higher.\n",
+                                      "\n\nIn the U.S., a person is legally intoxicated if they have a BAC of .08% or higher.\n"
+                                      "\nIn Florish, your BAC is calculated using the Widmark Formula which takes into account your "
+                                      "weight, sex, and how long it's been since each drink. When you take a drink, your BAC goes up "
+                                      "based on these factors and over time it drops by .015% per hour",
                                   style: TextStyle(
                                       fontFamily: 'Montserrat',
                                       height: 1.3,
@@ -348,7 +351,7 @@ Widget bacText(BuildContext context) {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                        "Your BAC is ${globals.bac.toStringAsFixed(3)}, "
+                        "Your BAC is ${globals.bac.toStringAsFixed(3)}%, "
                             "so you may be feeling: \n\n${_getBacInfo(globals.bac)}",
                         style: TextStyle(
                             fontFamily: 'Montserrat',

@@ -4,6 +4,9 @@ import 'package:Florish/helpers/database_helpers.dart';
 import 'dart:async';
 import 'package:Florish/alerts.dart';
 import 'package:Florish/homeScreen/homeScreenLayout.dart';
+import 'package:Florish/functions/speedAlert.dart';
+import 'package:Florish/homeScreen/homeScreen.dart';
+
 
 import '../helpers/notifications.dart';
 
@@ -34,12 +37,6 @@ class _DrinkButtonState extends State<DrinkButton> {
       // updates BAC, updates the plant image, and calls drinkButtonTap
       onTap: () {
         setState(() {
-          globals.inSession = true;
-          if (globals.bac == 0.0) {
-            globals.start = true;
-            //inSession = true;
-            //print("inSession: ${globals.inSession}, start: ${globals.start}");
-          }
           globals.today.totalDrinks++;
           drinkString = globals.today.totalDrinks.toString();
           drinkButtonTap();
@@ -80,7 +77,9 @@ class _DrinkButtonState extends State<DrinkButton> {
 // Updates today's time and type lists,
   // updates the database itself
   Future<void> drinkButtonTap() async {
-     DateTime now = DateTime.now().toUtc().add(
+    drinkRiseAnimationController.forward(from: 0.0);
+
+    DateTime now = DateTime.now().toUtc().add(
         Duration(seconds:30),
       );
       singleNotification(
@@ -89,16 +88,13 @@ class _DrinkButtonState extends State<DrinkButton> {
         "This is a notification",
         98123871,
       );
-     
-    if (globals.start) {
-      globals.today.addStartEnd(globals.today.typeList.length);
-    }
-    globals.start = false;
+
     DateTime currentTime = DateTime.now();
     globals.today.addHour(currentTime.hour);
     globals.today.addMinute(currentTime.minute);
     globals.today.addType(1);
     globals.today.lastBAC = globals.bac;
+    speedAlert(context);
     dbHelper.updateDay(globals.today);
   }
 }

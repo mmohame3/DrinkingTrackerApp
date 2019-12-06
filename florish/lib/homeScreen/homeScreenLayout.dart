@@ -9,6 +9,7 @@ import 'package:Florish/popups.dart';
 import 'package:Florish/helpers/notifications.dart';
 import 'package:Florish/homeScreen/drinkButton.dart';
 import 'package:Florish/homeScreen/waterButton.dart';
+import 'package:Florish/homeScreen/waterAnimation.dart';
 
 
 final int resetTime = 12; //resets counters on this hour
@@ -48,18 +49,7 @@ class _PlantState extends State<Plant> {
   _PlantState() {
     determineDay().then((day) => setState(() {
       globals.today = day;
-
-      // DateTime now = DateTime.now().toUtc().add(
-      //   Duration(seconds:30),
-      // );
-      // singleNotification(
-      //   now,
-      //   "Notification",
-      //   "This is a notification",
-      //   98123871,
-      // );
       updateImageAndBAC('assets/images/plants/drink0water0.png');
-      getDayEnded();
     }));
   }
 
@@ -174,7 +164,6 @@ updateImageAndBAC(String path) {
     globals.today.setMaxBac(globals.bac);
     globals.today.setWatersAtMaxBac(waterToPlant());
   }
-  endSession();
 }
 
 // takes in a list of DateTime objects and calculates the bac
@@ -265,25 +254,6 @@ _dbListToTimeList() {
 }
 
 
-Future<void> endSession() async {
-  if ((globals.today.sessionList.length != 0) &&
-      (globals.today.sessionList.length % 2 != 0)) {
-    globals.inSession = true;
-  }
-  if ((globals.inSession) && (globals.bac == 0.0)) {
-    //print("inSession: ${globals.inSession}, start: ${globals.start}");
-    globals.inSession = false;
-    DateTime now = DateTime.now();
-    globals.today.addType(2);
-    globals.today.addHour(now.hour);
-    globals.today.addMinute(now.minute);
-    globals.today.addStartEnd(globals.today.typeList.length - 1);
-    await dbHelper.updateDay(globals.today);
-  }
-}
-
-
-
 //takes a DateTime and makes it into the string format
 // we use as a database key
 String dateTimeToString(DateTime date) {
@@ -329,6 +299,7 @@ Future<Day> determineDay() async {
         waterAtMaxBAC: 0,
         totalDrinks: 0,
         totalWaters: 0,
+        //TODO: delete
         sessionList: new List<int>(),
         hydratio: 0.0,
         yesterHydratio: yesterHyd,
@@ -336,10 +307,8 @@ Future<Day> determineDay() async {
 
     await db.insert(tableDays, day.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
-    await getDayEnded();
-
-
     return day;
+
   } else {
     globals.dayEnded = false;
 
@@ -352,6 +321,7 @@ Future<Day> determineDay() async {
     day.hourList = new List<int>.from(day.hourList);
     day.minuteList = new List<int>.from(day.minuteList);
     day.typeList = new List<int>.from(day.typeList);
+    //TODO: delete
     day.sessionList = new List<int>.from(day.sessionList);
 
     return day;
@@ -360,7 +330,7 @@ Future<Day> determineDay() async {
 
 // sets the global variables for yesterday's drinks and waters
 // if the day has "ended" as indicated by determine day
-Future<void> getDayEnded() async {
+Future<void> getDayEndedPopupInfo() async {
     List yesterList = await getYesterInfo();
     globals.yesterWater = yesterList[0].toInt();
     globals.yesterDrink = yesterList[2].toInt();
