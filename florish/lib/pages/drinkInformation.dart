@@ -89,7 +89,7 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                                 padding: EdgeInsets.all(20),
                            child: Container(
                                 child: Text(
-                                    "Florish is an app to help people keep track of their drinking. "
+                                    "FLORISH is an app to help people keep track of their drinking. "
                                         "It is not a scientific or precise way to monitor your BAC.",
                                     style: TextStyle( fontSize: 16,
                                         fontFamily: 'Montserrat',
