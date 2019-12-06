@@ -5,12 +5,6 @@ Day today;
 double bac = 0.00;
 String imageName = 'assets/images/plants/drink0water0.png';
 
-String selectedFeetKey = "selectedFeetKey";
-String selectedHeightKey = "selectedHeightKey";
-String selectedWeightKey = "selectedWeightKey";
-String selectedInchKey = "selectedIntKey";
-String selectedSexKey = "selectedSexKey";
-
 String selectedSex = 'Other';
 int selectedHeight = 0;
 int selectedFeet = 0;
@@ -20,8 +14,6 @@ int selectedWeight = 180;
 double weightGrams = selectedWeight * 453.592;
 int heightInches = 0;
 
-bool start = true;
-bool inSession = false;
 bool dayEnded = false;
 int yesterDrink = 0;
 int yesterWater = 0;
