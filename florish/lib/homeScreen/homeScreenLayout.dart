@@ -160,6 +160,7 @@ updateImageAndBAC(String path) {
   globals.bac = _bacMath(_dbListToTimeList());
   globals.imageName =
   'assets/images/plants/drink${bacToPlant(globals.bac)}water${waterToPlant()}.png';
+
   if (globals.bac >= globals.today.getMaxBac()) {
     globals.today.setMaxBac(globals.bac);
     globals.today.setWatersAtMaxBac(waterToPlant());

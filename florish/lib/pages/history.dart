@@ -4,6 +4,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:Florish/helpers/database_helpers.dart' as database;
 import 'package:Florish/globals.dart' as globals;
 import 'package:sqflite/sqflite.dart';
@@ -207,8 +208,7 @@ class _CalendarState extends State<Calendar> {
         selectedDateTime: _currentDate,
         selectedDayButtonColor: Color(0xFF97B633),
         selectedDayTextStyle: TextStyle(color: Colors.black),
-        height: MediaQuery.of(context).size.height / 2,
-        width: MediaQuery.of(context).size.width,
+        height: 19 * MediaQuery.of(context).size.height / 48,
         daysHaveCircularBorder: null,
         weekendTextStyle: TextStyle(color: Colors.black),
         weekdayTextStyle: TextStyle(color: Colors.black),
@@ -219,8 +219,8 @@ class _CalendarState extends State<Calendar> {
           fontFamily: 'Montserrat',
           color: Colors.black,
         ),
-        minSelectedDate: DateTime(2019, 8, 1), // TODO: make these infinite
-        maxSelectedDate: DateTime(2022, 12, 31),
+        headerMargin: EdgeInsets.all(5),
+        markedDateIconMargin: 0,
         markedDatesMap: _markedDateMap,
         markedDateShowIcon: true,
         markedDateIconMaxShown: 1,
@@ -268,107 +268,56 @@ class _HistoryPageState extends State<HistoryPage> {
     });
   }
 
-  String typeToImageName(int type) {
-    String path =
-        type == 1 ? 'assets/images/soloCup.png' : 'assets/images/waterDrop.png';
-    return path;
-  }
-
-  int bacToPlant(double bac) {
-    bac = bac >= 0.12 ? 0.12 : bac; // sets BAC equal to 0.12 if >= 0.12
-    int plantNum = (5 * (bac / .12)).floor();
-    plantNum = plantNum > 4 ? 4 : plantNum;
-    return plantNum;
-  }
-
-  String dateToString(String date) {
-    String monthName;
-
-    List<String> dateObjects = date.split("/");
-    String month = minutesStringToString(dateObjects[0]);
-    String day = minutesStringToString(dateObjects[1]);
-    String year = dateObjects[2];
-
-    String dateStringToConvert = year + month + day;
-    DateTime parsedDate = DateTime.parse(dateStringToConvert);
-
-    int monthInt = parsedDate.month;
-    if (monthInt == 1) {
-      monthName = 'JANUARY';
-    } else if (monthInt == 2) {
-      monthName = 'FEBRUARY';
-    } else if (monthInt == 3) {
-      monthName = 'MARCH';
-    } else if (monthInt == 4) {
-      monthName = 'APRIL';
-    } else if (monthInt == 5) {
-      monthName = 'MAY';
-    } else if (monthInt == 6) {
-      monthName = 'JUNE';
-    } else if (monthInt == 7) {
-      monthName = 'JULY';
-    } else if (monthInt == 8) {
-      monthName = 'AUGUST';
-    } else if (monthInt == 9) {
-      monthName = 'SEPTEMBER';
-    } else if (monthInt == 10) {
-      monthName = 'OCTOBER';
-    } else if (monthInt == 11) {
-      monthName = 'NOVEMBER';
-    } else if (monthInt == 12) {
-      monthName = 'DECEMBER';
-    }
-
-    return '$monthName ${parsedDate.day}, ${parsedDate.year}';
-  }
-
   Widget dataReturn() {
     Container container;
     if (day.typeList.length > 0) {
       container = Container(
           padding: EdgeInsets.only(top: 10),
           child: Column(children: [
-            Text(dateToString(day.getDate())),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
-                Widget>[
-              Column(children: <Widget>[
-                Container(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.width / 15,
-                        left: MediaQuery.of(context).size.width / 15,
-                        right: MediaQuery.of(context).size.width / 15),
-                    child: Image.asset(
-                      'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
-                      width: MediaQuery.of(context).size.width / 3,
-                      height: MediaQuery.of(context).size.height / 6,
-                    )),
-              ]),
-              SingleChildScrollView(
-                  child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height / 3,
-                        maxWidth: MediaQuery.of(context).size.width / 4,
-                      ),
-                      child: Table(
-                          defaultVerticalAlignment:
-                              TableCellVerticalAlignment.middle,
-                          children: [
-                            for (int i = 0; day.getHours().length > i; i++)
-                              TableRow(children: [
-                                TableCell(
-                                    child: Text(day.getHours()[i].toString() +
-                                        ':' +
-                                        minutesIntToString(
-                                            day.getMinutes()[i]))),
-                                TableCell(
-                                    child: Container(
-                                        padding: EdgeInsets.all(5),
-                                        child: Image.asset(
-                                            typeToImageName(day.getTypes()[i]),
-                                            height: 15)))
-                              ])
-                          ])))
-            ])
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Column(children: <Widget>[
+                    Container(
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).size.width / 70),
+                        height: MediaQuery.of(context).size.height / 4,
+                        alignment: Alignment.bottomCenter,
+                        child: Image.asset(
+                          'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
+                          width: 7 * MediaQuery.of(context).size.width / 24,
+                        )),
+                  ]),
+                  SingleChildScrollView(
+                      child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: MediaQuery.of(context).size.height / 4,
+                            maxWidth: MediaQuery.of(context).size.width / 4,
+                          ),
+                          child: Table(
+                              defaultVerticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              children: [
+                                for (int i = 0; day.getHours().length > i; i++)
+                                  TableRow(children: [
+                                    TableCell(
+                                        child: Text(
+                                            twentyFourToTwelveHourString(
+                                                    day.getHours()[i]) +
+                                                ':' +
+                                                minutesIntToString(
+                                                    day.getMinutes()[i]))),
+                                    TableCell(
+                                        child: Container(
+                                            padding: EdgeInsets.all(5),
+                                            child: Image.asset(
+                                                typeToImageName(
+                                                    day.getTypes()[i]),
+                                                height: 20)))
+                                  ])
+                              ])))
+                ])
           ]));
     } else {
       container = Container(
@@ -382,7 +331,7 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget graphReturn() {
-    Container container = Container(color: Colors.orange); // TODO: make widget
+    Container container = Container(child: BacChart(day: day));
     return container;
   }
 
@@ -419,43 +368,24 @@ class _HistoryPageState extends State<HistoryPage> {
               SizedBox(height: MediaQuery.of(context).size.height / 70),
               Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 3,
+                  height: 5 * MediaQuery.of(context).size.height / 12,
                   padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(
                         Radius.circular(10),
                       ),
                       color: Colors.white),
-                  child: CarouselWithIndicator(
-                      widgetList: [dataReturn(), graphReturn()]))
-            ])
-//                  dataReturn())
-            ));
+                  child: Column(children: [
+                    Container(
+                        padding: EdgeInsets.only(top: 15, bottom: 5),
+                        child: Text(dateToString(day.getDate()),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16))),
+                    CarouselWithIndicator(
+                        widgetList: [dataReturn(), graphReturn()])
+                  ]))
+            ])));
   }
-}
-
-String minutesIntToString(int minutes) {
-  String minuteString = minutes.toString();
-  if (minuteString.length < 2) {
-    minuteString = '0' + minutes.toString()[0];
-  }
-  return minuteString;
-}
-
-String minutesStringToString(String minutes) {
-  String minuteString = minutes.toString();
-  if (minuteString.length < 2) {
-    minuteString = '0' + minutes.toString()[0];
-  }
-  return minuteString;
-}
-
-List<T> map<T>(List list, Function handler) {
-  List<T> result = [];
-  for (var i = 0; i < list.length; i++) {
-    result.add(handler(i, list[i]));
-  }
-  return result;
 }
 
 class CarouselWithIndicator extends StatefulWidget {
@@ -492,7 +422,8 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicator> {
       ),
       CarouselSlider(
         items: widget.widgetList,
-        aspectRatio: 1.7,
+        aspectRatio: MediaQuery.of(context).size.width /
+            (7 * MediaQuery.of(context).size.height / 20),
         viewportFraction: 1.0,
         enableInfiniteScroll: false,
         onPageChanged: (index) {
@@ -503,4 +434,162 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicator> {
       ),
     ]);
   }
+}
+
+class BacChart extends StatelessWidget {
+  final database.Day day;
+  const BacChart({Key key, this.day}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return new charts.TimeSeriesChart(
+      _createData(),
+      animate: false,
+    );
+  }
+
+  List<charts.Series<TimeSeriesBac, DateTime>> _createData() {
+    return [
+      new charts.Series<TimeSeriesBac, DateTime>(
+        id: 'BAC',
+        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+        domainFn: (TimeSeriesBac bac, _) => bac.time,
+        measureFn: (TimeSeriesBac bac, _) => bac.bac,
+        data: makeBacData(day)[0],
+      ),
+      new charts.Series<TimeSeriesBac, DateTime>(
+        id: 'Water',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (TimeSeriesBac bac, _) => bac.time,
+        measureFn: (TimeSeriesBac bac, _) => bac.bac,
+        data: makeBacData(day)[1],
+      )
+//        ..setAttribute(charts.rendererIdKey, 'customPoint'),
+    ];
+  }
+}
+
+class TimeSeriesBac {
+  final DateTime time;
+  final double bac;
+
+  TimeSeriesBac(this.time, this.bac);
+}
+
+String minutesIntToString(int minutes) {
+  String minuteString = minutes.toString();
+  if (minuteString.length < 2) {
+    minuteString = '0' + minutes.toString()[0];
+  }
+  return minuteString;
+}
+
+String minutesStringToString(String minutes) {
+  String minuteString = minutes.toString();
+  if (minuteString.length < 2) {
+    minuteString = '0' + minutes.toString()[0];
+  }
+  return minuteString;
+}
+
+String twentyFourToTwelveHourString(int hour) {
+  if (hour > 12) {
+    hour -= 12;
+  }
+  return '$hour';
+}
+
+int bacToPlant(double bac) {
+  bac = bac >= 0.12 ? 0.12 : bac; // sets BAC equal to 0.12 if >= 0.12
+  int plantNum = (5 * (bac / .12)).floor();
+  plantNum = plantNum > 4 ? 4 : plantNum;
+  return plantNum;
+}
+
+String typeToImageName(int type) {
+  String path =
+      type == 1 ? 'assets/images/soloCup.png' : 'assets/images/waterDrop.png';
+  return path;
+}
+
+String dateToString(String date) {
+  String monthName;
+
+  List<String> dateObjects = date.split("/");
+  String month = minutesStringToString(dateObjects[0]);
+  String day = minutesStringToString(dateObjects[1]);
+  String year = dateObjects[2];
+
+  String dateStringToConvert = year + month + day;
+  DateTime parsedDate = DateTime.parse(dateStringToConvert);
+
+  int monthInt = parsedDate.month;
+  if (monthInt == 1) {
+    monthName = 'JANUARY';
+  } else if (monthInt == 2) {
+    monthName = 'FEBRUARY';
+  } else if (monthInt == 3) {
+    monthName = 'MARCH';
+  } else if (monthInt == 4) {
+    monthName = 'APRIL';
+  } else if (monthInt == 5) {
+    monthName = 'MAY';
+  } else if (monthInt == 6) {
+    monthName = 'JUNE';
+  } else if (monthInt == 7) {
+    monthName = 'JULY';
+  } else if (monthInt == 8) {
+    monthName = 'AUGUST';
+  } else if (monthInt == 9) {
+    monthName = 'SEPTEMBER';
+  } else if (monthInt == 10) {
+    monthName = 'OCTOBER';
+  } else if (monthInt == 11) {
+    monthName = 'NOVEMBER';
+  } else if (monthInt == 12) {
+    monthName = 'DECEMBER';
+  }
+
+  return '$monthName ${parsedDate.day}, ${parsedDate.year}';
+}
+
+List<T> map<T>(List list, Function handler) {
+  List<T> result = [];
+  for (var i = 0; i < list.length; i++) {
+    result.add(handler(i, list[i]));
+  }
+  return result;
+}
+
+DateTime stringToDateTime(String date, int hour, int minutes) {
+  List<String> dateObjects = date.split("/");
+  String month = minutesStringToString(dateObjects[0]);
+  String day = minutesStringToString(dateObjects[1]);
+  String year = dateObjects[2];
+
+  DateTime dateTime =
+      DateTime.parse(year + month + day + ' ' + hour.toString() + ':' + minutes.toString() + ':00');
+  return dateTime;
+}
+
+List<List<TimeSeriesBac>> makeBacData(database.Day day) {
+  List<TimeSeriesBac> bacData = new List<TimeSeriesBac>();
+  List<TimeSeriesBac> waterData = new List<TimeSeriesBac>();
+
+  for (int i in day.typeList) {
+    if (day.typeList[i] == 1) {
+      bacData.add(TimeSeriesBac(
+          stringToDateTime(
+              day.getDate(), day.getHours()[i], day.getMinutes()[i]),
+          (1.0 + i)));
+    }
+    else {
+      waterData.add(TimeSeriesBac(
+        DateTime.now(),
+//          stringToDateTime(
+//              day.getDate(), day.getHours()[i], day.getMinutes()[i]),
+          1.0));
+    }
+  }
+  return [bacData, waterData];
 }

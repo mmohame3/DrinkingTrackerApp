@@ -60,9 +60,9 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                           child: Container(
                             padding: EdgeInsets.all(20),
                             child: Text(
-                                "FLORISH,  provides a platform for increased "
-                                "awareness of drinking levels in any scenario.  FLORISH is catered towards college students, who often binge drink and lose track of their Alcohol intake levels, jeopardizing their own safety, as well as that of those around them.\n\n"
-                                "FLORISH provides a visual indicator of their BAC as an emotional and accountability incentive to monitor their wellbeing and drinking habits. "
+                                "Florish provides a platform for increased "
+                                "awareness of drinking levels in any scenario. Florish is catered towards college students, who often binge drink and lose track of their Alcohol intake levels, jeopardizing their own safety, as well as that of those around them.\n\n"
+                                "Florish provides a visual indicator of their BAC as an emotional and accountability incentive to monitor their wellbeing and drinking habits. "
                                 ,
                                 style: TextStyle( fontSize: 16,
                                     fontFamily: 'Montserrat',
@@ -75,26 +75,6 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
 //                              style: TextStyle(color: Colors.white)),
 //                        )
                           )),
-                      Container(
-                          padding: EdgeInsets.only(top: 15, left: 20, bottom: 5
-                              ),
-                          child: Text(
-                            'DISCLAIMER',
-                            style: TextStyle(letterSpacing: 1, height: 1.5),
-                          )),
-
-                       Container(
-                         color: Colors.white,
-                           alignment: Alignment.topCenter,
-                                padding: EdgeInsets.all(20),
-                           child: Container(
-                                child: Text(
-                                    "FLORISH is an app to help people keep track of their drinking. "
-                                        "It is not a scientific or precise way to monitor your BAC.",
-                                    style: TextStyle( fontSize: 16,
-                                        fontFamily: 'Montserrat',
-                                        height: 1.3,
-                                        color: Colors.black)))),
                         Container(
                             padding:
                                 EdgeInsets.only(top: 15, left: 20, bottom: 5),
@@ -122,6 +102,26 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                                         style: TextStyle(color: Colors.white)),
                                   ),
                                 ]))),
+                      Container(
+                          padding: EdgeInsets.only(top: 15, left: 20, bottom: 5
+                          ),
+                          child: Text(
+                            'DISCLAIMER',
+                            style: TextStyle(letterSpacing: 1, height: 1.5),
+                          )),
+
+                      Container(
+                          color: Colors.white,
+                          alignment: Alignment.topCenter,
+                          padding: EdgeInsets.all(20),
+                          child: Container(
+                              child: Text(
+                                  "FLORISH is an app to help people keep track of their drinking. "
+                                      "It is not a scientific or precise way to monitor your BAC.",
+                                  style: TextStyle( fontSize: 16,
+                                      fontFamily: 'Montserrat',
+                                      height: 1.3,
+                                      color: Colors.black)))),
 
                       ]))));
   }

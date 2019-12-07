@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:Florish/homeScreen/homeScreen.dart' as home;
 
-
 Widget drinkAnimation(){
   var soloCupPosition = home.drinkRisePositionAnimation.value * 400;
   var soloCupOpacity = home.drinkRisePositionAnimation.value == 0.0 ? 0.0 :
@@ -16,6 +15,4 @@ Widget drinkAnimation(){
     bottom: soloCupPosition + 105,
     right: 255,
   );
-
-
 }

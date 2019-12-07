@@ -132,8 +132,8 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
       body: Stack(
           children: <Widget>[
             plant,
-//            waterAnimation(),
-//            drinkAnimation(),
+            waterAnimation(),
+            drinkAnimation(),
           ],
 
       ),

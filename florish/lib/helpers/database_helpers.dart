@@ -11,7 +11,7 @@ final String columnHourList = 'hourlist';
 final String columnMinuteList = 'minutelist';
 final String columnTypeList = 'typelist';
 final String columnMaxBAC = 'maxBAC';
-final String columnMBWater = 'WateratmaxBAC';
+final String columnMBWater = 'wateratmaxBAC';
 final String columnDrinkCount = "totaldrinkcount";
 final String columnWaterCount = "totalwatercount";
 final String columnSession = "sessionlist";
@@ -199,7 +199,7 @@ class DatabaseHelper {
   static final columnMinuteList = 'minutelist';
   static final columnTypeList = 'typelist';
   static final columnMaxBAC = 'maxBAC';
-  static final columnMBWater = 'WateratmaxBAC';
+  static final columnMBWater = 'wateratmaxBAC';
   static final columnDrinkCount = "totaldrinkcount";
   static final columnWaterCount = "totalwatercount";
   static final columnSession = "sessionlist";
