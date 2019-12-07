@@ -12,7 +12,7 @@ import 'package:Florish/homeScreen/waterButton.dart';
 import 'package:Florish/homeScreen/waterAnimation.dart';
 
 
-final int resetTime = 12; //resets counters on this hour
+final int resetTime = 15; //resets counters on this hour
 final double maxBAC = 0.12;
 final int numberOfDrinkPlants = 5;
 final int numberOfWaterPlants = 6;
@@ -214,7 +214,7 @@ _bacMath(drinkTimeList) {
   noon = currentTime.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
 
   int afterNoonDiff = currentTime.difference(noon).inSeconds;
-  double beforeNoonDiff = drinkToNoonTime * 3600;
+  double beforeNoonDiff = drinkToNoonTime * 60;
 
   double totalYesterBAC = (yesterBAC - (((afterNoonDiff + beforeNoonDiff) / 3600) * bacDropPerHour));
   totalYesterBAC = totalYesterBAC < 0 ? 0 : totalYesterBAC;
@@ -341,9 +341,9 @@ Future<void> getDayEndedPopupInfo() async {
 // [yesterday's total waters, yesterday's hydration ratio,
 // yesterday's total drinks, yesterday's last bac, hours between reset time and time of last drink]
 Future<List<double>> getYesterInfo() async {
-  DateTime time = DateTime.now();
+  DateTime currentTime = DateTime.now();
   Duration dayLength = Duration(days: 1);
-  DateTime yester = time.subtract(dayLength);
+  DateTime yester = currentTime.subtract(dayLength);
 
   String yesterDate = dateTimeToString(yester);
 
@@ -351,7 +351,7 @@ Future<List<double>> getYesterInfo() async {
 
   List<Map> yesterdayResult = await db.rawQuery('SELECT * FROM days WHERE day=?', [yesterDate]);
 
-  double w, yhr, d, ybac;
+  double w, yhr, d, ybac, lastDrinkToNoonMinutes;
 
   if (yesterdayResult.isEmpty || yesterdayResult == null) {
     return [0.0, 0.0, 0.0, 0.0, 0.0];
@@ -362,7 +362,31 @@ Future<List<double>> getYesterInfo() async {
     yhr = yesterday.hydratio;
     d = yesterday.totalDrinks.toDouble();
     ybac = yesterday.lastBAC;
-    return [w, yhr, d, ybac, 0];
+    lastDrinkToNoonMinutes = 0.0;
+    if (yesterday.typeList != null) {
+      if (yesterday.typeList.contains(1)) {
+        int i = yesterday.typeList.lastIndexOf(1);
+
+        DateTime noon = new DateTime(
+            currentTime.year, currentTime.month, currentTime.day, resetTime);
+        noon =
+        currentTime.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
+
+        DateTime yesterLastDrinkTime = yesterday.hourList[i] < resetTime ?
+        new DateTime(currentTime.year, currentTime.month, currentTime.day,
+            yesterday.hourList[i], yesterday.minuteList[i]) :
+        new DateTime(
+            yester.year, yester.month, yester.day, yesterday.hourList[i],
+            yesterday.minuteList[i]);
+
+        lastDrinkToNoonMinutes = noon
+            .difference(yesterLastDrinkTime)
+            .inMinutes
+            .toDouble();
+      }
+    }
+      return [w, yhr, d, ybac, lastDrinkToNoonMinutes];
+
   }
 }
 
@@ -379,31 +403,32 @@ int bacToPlant(double bac) {
 int waterToPlant() {
   DateTime current = DateTime.now();
   int plantNumWater;
-  int yesterWater = 0;
+  int yesterWaterCount = 0;
   double yesterHyd = 0.0;
+  double idealWatersPerHour = 0.5;
 
   DateTime noon =
   new DateTime(current.year, current.month, current.day, resetTime);
   noon = current.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
 
-  Duration diffDuration = current.difference(noon);
-  int diff = diffDuration.inMinutes;
+  Duration timeSinceNoon = current.difference(noon);
+  int timeSinceNoonMinutes = timeSinceNoon.inMinutes;
 
-  diff = diff < 0 ? -diff : diff; //makes diff positive if it wasn't
-  diff = diff < 1 ? 1 : diff; //makes sure diff is at least 1 minute
+  timeSinceNoonMinutes = timeSinceNoonMinutes < 0 ? -timeSinceNoonMinutes : timeSinceNoonMinutes; //makes timeSinceNoonMinutes positive if it wasn't
+  timeSinceNoonMinutes = timeSinceNoonMinutes < 1 ? 1 : timeSinceNoonMinutes; //makes sure timeSinceNoonMinutes is at least 1 minute
 
-  Future<List> yesterInfo = getYesterInfo();
-  yesterInfo.then((list) {
-    yesterWater = list[0].toInt();
+ // Future<List> yesterInfo = getYesterInfo();
+  getYesterInfo().then((list) {
+    yesterWaterCount = list[0].toInt();
     yesterHyd = list[1];
   });
-  double ratio =
-      (yesterWater - ((diff / 60) * yesterHyd) + globals.today.totalWaters) /
-          24;
+  double watersPerHourRatio =
+      (yesterWaterCount - ((timeSinceNoonMinutes / 60) * yesterHyd) + globals.today.totalWaters) /
+          (timeSinceNoonMinutes / 60);
 
-  globals.today.hydratio = ratio;
+  globals.today.hydratio = watersPerHourRatio;
 
-  plantNumWater = (numberOfWaterPlants * (ratio / .5)).round();
+  plantNumWater = (numberOfWaterPlants * (watersPerHourRatio / idealWatersPerHour)).round();
   plantNumWater = plantNumWater > numberOfWaterPlants - 1 ? numberOfWaterPlants - 1 : plantNumWater;
   plantNumWater = plantNumWater < 0 ? 0 : plantNumWater;
 
