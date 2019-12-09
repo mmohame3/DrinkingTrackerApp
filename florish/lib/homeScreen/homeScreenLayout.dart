@@ -9,10 +9,8 @@ import 'package:Florish/popups.dart';
 import 'package:Florish/helpers/notifications.dart';
 import 'package:Florish/homeScreen/drinkButton.dart';
 import 'package:Florish/homeScreen/waterButton.dart';
-import 'package:Florish/homeScreen/waterAnimation.dart';
 
-
-final int resetTime = 12; //resets counters on this hour
+final int resetTime = 15; //resets counters on this hour
 final double maxBAC = 0.12;
 final int numberOfDrinkPlants = 5;
 final int numberOfWaterPlants = 6;
@@ -211,7 +209,7 @@ _bacMath(drinkTimeList) {
   noon = currentTime.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
 
   int afterNoonDiff = currentTime.difference(noon).inSeconds;
-  double beforeNoonDiff = drinkToNoonTime * 3600;
+  double beforeNoonDiff = drinkToNoonTime * 60;
 
   double totalYesterBAC = (yesterBAC - (((afterNoonDiff + beforeNoonDiff) / 3600) * bacDropPerHour));
   totalYesterBAC = totalYesterBAC < 0 ? 0 : totalYesterBAC;
@@ -363,10 +361,6 @@ Future<void> getDayEndedPopupInfo() async {
     globals.yesterDrink = yesterList[2].toInt();
 }
 
-// gets yesterday's data about drinks and bac in the form:
-// [yesterday's total waters, yesterday's hydration ratio,
-// yesterday's total drinks, yesterday's last bac, hours between reset time and time of last drink]
-
 // turns the BAC to a plant stage
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
 int bacToPlant(double bac) {
@@ -380,31 +374,32 @@ int bacToPlant(double bac) {
 int waterToPlant() {
   DateTime current = DateTime.now();
   int plantNumWater;
-  int yesterWater = 0;
+  int yesterWaterCount = 0;
   double yesterHyd = 0.0;
+  double idealWatersPerHour = 0.5;
 
   DateTime noon =
   new DateTime(current.year, current.month, current.day, resetTime);
   noon = current.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
 
-  Duration diffDuration = current.difference(noon);
-  int diff = diffDuration.inMinutes;
+  Duration timeSinceNoon = current.difference(noon);
+  int timeSinceNoonMinutes = timeSinceNoon.inMinutes;
 
-  diff = diff < 0 ? -diff : diff; //makes diff positive if it wasn't
-  diff = diff < 1 ? 1 : diff; //makes sure diff is at least 1 minute
+  timeSinceNoonMinutes = timeSinceNoonMinutes < 0 ? -timeSinceNoonMinutes : timeSinceNoonMinutes; //makes timeSinceNoonMinutes positive if it wasn't
+  timeSinceNoonMinutes = timeSinceNoonMinutes < 1 ? 1 : timeSinceNoonMinutes; //makes sure timeSinceNoonMinutes is at least 1 minute
 
-  Future<List> yesterInfo = getYesterInfo();
-  yesterInfo.then((list) {
-    yesterWater = list[0].toInt();
+ // Future<List> yesterInfo = getYesterInfo();
+  getYesterInfo().then((list) {
+    yesterWaterCount = list[0].toInt();
     yesterHyd = list[1];
   });
-  double ratio =
-      (yesterWater - ((diff / 60) * yesterHyd) + globals.today.totalWaters) /
-          24;
+  double watersPerHourRatio =
+      (yesterWaterCount - ((timeSinceNoonMinutes / 60) * yesterHyd) + globals.today.totalWaters) /
+          (timeSinceNoonMinutes / 60);
 
-  globals.today.hydratio = ratio;
+  globals.today.hydratio = watersPerHourRatio;
 
-  plantNumWater = (numberOfWaterPlants * (ratio / .5)).round();
+  plantNumWater = (numberOfWaterPlants * (watersPerHourRatio / idealWatersPerHour)).round();
   plantNumWater = plantNumWater > numberOfWaterPlants - 1 ? numberOfWaterPlants - 1 : plantNumWater;
   plantNumWater = plantNumWater < 0 ? 0 : plantNumWater;
 
