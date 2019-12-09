@@ -46,6 +46,7 @@ class _CalendarState extends State<Calendar> {
           hourList: new List<int>(),
           minuteList: new List<int>(),
           typeList: new List<int>(),
+          constantBACList: new List<int>(),
           maxBAC: 0.0,
           waterAtMaxBAC: 0,
           totalDrinks: 0,
@@ -66,7 +67,7 @@ class _CalendarState extends State<Calendar> {
       day.hourList ??= new List<int>();
       day.minuteList ??= new List<int>();
       day.typeList ??= new List<int>();
-
+      day.constantBACList ??= new List<int>();
       day.hourList = new List<int>.from(day.hourList);
       day.minuteList = new List<int>.from(day.minuteList);
       day.typeList = new List<int>.from(day.typeList);
@@ -198,14 +199,16 @@ class _CalendarState extends State<Calendar> {
 
     return CalendarCarousel(
         selectedDateTime: _currentDate,
-        selectedDayButtonColor: Color(0xFF97B633),
+        selectedDayBorderColor: Colors.black,
+        selectedDayButtonColor: Colors.white,
         selectedDayTextStyle: TextStyle(color: Colors.black),
         height: 19 * MediaQuery.of(context).size.height / 48,
-        daysHaveCircularBorder: null,
+        daysHaveCircularBorder: true,
         weekendTextStyle: TextStyle(color: Colors.black),
         weekdayTextStyle: TextStyle(color: Colors.black),
         todayTextStyle: TextStyle(color: Colors.black),
-        todayButtonColor: Color(0xFFC9D986),
+        todayButtonColor: Colors.white,
+        todayBorderColor: Colors.black26,
         iconColor: Colors.black,
         headerTextStyle: TextStyle(
           fontFamily: 'Montserrat',
@@ -323,10 +326,36 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget graphReturn() {
-    Container container = Container(
-        height: MediaQuery.of(context).size.height / 2,
-        child: BacChart(day: day));
+    Container container;
+    if (day.typeList.length > 0) {
+      container = Container(
+          height: MediaQuery.of(context).size.height / 2,
+          child: BacChart(day: day));
+    } else {
+      container = Container(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
+          child: Text(
+            'No data for this day',
+            style: TextStyle(color: Colors.grey[600]),
+          ));
+    }
     return container;
+  }
+
+  Widget historyWidgetReturn() {
+    Widget historyWidget;
+    if (day.typeList.length > 0) {
+      historyWidget =
+          CarouselWithIndicator(widgetList: [dataReturn(), graphReturn()]);
+    } else {
+      historyWidget = Container(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
+          child: Text(
+            'No data for this day',
+            style: TextStyle(color: Colors.grey[600]),
+          ));
+    }
+    return historyWidget;
   }
 
   @override
@@ -374,8 +403,7 @@ class _HistoryPageState extends State<HistoryPage> {
                         padding: EdgeInsets.only(top: 15, bottom: 5),
                         child: Text(dateToString(day.getDate()),
                             style: TextStyle(fontSize: 16, letterSpacing: 1))),
-                    CarouselWithIndicator(
-                        widgetList: [dataReturn(), graphReturn()])
+                    historyWidgetReturn()
                   ]))
             ])));
   }
@@ -444,23 +472,11 @@ class BacChart extends StatelessWidget {
 
   List<charts.Series<TimeSeriesBac, DateTime>> _createData() {
     List<TimeSeriesBac> bacData = new List<TimeSeriesBac>();
-    List<TimeSeriesBac> waterData = new List<TimeSeriesBac>();
-
     for (int i = 0; i < day.constantBACList.length; i++) {
       bacData.add(new TimeSeriesBac(
-          DateTime(
-            getYear(day.getDate()),
-            getMonth(day.getDate()),
-            getDay(day.getDate()),
-            day.hourList[0],
-            day.minuteList[0],
-            5*i
-          ),
-          day.constantBACList[i] / 100));
-      waterData.add(TimeSeriesBac(
-          stringToDateTime(
-              day.getDate(), day.getHours()[i], day.getMinutes()[i]),
-          1.0));
+          DateTime(getYear(day.getDate()), getMonth(day.getDate()),
+              getDay(day.getDate()), day.hourList[0], day.minuteList[0], 5 * i),
+          day.constantBACList[i] / 10)); // = 10 * actual bac
     }
 
     return [
@@ -470,13 +486,6 @@ class BacChart extends StatelessWidget {
         domainFn: (TimeSeriesBac bac, _) => bac.time,
         measureFn: (TimeSeriesBac bac, _) => bac.bac,
         data: bacData,
-      ),
-      new charts.Series<TimeSeriesBac, DateTime>(
-        id: 'Water',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (TimeSeriesBac bac, _) => bac.time,
-        measureFn: (TimeSeriesBac bac, _) => bac.bac,
-        data: waterData,
       ),
     ];
   }

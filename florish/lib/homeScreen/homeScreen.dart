@@ -10,7 +10,7 @@ import 'package:Florish/homeScreen/homeScreenLayout.dart';
 import 'package:Florish/homeScreen/waterAnimation.dart';
 import 'package:Florish/homeScreen/drinkAnimation.dart';
 
-final int resetTime = 12; //resets counters on this hour
+final int resetTime = 6; //resets counters on this hour
 final double maxBAC = 0.12;
 final int numberOfDrinkPlants = 5;
 final int numberOfWaterPlants = 6;

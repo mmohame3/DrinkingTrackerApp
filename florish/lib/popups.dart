@@ -328,13 +328,6 @@ Widget dayEndPopUpBody(BuildContext context) {
 }
 
 Widget bacText(BuildContext context) {
-  Paint paint = Paint();
-  paint.color = Color(0xFFcbe67d);
-//  paint.color = Colors.black;
-  paint.strokeWidth = 3;
-  paint.style = PaintingStyle.fill;
-  paint.strokeJoin = StrokeJoin.round;
-
   double bacLater = (globals.bac - .08) / .015;
   double bacToZero = globals.bac / .015;
   bacLater = bacLater < 0 ? 0 : bacLater;
@@ -357,13 +350,23 @@ Widget bacText(BuildContext context) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                        "Your BAC is ${globals.bac.toStringAsFixed(3)}%, "
-                        "so you may be feeling: \n\n${_getBacInfo(globals.bac)}",
-                        style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            height: 1.3,
-                            color: Colors.black)),
+                    RichText(
+                        text: TextSpan(
+                            style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                height: 1.3,
+                                color: Colors.black),
+                            children: [
+                          TextSpan(
+                            text: "Your BAC is ",
+                          ),
+                          TextSpan(
+                              text: '${globals.bac.toStringAsFixed(3)}% ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text:
+                                  "so you may be feeling: \n\n${_getBacInfo(globals.bac)}"),
+                        ])),
                     Column(children: [
                       RichText(
                           text: TextSpan(
@@ -376,13 +379,12 @@ Widget bacText(BuildContext context) {
                                 text:
                                     "\nGiven your current BAC, it will take about:\n  •   "),
                             TextSpan(
-                                text: ' ${bacToZero.toStringAsFixed(1)} ',
-                                style: TextStyle(background: paint)),
-                            TextSpan(text: " hours to fall to 0% \n  •   "),
+                                text:
+                                    ' ${bacToZero.toStringAsFixed(1)} hours to fall to 0% \n',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(
-                                text: ' ${bacLater.toStringAsFixed(1)} ',
-                                style: TextStyle(background: paint)),
-                            TextSpan(text: " hours to fall to .08%"),
+                                text:
+                                    '  •    ${bacLater.toStringAsFixed(1)} hours to fall to .08%'),
                           ]))
                     ])
                   ])))
