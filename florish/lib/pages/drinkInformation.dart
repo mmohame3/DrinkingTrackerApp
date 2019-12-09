@@ -60,9 +60,9 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                           child: Container(
                             padding: EdgeInsets.all(20),
                             child: Text(
-                                "Florish provides a platform for increased "
-                                "awareness of drinking levels in any scenario. Florish is catered towards college students, who often binge drink and lose track of their Alcohol intake levels, jeopardizing their own safety, as well as that of those around them.\n\n"
-                                "Florish provides a visual indicator of their BAC as an emotional and accountability incentive to monitor their wellbeing and drinking habits. ",
+                                "FLORISH provides a platform for increased "
+                                "awareness of drinking levels in any scenario. FLORISH is catered towards college students, who often binge drink and lose track of their Alcohol intake levels, jeopardizing their own safety, as well as that of those around them.\n\n"
+                                "FLORISh provides a visual indicator of their BAC as an emotional and accountability incentive to monitor their wellbeing and drinking habits. ",
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontFamily: 'Montserrat',
