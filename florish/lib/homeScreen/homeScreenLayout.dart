@@ -148,7 +148,7 @@ class _PlantState extends State<Plant> {
 }
 
 
-// TODO: here are a lot of helper functions re: calculating bac and work with Day objects
+// Helper functions re: calculating bac and work with Day objects
 
 // sets the bac global to the new bac and updates the max bac
 // sets the plant's image name to a new path
@@ -388,7 +388,6 @@ int waterToPlant() {
   timeSinceNoonMinutes = timeSinceNoonMinutes < 0 ? -timeSinceNoonMinutes : timeSinceNoonMinutes; //makes timeSinceNoonMinutes positive if it wasn't
   timeSinceNoonMinutes = timeSinceNoonMinutes < 1 ? 1 : timeSinceNoonMinutes; //makes sure timeSinceNoonMinutes is at least 1 minute
 
- // Future<List> yesterInfo = getYesterInfo();
   getYesterInfo().then((list) {
     yesterWaterCount = list[0].toInt();
     yesterHyd = list[1];

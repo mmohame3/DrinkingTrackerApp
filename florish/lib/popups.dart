@@ -1,14 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'globals.dart' as globals;
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:Florish/pages/drinkInformation.dart';
 import 'package:Florish/pages/history.dart';
 
-List<TimeSeriesBac> bacChartData =
-    List<TimeSeriesBac>(); // List<TimeSeriesBac>();
-List<TimeSeriesBac> waterChartData = List<TimeSeriesBac>();
-
+List<TimeSeriesBac> bacChartData = List<TimeSeriesBac>();
 class PopupLayout extends ModalRoute {
   final Widget child;
   double top;
@@ -125,12 +121,12 @@ showBACPopup(BuildContext context) {
                   )
                 ],
               ),
-              body: BACpopUpBody(context),
+              body: bacPopUpBody(context),
             ),
           )));
 }
 
-Widget BACpopUpBody(BuildContext context) {
+Widget bacPopUpBody(BuildContext context) {
 //  double bacLater = (globals.bac - .08 )/.015;
 //  double bacToZero = globals.bac/.05;
 //  bacLater = bacLater < 0 ? 0 : bacLater;
@@ -139,28 +135,12 @@ Widget BACpopUpBody(BuildContext context) {
       child: SingleChildScrollView(
           child: ConstrainedBox(
               constraints: BoxConstraints(
-//                maxHeight: MediaQuery.of(context).size.height,
                 maxWidth: MediaQuery.of(context).size.width,
               ),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     bacText(context),
-//                    Container(
-//                        padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
-//                        child: Text(
-//                          'YOUR PROJECTED BAC',
-//                          style: TextStyle(letterSpacing: 1, height: 1.5),
-//                        )),
-//                    Container(
-//                        color: Colors.white,
-//                        alignment: Alignment.topCenter,
-//                        child: Container(
-//                            padding: EdgeInsets.all(20),
-//                            child: SizedBox(
-//                              height: MediaQuery.of(context).size.height / 5,
-////                                child: BacChart()
-//                            ))),
                     Container(
                         padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
                         child: Text(
@@ -291,12 +271,6 @@ Widget dayEndPopUpBody(BuildContext context) {
   return Container(
       color: Color(0xFFE6E7E8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-//        Container(
-//            padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
-//            child: Text(
-//              'YOUR BAC',
-//              style: TextStyle(letterSpacing: 1, height: 1.5),
-//            )),
         Container(
             color: Colors.white,
             alignment: Alignment.topCenter,
@@ -343,7 +317,6 @@ Widget bacText(BuildContext context) {
       Container(
           color: Colors.white,
           width: MediaQuery.of(context).size.width,
-//        alignment: Alignment.topCenter,
           child: Container(
               padding: EdgeInsets.all(20),
               child: Column(
@@ -384,56 +357,15 @@ Widget bacText(BuildContext context) {
                                 style: TextStyle(fontWeight: FontWeight.bold)),
                             TextSpan(
                                 text:
-                                    '  •    ${bacLater.toStringAsFixed(1)} hours to fall to .08%'),
+                                    '  •    ${bacLater.toStringAsFixed(1)} hours to fall to .08%\n'),
                           ]))
-                    ])
-                  ])))
+                    ]),
+                    SizedBox(
+                            height: MediaQuery.of(context).size.height / 5,
+                            child: BacChart(day: globals.today)
+                        )
+                  ]))),
     ]);
   }
   return container;
-}
-
-class BacChart extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new charts.TimeSeriesChart(
-      _createData(),
-      animate: false,
-//      customSeriesRenderers: [
-//        new charts.PointRendererConfig(
-//          // ID used to link series to this renderer.
-//            customRendererId: 'customPoint', radiusPx: 2)
-//      ],
-    );
-  }
-
-  static List<charts.Series<TimeSeriesBac, DateTime>> _createData() {
-    final bacData = bacChartData;
-    final waterData = waterChartData;
-
-    return [
-      new charts.Series<TimeSeriesBac, DateTime>(
-        id: 'BAC',
-        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
-        domainFn: (TimeSeriesBac bac, _) => bac.time,
-        measureFn: (TimeSeriesBac bac, _) => bac.bac,
-        data: bacData,
-      ),
-      new charts.Series<TimeSeriesBac, DateTime>(
-        id: 'Water',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (TimeSeriesBac bac, _) => bac.time,
-        measureFn: (TimeSeriesBac bac, _) => bac.bac,
-        data: waterData,
-      ) // TODO: fix axis display by multiplying bac by 10 and then having the axis labels show (stored value)/10,
-        ..setAttribute(charts.rendererIdKey, 'customPoint'),
-    ];
-  }
-}
-
-class TimeSeriesBac {
-  final DateTime time;
-  final double bac;
-
-  TimeSeriesBac(this.time, this.bac);
 }
