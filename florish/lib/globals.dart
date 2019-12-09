@@ -6,9 +6,9 @@ double bac = 0.00;
 String imageName = 'assets/images/plants/drink0water0.png';
 
 String selectedSex = 'Other';
-int selectedHeight = 0;
-int selectedFeet = 0;
-int selectedInches = 0;
+int selectedHeight = 5;
+int selectedFeet = 5;
+int selectedInches = 8;
 int selectedWeight = 180;
 
 double weightGrams = selectedWeight * 453.592;
@@ -29,7 +29,7 @@ var weights = [
 ];
 
 var sexes = [
-  "Female", "Male", "Other"
+  "Other", "Female", "Male"
 ];
 
 

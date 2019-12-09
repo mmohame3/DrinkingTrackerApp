@@ -305,7 +305,7 @@ Widget dayEndPopUpBody(BuildContext context) {
                 child: Column(children: [
                   Text(
                       'Yesterday you had ${globals.yesterDrink} drinks and ${globals.yesterWater} waters. '
-                      '\n\nCheck out your History to see more about your past drinking habits \n\n',
+                      '\n\nCheck out your History to see more about your past drinking habits.\n',
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           height: 1.3,
@@ -329,7 +329,11 @@ Widget dayEndPopUpBody(BuildContext context) {
 
 Widget bacText(BuildContext context) {
   Paint paint = Paint();
-  paint.color = Color(0xFF97B633);
+  paint.color = Color(0xFFcbe67d);
+//  paint.color = Colors.black;
+  paint.strokeWidth = 3;
+  paint.style = PaintingStyle.fill;
+  paint.strokeJoin = StrokeJoin.round;
 
   double bacLater = (globals.bac - .08) / .015;
   double bacToZero = globals.bac / .015;

@@ -10,6 +10,7 @@ final String columnDay = "day";
 final String columnHourList = 'hourlist';
 final String columnMinuteList = 'minutelist';
 final String columnTypeList = 'typelist';
+final String columnConstantBACList = 'constantBACList';
 final String columnMaxBAC = 'maxBAC';
 final String columnMBWater = 'wateratmaxBAC';
 final String columnDrinkCount = "totaldrinkcount";
@@ -25,6 +26,7 @@ class Day {
   List<int> hourList;
   List<int> minuteList;
   List<int> typeList;
+  List<int> constantBACList;
   double maxBAC;
   int waterAtMaxBAC;
   int totalDrinks;
@@ -39,6 +41,7 @@ class Day {
         this.hourList,
         this.minuteList,
         this.typeList,
+        this.constantBACList,
         this.maxBAC,
         this.waterAtMaxBAC,
         this.totalDrinks,
@@ -53,6 +56,7 @@ class Day {
     hourList = map[columnHourList];
     minuteList = map[columnMinuteList];
     typeList = map[columnTypeList];
+    constantBACList = map[columnConstantBACList];
     maxBAC = map[columnMaxBAC];
     waterAtMaxBAC = map[columnMBWater];
     totalDrinks = map[columnDrinkCount];
@@ -69,6 +73,7 @@ class Day {
       columnHourList: hourList,
       columnMinuteList: minuteList,
       columnTypeList: typeList,
+      columnConstantBACList: constantBACList,
       columnMaxBAC: maxBAC,
       columnMBWater: waterAtMaxBAC,
       columnDrinkCount: totalDrinks,
@@ -85,7 +90,7 @@ class Day {
   @override
   String toString() {
     return 'Day {date: $date, hourList: $hourList, minuteList: $minuteList, typeList: $typeList, '
-        'maxBAC: $maxBAC, waterAtMaxBAC: $waterAtMaxBAC,'
+        'constantBACList: $constantBACList, maxBAC: $maxBAC, waterAtMaxBAC: $waterAtMaxBAC,'
         'totalDrinks: $totalDrinks, totalWaters: $totalWaters, '
         'session: $sessionList, todayhydratio: $hydratio, yesterhydratio: $yesterHydratio,'
         'lasBAC: $lastBAC}';
@@ -107,6 +112,10 @@ class Day {
 
   List getTypes() {
     return this.typeList;
+  }
+
+  List getConstantBACs() {
+    return this.constantBACList;
   }
 
   double getMaxBac() {
@@ -155,6 +164,10 @@ class Day {
     this.typeList.add(type);
   }
 
+  void addConstantBAC(int bac) {
+    this.constantBACList.add(bac);
+  }
+
   void addStartEnd(int i){
     this.sessionList.add(i);
   }
@@ -198,6 +211,7 @@ class DatabaseHelper {
   static final columnHourList = 'hourlist';
   static final columnMinuteList = 'minutelist';
   static final columnTypeList = 'typelist';
+  static final columnConstantBACList = 'constantBACList';
   static final columnMaxBAC = 'maxBAC';
   static final columnMBWater = 'wateratmaxBAC';
   static final columnDrinkCount = "totaldrinkcount";
@@ -231,6 +245,7 @@ class DatabaseHelper {
                 $columnHourList BLOB NOT NULL,
                 $columnMinuteList BLOB NOT NULL,
                 $columnTypeList BLOB NOT NULL,
+                $columnConstantBACList BLOB NOT NULL,
                 $columnMaxBAC REAL NOT NULL,
                 $columnMBWater INTEGER NOT NULL,
                 $columnDrinkCount INTEGER NOT NULL,
@@ -271,9 +286,8 @@ class DatabaseHelper {
   }
 
   Future<void> resetDay(String date) async {
-    Database db = await instance.database;
     Day newDay = Day(date: date, hourList: new List<int>(), minuteList: new List<int>(),
-        typeList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0,
+        typeList: new List<int>(), constantBACList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0,
         totalWaters: 0, sessionList: new List<int>(), hydratio: 0.0, yesterHydratio: 0.0,
         lastBAC: 0.0);
     updateDay(newDay);

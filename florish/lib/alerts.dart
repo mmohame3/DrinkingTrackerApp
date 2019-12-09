@@ -15,8 +15,8 @@ Future<void> settingsAlert(BuildContext context) async {
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
           title: Text('Input your height and sex for a more accurate BAC calculation'),
-          content: Container(
-              padding: EdgeInsets.only(left: 20, right: 20, top: 15)),
+//          content: Container(
+//              padding: EdgeInsets.only(left: 20, right: 20, top: 15)),
           actions: <Widget>[
 
             FlatButton(

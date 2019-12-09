@@ -26,14 +26,6 @@ class _CalendarState extends State<Calendar> {
   }
 
   Future<database.Day> determineDay(DateTime date) async {
-//    DateTime time = DateTime.now();
-//    DateTime yesterday = time.subtract(Duration(days: 1));
-//    Database db = await DatabaseHelper.instance.database;
-//
-//    if (time.hour < resetTime) {
-//      time = yesterday;
-//    }
-
     Database db = await database.DatabaseHelper.instance.database;
     String selectedDate = mainPage.dateTimeToString(date);
     List<Map> result =
@@ -331,7 +323,9 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget graphReturn() {
-    Container container = Container(child: BacChart(day: day));
+    Container container = Container(
+        height: MediaQuery.of(context).size.height / 2,
+        child: BacChart(day: day));
     return container;
   }
 
@@ -379,8 +373,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     Container(
                         padding: EdgeInsets.only(top: 15, bottom: 5),
                         child: Text(dateToString(day.getDate()),
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16))),
+                            style: TextStyle(fontSize: 16, letterSpacing: 1))),
                     CarouselWithIndicator(
                         widgetList: [dataReturn(), graphReturn()])
                   ]))
@@ -445,26 +438,46 @@ class BacChart extends StatelessWidget {
     return new charts.TimeSeriesChart(
       _createData(),
       animate: false,
+      defaultRenderer: new charts.LineRendererConfig(includePoints: true),
     );
   }
 
   List<charts.Series<TimeSeriesBac, DateTime>> _createData() {
+    List<TimeSeriesBac> bacData = new List<TimeSeriesBac>();
+    List<TimeSeriesBac> waterData = new List<TimeSeriesBac>();
+
+    for (int i = 0; i < day.constantBACList.length; i++) {
+      bacData.add(new TimeSeriesBac(
+          DateTime(
+            getYear(day.getDate()),
+            getMonth(day.getDate()),
+            getDay(day.getDate()),
+            day.hourList[0],
+            day.minuteList[0],
+            5*i
+          ),
+          day.constantBACList[i] / 100));
+      waterData.add(TimeSeriesBac(
+          stringToDateTime(
+              day.getDate(), day.getHours()[i], day.getMinutes()[i]),
+          1.0));
+    }
+
     return [
       new charts.Series<TimeSeriesBac, DateTime>(
         id: 'BAC',
         colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
         domainFn: (TimeSeriesBac bac, _) => bac.time,
         measureFn: (TimeSeriesBac bac, _) => bac.bac,
-        data: makeBacData(day)[0],
+        data: bacData,
       ),
       new charts.Series<TimeSeriesBac, DateTime>(
         id: 'Water',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
         domainFn: (TimeSeriesBac bac, _) => bac.time,
         measureFn: (TimeSeriesBac bac, _) => bac.bac,
-        data: makeBacData(day)[1],
-      )
-//        ..setAttribute(charts.rendererIdKey, 'customPoint'),
+        data: waterData,
+      ),
     ];
   }
 }
@@ -553,6 +566,21 @@ String dateToString(String date) {
   return '$monthName ${parsedDate.day}, ${parsedDate.year}';
 }
 
+int getMonth(String date) {
+  List<String> dateObjects = date.split("/");
+  return int.parse(dateObjects[0]);
+}
+
+int getDay(String date) {
+  List<String> dateObjects = date.split("/");
+  return int.parse(dateObjects[1]);
+}
+
+int getYear(String date) {
+  List<String> dateObjects = date.split("/");
+  return int.parse(dateObjects[2]);
+}
+
 List<T> map<T>(List list, Function handler) {
   List<T> result = [];
   for (var i = 0; i < list.length; i++) {
@@ -567,29 +595,13 @@ DateTime stringToDateTime(String date, int hour, int minutes) {
   String day = minutesStringToString(dateObjects[1]);
   String year = dateObjects[2];
 
-  DateTime dateTime =
-      DateTime.parse(year + month + day + ' ' + hour.toString() + ':' + minutes.toString() + ':00');
+  DateTime dateTime = DateTime.parse(year +
+      month +
+      day +
+      ' ' +
+      minutesIntToString(hour) +
+      ':' +
+      minutesIntToString(minutes) +
+      ':00');
   return dateTime;
-}
-
-List<List<TimeSeriesBac>> makeBacData(database.Day day) {
-  List<TimeSeriesBac> bacData = new List<TimeSeriesBac>();
-  List<TimeSeriesBac> waterData = new List<TimeSeriesBac>();
-
-  for (int i in day.typeList) {
-    if (day.typeList[i] == 1) {
-      bacData.add(TimeSeriesBac(
-          stringToDateTime(
-              day.getDate(), day.getHours()[i], day.getMinutes()[i]),
-          (1.0 + i)));
-    }
-    else {
-      waterData.add(TimeSeriesBac(
-        DateTime.now(),
-//          stringToDateTime(
-//              day.getDate(), day.getHours()[i], day.getMinutes()[i]),
-          1.0));
-    }
-  }
-  return [bacData, waterData];
 }

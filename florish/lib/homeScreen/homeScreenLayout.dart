@@ -32,7 +32,6 @@ class _PlantState extends State<Plant> {
   void initState() {
     super.initState();
     initializeNotifications();
-
   }
 
   getInputInformation() async {
@@ -108,7 +107,6 @@ class _PlantState extends State<Plant> {
                         iconSize: MediaQuery.of(context).size.width / 7,
                         icon: Image.asset(
                           'assets/images/bacButton.png',
-//                    width: MediaQuery.of(context).size.width/,
                         ),
                         onPressed: () {
                           showBACPopup(context);
@@ -160,7 +158,6 @@ updateImageAndBAC(String path) {
   globals.bac = _bacMath(_dbListToTimeList());
   globals.imageName =
   'assets/images/plants/drink${bacToPlant(globals.bac)}water${waterToPlant()}.png';
-
   if (globals.bac >= globals.today.getMaxBac()) {
     globals.today.setMaxBac(globals.bac);
     globals.today.setWatersAtMaxBac(waterToPlant());
@@ -222,6 +219,32 @@ _bacMath(drinkTimeList) {
   double totalBAC = fullBAC + totalYesterBAC;
 
   return totalBAC;
+}
+
+Future<List<double>> getYesterInfo() async {
+  DateTime time = DateTime.now();
+  Duration dayLength = Duration(days: 1);
+  DateTime yester = time.subtract(dayLength);
+
+  String yesterDate = dateTimeToString(yester);
+
+  Database db = await DatabaseHelper.instance.database;
+
+  List<Map> yesterdayResult = await db.rawQuery('SELECT * FROM days WHERE day=?', [yesterDate]);
+
+  double w, yhr, d, ybac;
+
+  if (yesterdayResult.isEmpty || yesterdayResult == null) {
+    return [0.0, 0.0, 0.0, 0.0, 0.0];
+  }
+  else {
+    Day yesterday = Day.fromMap(yesterdayResult[0]);
+    w = yesterday.totalWaters.toDouble();
+    yhr = yesterday.hydratio;
+    d = yesterday.totalDrinks.toDouble();
+    ybac = yesterday.lastBAC;
+    return [w, yhr, d, ybac, 0];
+  }
 }
 
 // turns today's hours and minute lists to a list of DateTimes
@@ -296,6 +319,7 @@ Future<Day> determineDay() async {
         hourList: new List<int>(),
         minuteList: new List<int>(),
         typeList: new List<int>(),
+        constantBACList: new List<int>(),
         maxBAC: 0.0,
         waterAtMaxBAC: 0,
         totalDrinks: 0,
@@ -319,9 +343,11 @@ Future<Day> determineDay() async {
     day.hourList ??= new List<int>();
     day.minuteList ??= new List<int>();
     day.typeList ??= new List<int>();
+    day.constantBACList ??= new List<int>();
     day.hourList = new List<int>.from(day.hourList);
     day.minuteList = new List<int>.from(day.minuteList);
     day.typeList = new List<int>.from(day.typeList);
+    day.constantBACList = new List<int>.from(day.constantBACList);
     //TODO: delete
     day.sessionList = new List<int>.from(day.sessionList);
 
@@ -340,31 +366,6 @@ Future<void> getDayEndedPopupInfo() async {
 // gets yesterday's data about drinks and bac in the form:
 // [yesterday's total waters, yesterday's hydration ratio,
 // yesterday's total drinks, yesterday's last bac, hours between reset time and time of last drink]
-Future<List<double>> getYesterInfo() async {
-  DateTime time = DateTime.now();
-  Duration dayLength = Duration(days: 1);
-  DateTime yester = time.subtract(dayLength);
-
-  String yesterDate = dateTimeToString(yester);
-
-  Database db = await DatabaseHelper.instance.database;
-
-  List<Map> yesterdayResult = await db.rawQuery('SELECT * FROM days WHERE day=?', [yesterDate]);
-
-  double w, yhr, d, ybac;
-
-  if (yesterdayResult.isEmpty || yesterdayResult == null) {
-    return [0.0, 0.0, 0.0, 0.0, 0.0];
-  }
-  else {
-    Day yesterday = Day.fromMap(yesterdayResult[0]);
-    w = yesterday.totalWaters.toDouble();
-    yhr = yesterday.hydratio;
-    d = yesterday.totalDrinks.toDouble();
-    ybac = yesterday.lastBAC;
-    return [w, yhr, d, ybac, 0];
-  }
-}
 
 // turns the BAC to a plant stage
 // where 5 is the number of plant stages we have and .12 is our "max" BAC

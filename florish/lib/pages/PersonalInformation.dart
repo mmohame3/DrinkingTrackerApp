@@ -50,13 +50,12 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.width / 20,
-                          left: MediaQuery.of(context).size.width / 20),
-                      child: Text('YOUR PROFILE',
-                          style: TextStyle(
-                              letterSpacing: 1,
-                              height: 1.5))), // "Your Profile" label
+                      padding:
+                      EdgeInsets.only(top: 15, left: 20, bottom: 5),
+                      child: Text(
+                        'YOUR PROFILE',
+                        style: TextStyle(letterSpacing: 1, height: 1.5),
+                      )),
                   Container(
                     color: Colors.white,
                     child: CupertinoButton(
@@ -217,13 +216,12 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                     ),
                   ), // sex
                   Container(
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.width / 20,
-                          left: MediaQuery.of(context).size.width / 20),
-                      child: Text('DRINK OVERRIDE',
-                          style: TextStyle(
-                              letterSpacing: 1,
-                              height: 1.5))), // "Drink Override" label
+                      padding:
+                      EdgeInsets.only(top: 15, left: 20, bottom: 5),
+                      child: Text(
+                        'DRINK OVERRIDE',
+                        style: TextStyle(letterSpacing: 1, height: 1.5),
+                      )),
                   Container(
                     color: Colors.white,
                     child: CupertinoButton(
