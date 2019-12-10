@@ -355,6 +355,12 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
   }
 
   void drinkDec(DateTime currentTime) async {
+    double r = 0.615;
+    if (globals.selectedSex == 'Male') {
+      r = 0.68;
+    } else if (globals.selectedSex == 'Female') {
+      r = 0.55;
+    }
     if (globals.today.totalDrinks >= 0) {
       print(globals.today.typeList);
       int i = globals.today.typeList.lastIndexOf(1);
@@ -362,6 +368,8 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
         globals.today.typeList.removeAt(i);
         globals.today.hourList.removeAt(i);
         globals.today.minuteList.removeAt(i);
+        globals.today.constantBACList.removeLast();
+        globals.today.maxBAC = globals.today.maxBAC - (14 / (globals.selectedWeight * 453.592 * r) * 100);
       }
       print("after: ");
       print(globals.today.typeList);
