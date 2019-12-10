@@ -10,7 +10,7 @@ import 'package:Florish/helpers/notifications.dart';
 import 'package:Florish/homeScreen/drinkButton.dart';
 import 'package:Florish/homeScreen/waterButton.dart';
 
-final int resetTime = 6; //resets counters on this hour
+final int resetTime = 12; //resets counters on this hour
 final double maxBAC = 0.12;
 final int numberOfDrinkPlants = 5;
 final int numberOfWaterPlants = 6;
@@ -333,8 +333,6 @@ Future<Day> determineDay() async {
     return day;
 
   } else {
-    globals.dayEnded = false;
-
     day = Day.fromMap(result[0]);
 
     day.sessionList ??= new List<int>();

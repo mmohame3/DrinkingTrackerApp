@@ -268,6 +268,7 @@ showDayEndPopup(BuildContext context) {
 }
 
 Widget dayEndPopUpBody(BuildContext context) {
+  globals.dayEnded = false;
   return Container(
       color: Color(0xFFE6E7E8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
