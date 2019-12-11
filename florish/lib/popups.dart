@@ -160,7 +160,7 @@ Widget bacPopUpBody(BuildContext context) {
                                       "alcohol in a person's blood stream."
                                       "\n\nIn the U.S., a person is legally intoxicated if they have a BAC of .08% or higher.\n"
                                       "\nIn Florish, your BAC is calculated using the Widmark Formula which takes into account your "
-                                      "weight, sex, and how long it's been since each drink. When you take a drink, your BAC goes up "
+                                      "weight, sex, and the time between each drink. When you take a drink, your BAC goes up "
                                       "based on these factors and over time, it drops by .015% per hour.\n",
                                       style: TextStyle(
                                           fontFamily: 'Montserrat',
@@ -202,7 +202,7 @@ String _getBacInfo(double bac) {
 
   if ((bac >= .06) && (bac < 0.1)) {
     effects =
-        "Oh oh! You might be tumbling now. Slurring words, slowed reactions, ssssand out of pocket actions describe your current state. Find a sober friend!";
+        "Oh oh! You might be tumbling now. Slurring words, slowed reactions, and out of pocket actions describe your current state. Find a sober friend!";
   }
 
   if ((bac >= .1) && (bac < 0.13)) {
@@ -268,6 +268,7 @@ showDayEndPopup(BuildContext context) {
 }
 
 Widget dayEndPopUpBody(BuildContext context) {
+  globals.dayEnded = false;
   return Container(
       color: Color(0xFFE6E7E8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

@@ -333,8 +333,6 @@ Future<Day> determineDay() async {
     return day;
 
   } else {
-    globals.dayEnded = false;
-
     day = Day.fromMap(result[0]);
 
     day.sessionList ??= new List<int>();
@@ -380,6 +378,7 @@ int waterToPlant() {
 
   DateTime noon =
   new DateTime(current.year, current.month, current.day, resetTime);
+
   noon = current.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
 
   Duration timeSinceNoon = current.difference(noon);

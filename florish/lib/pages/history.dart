@@ -157,8 +157,9 @@ class _CalendarState extends State<Calendar> {
       else if (dayList[i].maxBAC >= halfMax &&
           dayList[i].maxBAC < threeQuartersMax)
         drunkDates.add(stringToDateTime(dayList[i].getDate()));
-      else if (dayList[i].maxBAC >= threeQuartersMax &&
-          dayList[i].maxBAC <= max)
+      else if (dayList[i].maxBAC >= threeQuartersMax)
+        // TODO: was there a reason for specifying the maxBAC was below the max we set?
+        //  && dayList[i].maxBAC <= max)
         veryDrunkDates.add(stringToDateTime(dayList[i].getDate()));
   }
 
