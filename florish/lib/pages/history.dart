@@ -142,7 +142,6 @@ class _CalendarState extends State<Calendar> {
   }
 
   _sortDates() async {
-    double max = mainPage.maxBAC;
     double threeQuartersMax = (3 * mainPage.maxBAC) / 4;
     double halfMax = mainPage.maxBAC / 2;
     double quarterMax = mainPage.maxBAC / 4;
@@ -158,8 +157,6 @@ class _CalendarState extends State<Calendar> {
           dayList[i].maxBAC < threeQuartersMax)
         drunkDates.add(stringToDateTime(dayList[i].getDate()));
       else if (dayList[i].maxBAC >= threeQuartersMax)
-        // TODO: was there a reason for specifying the maxBAC was below the max we set?
-        //  && dayList[i].maxBAC <= max)
         veryDrunkDates.add(stringToDateTime(dayList[i].getDate()));
   }
 
@@ -291,28 +288,7 @@ class _HistoryPageState extends State<HistoryPage> {
                             maxHeight: MediaQuery.of(context).size.height / 4,
                             maxWidth: MediaQuery.of(context).size.width / 4,
                           ),
-                          child: Table(
-                              defaultVerticalAlignment:
-                                  TableCellVerticalAlignment.middle,
-                              children: [
-                                for (int i = 0; day.getHours().length > i; i++)
-                                  TableRow(children: [
-                                    TableCell(
-                                        child: Text(
-                                            twentyFourToTwelveHourString(
-                                                    day.getHours()[i]) +
-                                                ':' +
-                                                minutesIntToString(
-                                                    day.getMinutes()[i]))),
-                                    TableCell(
-                                        child: Container(
-                                            padding: EdgeInsets.all(5),
-                                            child: Image.asset(
-                                                typeToImageName(
-                                                    day.getTypes()[i]),
-                                                height: 20)))
-                                  ])
-                              ])))
+                          child: generateTable(day)))
                 ])
           ]));
     } else {
@@ -614,4 +590,21 @@ DateTime stringToDateTime(String date, int hour, int minutes) {
       minutesIntToString(minutes) +
       ':00');
   return dateTime;
+}
+
+Widget generateTable(database.Day day) {
+  List rows = List<Row>();
+  for (int i = 0; day.getHours().length > i; i++) {
+    rows.add(new Row(
+      children: <Widget>[
+        Text(twentyFourToTwelveHourString(day.getHours()[i]) +
+            ':' + minutesIntToString(day.getMinutes()[i])),
+        Container(
+            padding: EdgeInsets.all(5),
+            child: Image.asset(typeToImageName(day.getTypes()[i]), height: 20))
+      ],
+    ));
+  }
+
+  return ListView(children: rows);
 }

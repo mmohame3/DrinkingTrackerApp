@@ -32,21 +32,50 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                           color: Colors.white,
                           alignment: Alignment.topCenter,
                           child: Container(
-                            padding: EdgeInsets.all(20),
-                            child: Text(
-                                'In the United States, one "standard drink" contains approximately '
-                                "14 grams of pure alcohol, which is found in:"
-                                "\n •  12 oz of beer (5% alcohol)"
-                                "\n •  5 oz of wine (12% alcohol)"
-                                "\n •  1.5 oz of liquor(40% alcohol)"
-                                "\n\nIn Florish, by clicking the drink button, you are indicating "
-                                "that you just had one standard drink.",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: 'Montserrat',
-                                    height: 1.3,
-                                    color: Colors.black)),
-                          )),
+                              padding: EdgeInsets.all(20),
+                              child: Column(children: [
+                                Text(
+                                    'In the United States, one "standard drink" contains approximately '
+                                    "14 grams of pure alcohol, which is found in:\n",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: 'Montserrat',
+                                        height: 1.3,
+                                        color: Colors.black)),
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Image.asset('assets/images/beerIcon.png',
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              18),
+                                      Text('12 oz.\nbeer'),
+                                      Image.asset('assets/images/wineIcon.png',
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              18),
+                                      Text('5 oz.\nwine'),
+                                      Image.asset(
+                                          'assets/images/shotGlassIcon.png',
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              18),
+                                      Text('1.5 oz.\nliquor'),
+                                    ]),
+                                Text(
+                                    "\nIn Florish, by clicking the drink button, you are indicating "
+                                    "that you just had one standard drink.",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: 'Montserrat',
+                                        height: 1.3,
+                                        color: Colors.black)),
+                              ]))),
                       Container(
                           padding:
                               EdgeInsets.only(top: 15, left: 20, bottom: 5),

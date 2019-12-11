@@ -12,8 +12,8 @@ import 'package:Florish/homeScreen/waterButton.dart';
 
 final int resetTime = 6; //resets counters on this hour
 final double maxBAC = 0.12;
-final int numberOfDrinkPlants = 5;
-final int numberOfWaterPlants = 6;
+final int numberOfDrinkPlants = 9;
+final int numberOfWaterPlants = 9;
 final double bacDropPerHour = .015;
 
 
