@@ -473,12 +473,34 @@ class BacChart extends StatelessWidget {
 
   List<charts.Series<TimeSeriesBac, DateTime>> _createData() {
     List<TimeSeriesBac> bacData = new List<TimeSeriesBac>();
-    for (int i = 0; i < day.constantBACList.length; i++) {
+    int i, timeOne, timeTwo, currentTimeMinutes;
+    DateTime currentTime = DateTime.now();
+    for (i = 0; i < day.constantBACList.length - 1; i++) {
       bacData.add(new TimeSeriesBac(
           DateTime(getYear(day.getDate()), getMonth(day.getDate()),
-              getDay(day.getDate()), day.hourList[0], day.minuteList[0], 5 * i),
-          day.constantBACList[i] / 10)); // = 10 * actual bac
+              getDay(day.getDate()), day.hourList[i], day.minuteList[i], 0),
+          day.constantBACList[i] / 10));
+
+      timeOne = (day.hourList[i])*60 + day.minuteList[i];
+      timeTwo = (day.hourList[i+1] * 60) + day.minuteList[i + 1];
+      double timeDifferenceHours = (timeOne - timeTwo) / 60 < 0 ? ((1440 - timeOne) + timeTwo) /60 : (timeOne - timeTwo) / 60;
+
+      bacData.add(new TimeSeriesBac(
+          DateTime(getYear(day.getDate()), getMonth(day.getDate()),
+              getDay(day.getDate()), day.hourList[i + 1], day.minuteList[i + 1], 0),
+          (day.constantBACList[i] / 10) - timeDifferenceHours* 0.0015));// = 10 * actual bac
     }
+    timeOne = (day.hourList[i])*60 + day.minuteList[i];
+    currentTimeMinutes = (currentTime.hour) * 60 + currentTime.minute;
+    double currentTimeDifference = (currentTimeMinutes - timeOne) / 60 < 0 ? ((1440 - currentTimeMinutes) + timeOne) /60 : (currentTimeMinutes - timeOne) / 60;
+    bacData.add(new TimeSeriesBac(
+        DateTime(getYear(day.getDate()), getMonth(day.getDate()),
+            getDay(day.getDate()), day.hourList[i], day.minuteList[i], 0),
+        day.constantBACList[i] / 10));
+    bacData.add(new TimeSeriesBac(
+        DateTime(getYear(day.getDate()), getMonth(day.getDate()),
+            getDay(day.getDate()), currentTime.hour, currentTime.minute, 0),
+        (day.constantBACList[i] / 10) - (currentTimeDifference)* 0.0015));
 
     return [
       new charts.Series<TimeSeriesBac, DateTime>(
