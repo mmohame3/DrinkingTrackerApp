@@ -483,16 +483,17 @@ class BacChart extends StatelessWidget {
 
       timeOne = (day.hourList[i])*60 + day.minuteList[i];
       timeTwo = (day.hourList[i+1] * 60) + day.minuteList[i + 1];
-      double timeDifferenceHours = (timeOne - timeTwo) / 60 < 0 ? ((1440 - timeOne) + timeTwo) /60 : (timeOne - timeTwo) / 60;
+      double timeDifferenceHours = (timeTwo - timeOne) / 60 < 0 ? ((1440 - timeOne) + timeTwo) /60 : (timeTwo - timeOne) / 60;
 
       bacData.add(new TimeSeriesBac(
           DateTime(getYear(day.getDate()), getMonth(day.getDate()),
               getDay(day.getDate()), day.hourList[i + 1], day.minuteList[i + 1], 0),
-          (day.constantBACList[i] / 10) - timeDifferenceHours* 0.0015));// = 10 * actual bac
+          (day.constantBACList[i] / 10) - timeDifferenceHours* 0.15));// = 10 * actual bac
     }
     timeOne = (day.hourList[i])*60 + day.minuteList[i];
     currentTimeMinutes = (currentTime.hour) * 60 + currentTime.minute;
     double currentTimeDifference = (currentTimeMinutes - timeOne) / 60 < 0 ? ((1440 - currentTimeMinutes) + timeOne) /60 : (currentTimeMinutes - timeOne) / 60;
+
     bacData.add(new TimeSeriesBac(
         DateTime(getYear(day.getDate()), getMonth(day.getDate()),
             getDay(day.getDate()), day.hourList[i], day.minuteList[i], 0),
@@ -500,7 +501,8 @@ class BacChart extends StatelessWidget {
     bacData.add(new TimeSeriesBac(
         DateTime(getYear(day.getDate()), getMonth(day.getDate()),
             getDay(day.getDate()), currentTime.hour, currentTime.minute, 0),
-        (day.constantBACList[i] / 10) - (currentTimeDifference)* 0.0015));
+        (day.constantBACList[i] / 10) - currentTimeDifference* 0.15));
+
 
     return [
       new charts.Series<TimeSeriesBac, DateTime>(
