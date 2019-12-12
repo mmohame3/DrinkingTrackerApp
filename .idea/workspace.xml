@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1e411cc2-ef88-4ee5-8d52-f15e637ecbea" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/florish/assets/images/plantSetting.png" beforeDir="false" afterPath="$PROJECT_DIR$/florish/assets/images/plantSetting.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/florish/assets/images/plantSetting2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/florish/lib/homeScreen/homeScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/florish/lib/homeScreen/homeScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/florish/lib/helpers/database_helpers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/florish/lib/helpers/database_helpers.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/florish/lib/homeScreen/drinkButton.dart" beforeDir="false" afterPath="$PROJECT_DIR$/florish/lib/homeScreen/drinkButton.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/florish/lib/homeScreen/homeScreenLayout.dart" beforeDir="false" afterPath="$PROJECT_DIR$/florish/lib/homeScreen/homeScreenLayout.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/florish/lib/homeScreen/waterButton.dart" beforeDir="false" afterPath="$PROJECT_DIR$/florish/lib/homeScreen/waterButton.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/florish/lib/pages/history.dart" beforeDir="false" afterPath="$PROJECT_DIR$/florish/lib/pages/history.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -23,8 +22,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/florish/lib/homeScreen/homeScreenLayout.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="244">
-              <caret line="108" column="39" selection-start-line="108" selection-start-column="39" selection-end-line="108" selection-end-column="39" />
+            <state relative-caret-position="319">
+              <caret line="107" column="26" lean-forward="true" selection-start-line="107" selection-start-column="26" selection-end-line="107" selection-end-column="26" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -33,6 +32,20 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/florish/lib/pages/history.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="99">
+              <caret line="536" lean-forward="true" selection-start-line="536" selection-end-line="536" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+                <element signature="n#!!block;n#Calendar#0" />
+                <element signature="n#!!block;n#_CalendarState#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/florish/lib/homeScreen/homeScreen.dart">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="273">
@@ -58,6 +71,7 @@
       <find>table</find>
       <find>plantsetting</find>
       <find>icon</find>
+      <find>&gt;&gt;</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/florish</dir>
@@ -79,16 +93,16 @@
         <option value="$PROJECT_DIR$/florish/lib/termsConditions.dart" />
         <option value="$PROJECT_DIR$/florish/lib/pages/drinkInformation.dart" />
         <option value="$PROJECT_DIR$/florish/lib/homeScreen/drinkButton.dart" />
-        <option value="$PROJECT_DIR$/florish/lib/pages/history.dart" />
         <option value="$PROJECT_DIR$/florish/lib/homeScreen/homeScreenLayout.dart" />
         <option value="$PROJECT_DIR$/florish/lib/homeScreen/homeScreen.dart" />
+        <option value="$PROJECT_DIR$/florish/lib/pages/history.dart" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="432" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="25" />
     <option name="y" value="23" />
-    <option name="width" value="1008" />
+    <option name="width" value="1415" />
     <option name="height" value="825" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -135,6 +149,13 @@
               <item name="lib" type="462c0819:PsiDirectoryNode" />
               <item name="homeScreen" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="FLORISH" type="b2602c69:ProjectViewProjectNode" />
+              <item name="FLORISH" type="462c0819:PsiDirectoryNode" />
+              <item name="florish" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="pages" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -148,7 +169,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1576086773471" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1576180581853" />
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -199,12 +220,12 @@
       <workItem from="1576082310867" duration="911000" />
       <workItem from="1576083383210" duration="2931000" />
       <workItem from="1576092964708" duration="1750000" />
-      <workItem from="1576177504214" duration="1592000" />
+      <workItem from="1576177504214" duration="2234000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7184000" />
+    <option name="totallyTimeSpent" value="7826000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -216,11 +237,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="432" y="23" width="1008" height="825" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="825" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23291926" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49928877" visible="true" weight="0.16094421" />
+      <window_info active="true" id="Structure" order="1" sideWeight="0.50071126" side_tool="true" visible="true" weight="0.16094421" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
       <window_info id="UI Designer" order="4" />
@@ -230,14 +251,14 @@
       <window_info id="Captures" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.34652114" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.10231923" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3287858" />
       <window_info anchor="bottom" id="Dart Analysis" order="7" weight="0.3299363" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3287858" />
-      <window_info anchor="bottom" id="Terminal" order="9" weight="0.3287858" />
+      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.040927693" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Flutter Performance" order="11" side_tool="true" />
       <window_info anchor="bottom" id="Android Profiler" order="12" show_stripe_button="false" />
@@ -423,39 +444,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/florish/lib/pages/history.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="446" column="38" lean-forward="true" selection-start-line="446" selection-start-column="38" selection-end-line="446" selection-end-column="38" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-            <element signature="n#!!block;n#TimeSeriesBac#0" />
-            <element signature="e#17267#17422#0" />
-            <element signature="e#17469#17624#0" />
-            <element signature="e#17672#17732#0" />
-            <element signature="e#17761#17940#0" />
-            <element signature="e#17975#18088#0" />
-            <element signature="e#18123#19220#0" />
-            <element signature="e#19248#19333#0" />
-            <element signature="e#19359#19444#0" />
-            <element signature="e#19471#19556#0" />
-            <element signature="e#19602#19728#0" />
-            <element signature="e#19792#20180#0" />
-            <element signature="e#20221#20670#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/florish/lib/homeScreen/homeScreenLayout.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="108" column="39" selection-start-line="108" selection-start-column="39" selection-end-line="108" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../flutter/packages/flutter/lib/src/material/icon_button.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
@@ -469,6 +457,38 @@
           <caret line="109" column="74" selection-start-line="109" selection-start-column="74" selection-end-line="109" selection-end-column="74" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/florish/lib/homeScreen/homeScreenLayout.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="319">
+          <caret line="107" column="26" lean-forward="true" selection-start-line="107" selection-start-column="26" selection-end-line="107" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/florish/lib/popups.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4153">
+          <caret line="6" column="18" selection-start-line="6" selection-start-column="18" selection-end-line="6" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/florish/lib/pages/history.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="99">
+          <caret line="536" lean-forward="true" selection-start-line="536" selection-end-line="536" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+            <element signature="n#!!block;n#Calendar#0" />
+            <element signature="n#!!block;n#_CalendarState#0" />
           </folding>
         </state>
       </provider>

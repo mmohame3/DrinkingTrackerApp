@@ -212,7 +212,7 @@ _bacMath(drinkTimeList) {
   double beforeNoonDiff = drinkToNoonTime * 60;
 
   double totalYesterBAC = (yesterBAC - (((afterNoonDiff + beforeNoonDiff) / 3600) * bacDropPerHour));
-  totalYesterBAC = totalYesterBAC < 0 ? 0 : totalYesterBAC;
+  totalYesterBAC = totalYesterBAC <= 0 ? 0 : totalYesterBAC;
 
   double totalBAC = fullBAC + totalYesterBAC;
 
@@ -322,8 +322,6 @@ Future<Day> determineDay() async {
         waterAtMaxBAC: 0,
         totalDrinks: 0,
         totalWaters: 0,
-        //TODO: delete
-        sessionList: new List<int>(),
         hydratio: 0.0,
         yesterHydratio: yesterHyd,
         lastBAC: 0.0);
@@ -335,7 +333,6 @@ Future<Day> determineDay() async {
   } else {
     day = Day.fromMap(result[0]);
 
-    day.sessionList ??= new List<int>();
     day.hourList ??= new List<int>();
     day.minuteList ??= new List<int>();
     day.typeList ??= new List<int>();
@@ -344,8 +341,6 @@ Future<Day> determineDay() async {
     day.minuteList = new List<int>.from(day.minuteList);
     day.typeList = new List<int>.from(day.typeList);
     day.constantBACList = new List<int>.from(day.constantBACList);
-    //TODO: delete
-    day.sessionList = new List<int>.from(day.sessionList);
 
     return day;
   }

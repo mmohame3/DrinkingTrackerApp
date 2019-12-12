@@ -46,7 +46,6 @@ class Day {
         this.waterAtMaxBAC,
         this.totalDrinks,
         this.totalWaters,
-        this.sessionList,
         this.hydratio,
         this.yesterHydratio,
         this.lastBAC});
@@ -61,7 +60,6 @@ class Day {
     waterAtMaxBAC = map[columnMBWater];
     totalDrinks = map[columnDrinkCount];
     totalWaters = map[columnWaterCount];
-    sessionList = map[columnSession];
     hydratio = map[columnHydratio];
     yesterHydratio = map[columnYesterHydratio];
     lastBAC = map[columnLastBAC];
@@ -78,7 +76,6 @@ class Day {
       columnMBWater: waterAtMaxBAC,
       columnDrinkCount: totalDrinks,
       columnWaterCount: totalWaters,
-      columnSession: sessionList,
       columnHydratio: hydratio,
       columnYesterHydratio: yesterHydratio,
       columnLastBAC: lastBAC,
@@ -92,8 +89,8 @@ class Day {
     return 'Day {date: $date, hourList: $hourList, minuteList: $minuteList, typeList: $typeList, '
         'constantBACList: $constantBACList, maxBAC: $maxBAC, waterAtMaxBAC: $waterAtMaxBAC,'
         'totalDrinks: $totalDrinks, totalWaters: $totalWaters, '
-        'session: $sessionList, todayhydratio: $hydratio, yesterhydratio: $yesterHydratio,'
-        'lasBAC: $lastBAC}';
+        'todayhydratio: $hydratio, yesterhydratio: $yesterHydratio,'
+        'lastBAC: $lastBAC}';
   }
 
   // NOTE: this many getters and setters CANNOT be efficient in a
@@ -168,9 +165,6 @@ class Day {
     this.constantBACList.add(bac);
   }
 
-  void addStartEnd(int i){
-    this.sessionList.add(i);
-  }
 
   void setMaxBac(double mb) {
     this.maxBAC = mb;
@@ -196,9 +190,6 @@ class Day {
     this.yesterHydratio = ratio;
   }
 
-//  void addSession(int start) {
-//    this.session.add(start);
-//  }
 }
 
 class DatabaseHelper {
@@ -216,7 +207,6 @@ class DatabaseHelper {
   static final columnMBWater = 'wateratmaxBAC';
   static final columnDrinkCount = "totaldrinkcount";
   static final columnWaterCount = "totalwatercount";
-  static final columnSession = "sessionlist";
   static final columnHydratio = "hydratio";
   static final columnYesterHydratio = "yesterhydratio";
   static final columnLastBAC = "lastBAC";
@@ -250,7 +240,6 @@ class DatabaseHelper {
                 $columnMBWater INTEGER NOT NULL,
                 $columnDrinkCount INTEGER NOT NULL,
                 $columnWaterCount INTEGER NOT NULL,
-                $columnSession BLOB NOT NULL,
                 $columnHydratio REAL NOT NULL,
                 $columnYesterHydratio REAL NOT NULL,
                 $columnLastBAC REAL NOT NULL
@@ -288,7 +277,7 @@ class DatabaseHelper {
   Future<void> resetDay(String date) async {
     Day newDay = Day(date: date, hourList: new List<int>(), minuteList: new List<int>(),
         typeList: new List<int>(), constantBACList: new List<int>(), maxBAC: 0.0, waterAtMaxBAC: 0, totalDrinks: 0,
-        totalWaters: 0, sessionList: new List<int>(), hydratio: 0.0, yesterHydratio: 0.0,
+        totalWaters: 0, hydratio: 0.0, yesterHydratio: 0.0,
         lastBAC: 0.0);
     updateDay(newDay);
   }
