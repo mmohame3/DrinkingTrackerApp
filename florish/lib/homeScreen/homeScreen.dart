@@ -66,13 +66,13 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await determineDay();
+    WidgetsBinding.instance.addPostFrameCallback((_)  {
+      determineDay();
       if (globals.dayEnded) {
-        await getDayEndedPopupInfo();
+        getDayEndedPopupInfo();
         showDayEndPopup(context);
       }
-      await getInputInformation();
+      getInputInformation();
     });
     Widget plant = Stack(
       alignment: Alignment.bottomCenter,
