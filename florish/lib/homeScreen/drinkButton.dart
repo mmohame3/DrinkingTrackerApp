@@ -41,7 +41,7 @@ class _DrinkButtonState extends State<DrinkButton> {
           drinkString = globals.today.totalDrinks.toString();
           drinkButtonTap();
           widget.parentActionUpdates('assets/images/plants/drink0water0.png');
-          globals.today.addConstantBAC((globals.bac * 100).toInt());
+          globals.today.addConstantBAC((globals.bac * 100).round());
           globals.today.lastBAC = globals.bac;
           settingsAlert(context);
         });
