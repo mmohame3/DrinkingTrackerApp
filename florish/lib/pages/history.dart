@@ -271,7 +271,10 @@ class _HistoryPageState extends State<HistoryPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Column(children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                      children: <Widget>[
                     Container(
                         padding: EdgeInsets.only(
                             bottom: MediaQuery.of(context).size.width / 70),
@@ -281,6 +284,8 @@ class _HistoryPageState extends State<HistoryPage> {
                           'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
                           width: 7 * MediaQuery.of(context).size.width / 24,
                         )),
+                    Text('Total drinks: ${day.totalDrinks}'),
+                    Text('Total water: ${day.totalWaters}')
                   ]),
                   SingleChildScrollView(
                       child: ConstrainedBox(
@@ -444,15 +449,22 @@ class BacChart extends StatelessWidget {
       _createData(),
       animate: false,
       defaultRenderer: new charts.LineRendererConfig(includePoints: true),
-    );
+        customSeriesRenderers: [
+          new charts.PointRendererConfig(
+              customRendererId: 'customPoint')
+        ]);
+//    );
   }
 
   List<charts.Series<TimeSeriesBac, DateTime>> _createData() {
+    List<TimeSeriesBac> drinkData = new List<TimeSeriesBac>();
     List<TimeSeriesBac> bacData = new List<TimeSeriesBac>();
+
     int i, timeOne, timeTwo, currentTimeMinutes;
     DateTime currentTime = DateTime.now();
+
     for (i = 0; i < day.constantBACList.length - 1; i++) {
-      bacData.add(new TimeSeriesBac(
+      drinkData.add(new TimeSeriesBac(
           DateTime(getYear(day.getDate()), getMonth(day.getDate()),
               getDay(day.getDate()), day.hourList[i], day.minuteList[i], 0),
           day.constantBACList[i] / 10));
@@ -466,11 +478,12 @@ class BacChart extends StatelessWidget {
               getDay(day.getDate()), day.hourList[i + 1], day.minuteList[i + 1], 0),
           (day.constantBACList[i] / 10) - timeDifferenceHours* 0.15));// = 10 * actual bac
     }
+
     timeOne = (day.hourList[i])*60 + day.minuteList[i];
     currentTimeMinutes = (currentTime.hour) * 60 + currentTime.minute;
     double currentTimeDifference = (currentTimeMinutes - timeOne) / 60 < 0 ? ((1440 - currentTimeMinutes) + timeOne) /60 : (currentTimeMinutes - timeOne) / 60;
 
-    bacData.add(new TimeSeriesBac(
+    drinkData.add(new TimeSeriesBac(
         DateTime(getYear(day.getDate()), getMonth(day.getDate()),
             getDay(day.getDate()), day.hourList[i], day.minuteList[i], 0),
         day.constantBACList[i] / 10));
@@ -482,12 +495,20 @@ class BacChart extends StatelessWidget {
 
     return [
       new charts.Series<TimeSeriesBac, DateTime>(
-        id: 'BAC',
+        id: 'Drinks',
         colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
         domainFn: (TimeSeriesBac bac, _) => bac.time,
         measureFn: (TimeSeriesBac bac, _) => bac.bac,
-        data: bacData,
+        data: drinkData,
       ),
+      new charts.Series<TimeSeriesBac, DateTime>(
+        id: 'BAC decrease',
+        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+        domainFn: (TimeSeriesBac bac, _) => bac.time,
+        measureFn: (TimeSeriesBac bac, _) => bac.bac,
+        data: bacData,
+      )
+      ..setAttribute(charts.rendererIdKey, 'customPoint'),
     ];
   }
 }
@@ -620,6 +641,7 @@ Widget generateTable(database.Day day) {
   List rows = List<Row>();
   for (int i = 0; day.getHours().length > i; i++) {
     rows.add(new Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text(twentyFourToTwelveHourString(day.getHours()[i]) +
             ':' + minutesIntToString(day.getMinutes()[i])),

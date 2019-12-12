@@ -104,7 +104,7 @@ class _PlantState extends State<Plant> {
                     child: IconButton(
                         iconSize: MediaQuery.of(context).size.width / 7,
                         icon: Image.asset(
-                          'assets/images/bacButton.png',
+                          'assets/images/bacInfoButton.png',
                         ),
                         onPressed: () {
                           showBACPopup(context);
