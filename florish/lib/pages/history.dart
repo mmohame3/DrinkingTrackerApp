@@ -268,7 +268,10 @@ class _HistoryPageState extends State<HistoryPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Column(children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                      children: <Widget>[
                     Container(
                         padding: EdgeInsets.only(
                             bottom: MediaQuery.of(context).size.width / 70),
@@ -278,6 +281,8 @@ class _HistoryPageState extends State<HistoryPage> {
                           'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
                           width: 7 * MediaQuery.of(context).size.width / 24,
                         )),
+                    Text('Total drinks: ${day.totalDrinks}'),
+                    Text('Total water: ${day.totalWaters}')
                   ]),
                   SingleChildScrollView(
                       child: ConstrainedBox(
@@ -441,42 +446,46 @@ class BacChart extends StatelessWidget {
       _createData(),
       animate: false,
       defaultRenderer: new charts.LineRendererConfig(includePoints: true),
-    );
+        customSeriesRenderers: [
+          new charts.PointRendererConfig(
+              customRendererId: 'customPoint')
+        ]);
   }
 
   List<charts.Series<TimeSeriesBac, DateTime>> _createData() {
     List<TimeSeriesBac> bacData = new List<TimeSeriesBac>();
+
     int i, currentDrinkMinutes, nextDrinkMinutes;
     for (i = 0; i < day.typeList.length; i++) {
       if (day.typeList[i] == 1 && i != day.typeList.lastIndexOf(1)) {
         DateTime currentDrinkDateTime = day.hourList[i] < 6
             ? DateTime(
-                    getYear(day.getDate()),
-                    getMonth(day.getDate()),
-                    getDay(day.getDate()),
-                    day.hourList[i],
-                    day.minuteList[i],
-                    0)
-                .add(Duration(days: 1))
+            getYear(day.getDate()),
+            getMonth(day.getDate()),
+            getDay(day.getDate()),
+            day.hourList[i],
+            day.minuteList[i],
+            0)
+            .add(Duration(days: 1))
             : DateTime(getYear(day.getDate()), getMonth(day.getDate()),
-                getDay(day.getDate()), day.hourList[i], day.minuteList[i], 0);
+            getDay(day.getDate()), day.hourList[i], day.minuteList[i], 0);
 
         DateTime nextDrinkDateTime = day.hourList[i + 1] < 6
             ? DateTime(
-                    getYear(day.getDate()),
-                    getMonth(day.getDate()),
-                    getDay(day.getDate()),
-                    day.hourList[i + 1],
-                    day.minuteList[i + 1],
-                    0)
-                .add(Duration(days: 1))
+            getYear(day.getDate()),
+            getMonth(day.getDate()),
+            getDay(day.getDate()),
+            day.hourList[i + 1],
+            day.minuteList[i + 1],
+            0)
+            .add(Duration(days: 1))
             : DateTime(
-                getYear(day.getDate()),
-                getMonth(day.getDate()),
-                getDay(day.getDate()),
-                day.hourList[i + 1],
-                day.minuteList[i + 1],
-                0);
+            getYear(day.getDate()),
+            getMonth(day.getDate()),
+            getDay(day.getDate()),
+            day.hourList[i + 1],
+            day.minuteList[i + 1],
+            0);
 
         bacData.add(new TimeSeriesBac(
             currentDrinkDateTime, day.constantBACList[i] / 10));
@@ -485,13 +494,13 @@ class BacChart extends StatelessWidget {
         nextDrinkMinutes = (day.hourList[i + 1] * 60) + day.minuteList[i + 1];
 
         double timeDifferenceHours =
-            (nextDrinkMinutes - currentDrinkMinutes) / 60 < 0
-                ? ((1440 - currentDrinkMinutes) + nextDrinkMinutes) / 60
-                : (nextDrinkMinutes - currentDrinkMinutes) / 60;
+        (nextDrinkMinutes - currentDrinkMinutes) / 60 < 0
+            ? ((1440 - currentDrinkMinutes) + nextDrinkMinutes) / 60
+            : (nextDrinkMinutes - currentDrinkMinutes) / 60;
         double bacBeforeNextDrink =
-            (day.constantBACList[i] / 10) - (timeDifferenceHours * 0.15) < 0
-                ? 0.0
-                : (day.constantBACList[i] / 10) - (timeDifferenceHours * 0.15);
+        (day.constantBACList[i] / 10) - (timeDifferenceHours * 0.15) < 0
+            ? 0.0
+            : (day.constantBACList[i] / 10) - (timeDifferenceHours * 0.15);
         bacData.add(new TimeSeriesBac(
             nextDrinkDateTime, bacBeforeNextDrink)); // = 10 * actual bac
       }
@@ -502,37 +511,37 @@ class BacChart extends StatelessWidget {
     if (lastDrink != -1) {
       DateTime lastDrinkDateTime = day.hourList[lastDrink] < 6
           ? DateTime(
-                  getYear(day.getDate()),
-                  getMonth(day.getDate()),
-                  getDay(day.getDate()),
-                  day.hourList[lastDrink],
-                  day.minuteList[lastDrink],
-                  0)
-              .add(Duration(days: 1))
+          getYear(day.getDate()),
+          getMonth(day.getDate()),
+          getDay(day.getDate()),
+          day.hourList[lastDrink],
+          day.minuteList[lastDrink],
+          0)
+          .add(Duration(days: 1))
           : DateTime(
-              getYear(day.getDate()),
-              getMonth(day.getDate()),
-              getDay(day.getDate()),
-              day.hourList[lastDrink],
-              day.minuteList[lastDrink],
-              0);
+          getYear(day.getDate()),
+          getMonth(day.getDate()),
+          getDay(day.getDate()),
+          day.hourList[lastDrink],
+          day.minuteList[lastDrink],
+          0);
 
       int lastDrinkMinutes =
           (day.hourList[lastDrink]) * 60 + day.minuteList[lastDrink];
       int currentTimeMinutes = (currentTime.hour) * 60 + currentTime.minute;
       double currentTimeDifference =
-          (currentTimeMinutes - lastDrinkMinutes) / 60 < 0
-              ? ((1440 - currentTimeMinutes) + currentDrinkMinutes) / 60
-              : (currentTimeMinutes - lastDrinkMinutes) / 60;
+      (currentTimeMinutes - lastDrinkMinutes) / 60 < 0
+          ? ((1440 - currentTimeMinutes) + currentDrinkMinutes) / 60
+          : (currentTimeMinutes - lastDrinkMinutes) / 60;
 
       bacData.add(new TimeSeriesBac(
           lastDrinkDateTime, day.constantBACList[lastDrink] / 10));
 
       double currentBAC = (day.constantBACList[lastDrink] / 10) -
-                  (currentTimeDifference * 0.15) < 0
+          (currentTimeDifference * 0.15) < 0
           ? 0.0
           : (day.constantBACList[lastDrink] / 10) -
-              (currentTimeDifference * 0.15);
+          (currentTimeDifference * 0.15);
 
       bacData.add(new TimeSeriesBac(currentTime, currentBAC));
     }
@@ -677,6 +686,7 @@ Widget generateTable(database.Day day) {
   List rows = List<Row>();
   for (int i = 0; day.getHours().length > i; i++) {
     rows.add(new Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text(twentyFourToTwelveHourString(day.getHours()[i]) +
             ':' +

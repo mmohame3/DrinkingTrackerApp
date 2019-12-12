@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:Florish/globals.dart' as globals;
 import 'package:Florish/helpers/database_helpers.dart';
 import 'package:Florish/pages/history.dart';
@@ -12,8 +11,8 @@ import 'package:Florish/homeScreen/drinkAnimation.dart';
 
 final int resetTime = 6; //resets counters on this hour
 final double maxBAC = 0.12;
-final int numberOfDrinkPlants = 5;
-final int numberOfWaterPlants = 6;
+final int numberOfDrinkPlants = 9;
+final int numberOfWaterPlants = 9;
 final double bacDropPerHour = .015;
 AnimationController drinkRiseAnimationController, waterRiseAnimationController;
 Animation drinkRisePositionAnimation, waterRisePositionAnimation;
@@ -81,7 +80,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).size.width / 3),
           child: Image.asset(
-            'assets/images/plantSetting2.png',
+            'assets/images/plantSetting.png',
           ),
         ),
         new Plant(),
@@ -108,7 +107,8 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.info_outline, color: Colors.white),
+            icon: Image.asset('assets/images/drinkInfoIcon.png', width: 22),
+//              icon: Icon(Icons.info_outline, color: Colors.white),
               onPressed: () {
                 Navigator.push(
                     context,
