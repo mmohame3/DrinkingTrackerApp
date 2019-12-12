@@ -47,20 +47,20 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                                         MainAxisAlignment.spaceEvenly,
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Image.asset('assets/images/beerIcon.png',
+                                      Image.asset('assets/beerIcon.png',
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width /
                                               18),
                                       Text('12 oz.\nbeer'),
-                                      Image.asset('assets/images/wineIcon.png',
+                                      Image.asset('assets/wineIcon.png',
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width /
                                               18),
                                       Text('5 oz.\nwine'),
                                       Image.asset(
-                                          'assets/images/shotGlassIcon.png',
+                                          'assets/shotGlassIcon.png',
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width /

@@ -10,7 +10,7 @@ Widget drinkAnimation(){
         child: new Container(
           height: 50,
           width: 50,
-          child: Image.asset('assets/images/soloCupDropShadow.png'),
+          child: Image.asset('assets/soloCupDropShadow.png'),
         )),
     bottom: soloCupPosition + 105,
     right: 255,

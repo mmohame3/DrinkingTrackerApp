@@ -241,13 +241,9 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
                                     GestureDetector(
                                         onTap: () {
                                           setState(() {
-                                            print(
-                                                "totalDrinks = ${globals.today.totalDrinks}");
                                             if (globals.today.totalDrinks > 0) {
                                               globals.today.totalDrinks--;
                                             }
-                                            print(
-                                                "totalDrinks = ${globals.today.totalDrinks}");
                                             drinkString = globals
                                                 .today.totalDrinks
                                                 .toString();
@@ -362,7 +358,7 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
       r = 0.55;
     }
     if (globals.today.totalDrinks >= 0) {
-      print(globals.today.typeList);
+
       int i = globals.today.typeList.lastIndexOf(1);
       if (i >= 0) {
         globals.today.typeList.removeAt(i);
@@ -371,8 +367,7 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
         globals.today.constantBACList.removeLast();
         globals.today.maxBAC = globals.today.maxBAC - (14 / (globals.selectedWeight * 453.592 * r) * 100);
       }
-      print("after: ");
-      print(globals.today.typeList);
+
     }
     await dbHelper.updateDay(globals.today);
   }
@@ -384,8 +379,6 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
         globals.today.typeList.removeAt(i);
         globals.today.hourList.removeAt(i);
         globals.today.minuteList.removeAt(i);
-        print(globals.today.totalWaters);
-        print(globals.today.typeList);
       }
     }
     await dbHelper.updateDay(globals.today);
@@ -399,6 +392,5 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
     inputModel.sex = globals.selectedSex;
 
     var result = await _databaseHelper.saveInputInformation(inputModel.toMap());
-    print(result);
   }
 }

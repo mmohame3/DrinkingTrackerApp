@@ -279,7 +279,7 @@ class _HistoryPageState extends State<HistoryPage> {
                         height: MediaQuery.of(context).size.height / 4,
                         alignment: Alignment.bottomCenter,
                         child: Image.asset(
-                          'assets/images/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
+                          'assets/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
                           width: 7 * MediaQuery.of(context).size.width / 24,
                         )),
                     Text('Total drinks: ${day.totalDrinks}'),
@@ -575,7 +575,7 @@ int bacToPlant(double bac) {
 
 String typeToImageName(int type) {
   String path =
-      type == 1 ? 'assets/images/soloCup.png' : 'assets/images/waterDrop.png';
+      type == 1 ? 'assets/soloCup.png' : 'assets/waterDrop.png';
   return path;
 }
 

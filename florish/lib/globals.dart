@@ -3,7 +3,7 @@ import 'package:Florish/models/day_model.dart';
 
 Day today;
 double bac = 0.00;
-String imageName = 'assets/images/plants/drink0water0.png';
+String imageName = 'assets/plants/drink0water0.png';
 
 final int resetTime = 6; //resets counters on this hour
 final double maxBAC = 0.15;
