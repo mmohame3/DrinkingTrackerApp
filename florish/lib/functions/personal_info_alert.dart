@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'globals.dart' as globals;
-import 'package:Florish/pages/PersonalInformation.dart';
+import 'package:Florish/globals.dart' as globals;
+import 'package:Florish/pages/settings_page.dart';
 
 
 

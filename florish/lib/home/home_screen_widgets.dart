@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:Florish/globals.dart' as globals;
 import 'package:timer_builder/timer_builder.dart';
-import 'package:Florish/helpers/database_helpers.dart';
+import 'package:Florish/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
-import 'package:Florish/pages/PersonalInformation.dart';
-import 'package:Florish/popups.dart';
-import 'package:Florish/helpers/notifications.dart';
-import 'package:Florish/homeScreen/drinkButton.dart';
-import 'package:Florish/homeScreen/waterButton.dart';
-
-final int resetTime = 6; //resets counters on this hour
-final double maxBAC = 0.12;
-final int numberOfDrinkPlants = 9;
-final int numberOfWaterPlants = 9;
-final double bacDropPerHour = .015;
-
+import 'package:Florish/pages/settings_page.dart';
+import 'package:Florish/functions/bac_info_popup.dart';
+import 'package:Florish/models/notification.dart';
+import 'package:Florish/home/drink_button.dart';
+import 'package:Florish/home/water_button.dart';
+import 'package:Florish/models/day_model.dart';
 
 
 class Plant extends StatefulWidget {
@@ -46,7 +40,7 @@ class _PlantState extends State<Plant> {
   _PlantState() {
     determineDay().then((day) => setState(() {
       globals.today = day;
-      updateImageAndBAC('assets/images/plants/drink0water0.png');
+      updateImageAndBAC('assets/plants/drink0water0.png');
     }));
   }
 
@@ -57,7 +51,7 @@ class _PlantState extends State<Plant> {
     return TimerBuilder.periodic(Duration(seconds: 5), builder: (context) {
       determineDay().then((day) => setState(() {
         globals.today = day;
-        updateImageAndBAC('assets/images/plants/drink0water0.png');
+        updateImageAndBAC('assets/plants/drink0water0.png');
         dbHelper.updateDay(globals.today);
       }));
 
@@ -104,7 +98,7 @@ class _PlantState extends State<Plant> {
                     child: IconButton(
                         iconSize: MediaQuery.of(context).size.width / 7,
                         icon: Image.asset(
-                          'assets/images/bacInfoButton.png',
+                          'assets/bacInfoButton.png',
                         ),
                         onPressed: () {
                           showBACPopup(context);
@@ -155,7 +149,7 @@ class _PlantState extends State<Plant> {
 updateImageAndBAC(String path) {
   globals.bac = _bacMath(_dbListToTimeList());
   globals.imageName =
-  'assets/images/plants/drink${bacToPlant(globals.bac)}water${waterToPlant()}.png';
+  'assets/plants/drink${bacToPlant(globals.bac)}water${waterToPlant()}.png';
   if (globals.bac >= globals.today.getMaxBac()) {
     globals.today.setMaxBac(globals.bac);
     globals.today.setWatersAtMaxBac(waterToPlant());
@@ -183,15 +177,15 @@ _bacMath(drinkTimeList) {
       int timeDiff = drinkTimeList[i + 1].difference(drinkTimeList[i]).inSeconds;
 
       //rollover = amount of bac from drink[i] not digested
-      toSubtract = (timeDiff / 3600) * bacDropPerHour <= oneDrink + rolloverBAC ? (timeDiff / 3600) * bacDropPerHour : oneDrink + rolloverBAC;
+      toSubtract = (timeDiff / 3600) * globals.bacDropPerHour <= oneDrink + rolloverBAC ? (timeDiff / 3600) * globals.bacDropPerHour : oneDrink + rolloverBAC;
       rolloverBAC = rolloverBAC + (oneDrink - toSubtract);
 
       fullBAC = fullBAC - toSubtract;
     }
     double timeSinceLastDrinkHours = (currentTime.difference(drinkTimeList.last).inSeconds / 3600);
 
-    fullBAC = timeSinceLastDrinkHours * bacDropPerHour <= oneDrink + rolloverBAC ?
-    fullBAC - (timeSinceLastDrinkHours * bacDropPerHour) : fullBAC - (oneDrink + rolloverBAC);
+    fullBAC = timeSinceLastDrinkHours * globals.bacDropPerHour <= oneDrink + rolloverBAC ?
+    fullBAC - (timeSinceLastDrinkHours * globals.bacDropPerHour) : fullBAC - (oneDrink + rolloverBAC);
 
   }
 
@@ -205,13 +199,13 @@ _bacMath(drinkTimeList) {
   yesterBAC ??= 0.0;
   drinkToNoonTime ??= 0.0;
 
-  DateTime noon = new DateTime(currentTime.year, currentTime.month, currentTime.day, resetTime);
-  noon = currentTime.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
+  DateTime noon = new DateTime(currentTime.year, currentTime.month, currentTime.day, globals.resetTime);
+  noon = currentTime.hour < globals.resetTime ? noon.subtract(Duration(days: 1)) : noon;
 
   int afterNoonDiff = currentTime.difference(noon).inSeconds;
   double beforeNoonDiff = drinkToNoonTime * 60;
 
-  double totalYesterBAC = (yesterBAC - (((afterNoonDiff + beforeNoonDiff) / 3600) * bacDropPerHour));
+  double totalYesterBAC = (yesterBAC - (((afterNoonDiff + beforeNoonDiff) / 3600) * globals.bacDropPerHour));
   totalYesterBAC = totalYesterBAC <= 0 ? 0 : totalYesterBAC;
 
   double totalBAC = fullBAC + totalYesterBAC;
@@ -294,7 +288,7 @@ Future<Day> determineDay() async {
   DateTime yesterday = time.subtract(Duration(days: 1));
   Database db = await DatabaseHelper.instance.database;
 
-  if (time.hour < resetTime) {
+  if (time.hour < globals.resetTime) {
     time = yesterday;
   }
 
@@ -357,8 +351,8 @@ Future<void> getDayEndedPopupInfo() async {
 // turns the BAC to a plant stage
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
 int bacToPlant(double bac) {
-  int plantNum = (numberOfDrinkPlants * (bac / maxBAC)).round();
-  plantNum = plantNum > numberOfDrinkPlants - 1 ? numberOfDrinkPlants - 1 : plantNum;
+  int plantNum = (globals.numberOfDrinkPlants * (bac / globals.maxBAC)).round();
+  plantNum = plantNum > globals.numberOfDrinkPlants - 1 ? globals.numberOfDrinkPlants - 1 : plantNum;
 
   return plantNum;
 }
@@ -372,9 +366,9 @@ int waterToPlant() {
   double idealWatersPerHour = 0.5;
 
   DateTime noon =
-  new DateTime(current.year, current.month, current.day, resetTime);
+  new DateTime(current.year, current.month, current.day, globals.resetTime);
 
-  noon = current.hour < resetTime ? noon.subtract(Duration(days: 1)) : noon;
+  noon = current.hour < globals.resetTime ? noon.subtract(Duration(days: 1)) : noon;
 
   Duration timeSinceNoon = current.difference(noon);
   int timeSinceNoonMinutes = timeSinceNoon.inMinutes;
@@ -392,8 +386,8 @@ int waterToPlant() {
 
   globals.today.hydratio = watersPerHourRatio;
 
-  plantNumWater = (numberOfWaterPlants * (watersPerHourRatio / idealWatersPerHour)).round();
-  plantNumWater = plantNumWater > numberOfWaterPlants - 1 ? numberOfWaterPlants - 1 : plantNumWater;
+  plantNumWater = (globals.numberOfWaterPlants * (watersPerHourRatio / idealWatersPerHour)).round();
+  plantNumWater = plantNumWater > globals.numberOfWaterPlants - 1 ? globals.numberOfWaterPlants - 1 : plantNumWater;
   plantNumWater = plantNumWater < 0 ? 0 : plantNumWater;
 
   dbHelper.updateDay(globals.today);

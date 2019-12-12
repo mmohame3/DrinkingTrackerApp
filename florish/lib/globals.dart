@@ -1,14 +1,19 @@
 library globals;
-import 'package:Florish/helpers/database_helpers.dart';
+import 'package:Florish/models/day_model.dart';
 
 Day today;
 double bac = 0.00;
 String imageName = 'assets/images/plants/drink0water0.png';
 
+final int resetTime = 6; //resets counters on this hour
+final double maxBAC = 0.15;
+final int numberOfDrinkPlants = 9;
+final int numberOfWaterPlants = 9;
+final double bacDropPerHour = .015;
+
 String selectedSex = 'Other';
-int selectedHeight = 5;
-int selectedFeet = 5;
-int selectedInches = 8;
+int selectedFeet = 0;
+int selectedInches = 0;
 int selectedWeight = 180;
 
 double weightGrams = selectedWeight * 453.592;

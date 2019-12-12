@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:Florish/helpers/database_helpers.dart' as database;
+import 'package:Florish/database_helper.dart' as database;
 import 'package:Florish/globals.dart' as globals;
-import 'package:Florish/homeScreen/homeScreenLayout.dart';
-import 'package:Florish/homeScreen/homeScreen.dart';
-import 'package:Florish/helpers/inputModel.dart';
-
+import 'package:Florish/home/home_screen_widgets.dart';
+import 'package:Florish/home/home_screen_layout.dart';
+import 'package:Florish/models/input_model.dart';
+import 'package:Florish/models/day_model.dart';
 final dbHelper = database.DatabaseHelper.instance;
 
 class PersonalInfoPage extends StatefulWidget {
@@ -23,7 +23,7 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
   }
 
   int initialFeet = 0;
-  database.Day day = globals.today;
+  Day day = globals.today;
   var _databaseHelper = database.DatabaseHelper.instance;
 
   String drinkString = globals.today.totalDrinks.toString();

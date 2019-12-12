@@ -1,9 +1,9 @@
-import 'package:Florish/home/homeScreen.dart';
+import 'package:Florish/home/home_screen_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:Florish/globals.dart' as globals;
-import 'package:Florish/helpers/database_helpers.dart';
-import 'package:Florish/home/homeScreenLayout.dart';
-import 'package:Florish/functions/speedAlert.dart';
+import 'package:Florish/database_helper.dart';
+import 'package:Florish/home/home_screen_widgets.dart';
+import 'package:Florish/functions/speed_alert.dart';
 
 class WaterButton extends StatefulWidget {
   final ValueChanged<String> parentAction;
@@ -35,7 +35,7 @@ class _WaterButtonState extends State<WaterButton> {
           globals.today.totalWaters++;
           waterString = globals.today.totalWaters.toString();
           waterButtonTap();
-          widget.parentAction('assets/images/plants/drink0water0.png');
+          widget.parentAction('assets/plants/drink0water0.png');
         });
       },
       child: Stack(
@@ -54,7 +54,7 @@ class _WaterButtonState extends State<WaterButton> {
                 borderRadius: BorderRadius.circular(1000),
               ),
               child: Image.asset(
-                'assets/images/waterCupButton.png',
+                'assets/waterCupButton.png',
                 width: MediaQuery.of(context).size.width / 5,
               )),
           Text(

@@ -5,13 +5,14 @@ import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:Florish/helpers/database_helpers.dart' as database;
+import 'package:Florish/database_helper.dart' as database;
 import 'package:Florish/globals.dart' as globals;
 import 'package:sqflite/sqflite.dart';
-import 'package:Florish/homeScreen/homeScreenLayout.dart' as mainPage;
+import 'package:Florish/home/home_screen_widgets.dart' as mainPage;
+import 'package:Florish/models/day_model.dart';
 
 class Calendar extends StatefulWidget {
-  final ValueChanged<database.Day> parentAction;
+  final ValueChanged<Day> parentAction;
   const Calendar({Key key, this.parentAction}) : super(key: key);
 
   @override
@@ -25,13 +26,13 @@ class _CalendarState extends State<Calendar> {
         }));
   }
 
-  Future<database.Day> determineDay(DateTime date) async {
+  Future<Day> determineDay(DateTime date) async {
     Database db = await database.DatabaseHelper.instance.database;
     String selectedDate = mainPage.dateTimeToString(date);
     List<Map> result =
         await db.rawQuery('SELECT * FROM days WHERE day=?', [selectedDate]);
 
-    database.Day day;
+    Day day;
     double yesterHyd;
 
     if (result == null || result.isEmpty) {
@@ -41,7 +42,7 @@ class _CalendarState extends State<Calendar> {
       });
       yesterHyd ??= 0.0;
 
-      day = new database.Day(
+      day = new Day(
           date: selectedDate,
           hourList: new List<int>(),
           minuteList: new List<int>(),
@@ -55,12 +56,12 @@ class _CalendarState extends State<Calendar> {
           yesterHydratio: yesterHyd,
           lastBAC: 0.0);
 
-      await db.insert(database.tableDays, day.toMap(),
+      await db.insert(tableDays, day.toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace);
       return day;
     } else {
 // alternate (read: better) way #2
-      day = database.Day.fromMap(result[0]);
+      day = Day.fromMap(result[0]);
 
       day.hourList ??= new List<int>();
       day.minuteList ??= new List<int>();
@@ -129,21 +130,21 @@ class _CalendarState extends State<Calendar> {
   List<DateTime> drunkDates = [];
   List<DateTime> veryDrunkDates = [];
 
-  Future<List<database.Day>> _makeDayList() async {
-    List<database.Day> dayList = List<database.Day>();
+  Future<List<Day>> _makeDayList() async {
+    List<Day> dayList = List<Day>();
 
     Database db = await database.DatabaseHelper.instance.database;
     List<Map> result = await db.rawQuery('SELECT * FROM days');
-    result.forEach((map) => dayList.add(database.Day.fromMap(map)));
+    result.forEach((map) => dayList.add(Day.fromMap(map)));
     return dayList;
   }
 
   _sortDates() async {
-    double threeQuartersMax = (3 * mainPage.maxBAC) / 4;
-    double halfMax = mainPage.maxBAC / 2;
-    double quarterMax = mainPage.maxBAC / 4;
+    double threeQuartersMax = (3 * globals.maxBAC) / 4;
+    double halfMax = globals.maxBAC / 2;
+    double quarterMax = globals.maxBAC / 4;
 
-    List<database.Day> dayList = await _makeDayList();
+    List<Day> dayList = await _makeDayList();
 
     for (int i = 0; i < dayList.length; i++)
       if (dayList[i].maxBAC > 0.00 && dayList[i].maxBAC < quarterMax)
@@ -246,13 +247,13 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  database.Day day = globals.today;
+  Day day = globals.today;
   double maxBACOnDay = 0;
   int waterOnDay = 0;
   List<String> times;
   List<String> types;
 
-  _updateSelectedDay(database.Day day) {
+  _updateSelectedDay(Day day) {
     setState(() {
       this.day = day;
     });
@@ -437,7 +438,7 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicator> {
 }
 
 class BacChart extends StatelessWidget {
-  final database.Day day;
+  final Day day;
   const BacChart({Key key, this.day}) : super(key: key);
 
   @override
@@ -454,97 +455,74 @@ class BacChart extends StatelessWidget {
 
   List<charts.Series<TimeSeriesBac, DateTime>> _createData() {
     List<TimeSeriesBac> bacData = new List<TimeSeriesBac>();
-
-    int i, currentDrinkMinutes, nextDrinkMinutes;
-    for (i = 0; i < day.typeList.length; i++) {
-      if (day.typeList[i] == 1 && i != day.typeList.lastIndexOf(1)) {
-        DateTime currentDrinkDateTime = day.hourList[i] < 6
-            ? DateTime(
-            getYear(day.getDate()),
-            getMonth(day.getDate()),
-            getDay(day.getDate()),
-            day.hourList[i],
-            day.minuteList[i],
-            0)
-            .add(Duration(days: 1))
-            : DateTime(getYear(day.getDate()), getMonth(day.getDate()),
-            getDay(day.getDate()), day.hourList[i], day.minuteList[i], 0);
-
-        DateTime nextDrinkDateTime = day.hourList[i + 1] < 6
-            ? DateTime(
-            getYear(day.getDate()),
-            getMonth(day.getDate()),
-            getDay(day.getDate()),
-            day.hourList[i + 1],
-            day.minuteList[i + 1],
-            0)
-            .add(Duration(days: 1))
-            : DateTime(
-            getYear(day.getDate()),
-            getMonth(day.getDate()),
-            getDay(day.getDate()),
-            day.hourList[i + 1],
-            day.minuteList[i + 1],
-            0);
-
-        bacData.add(new TimeSeriesBac(
-            currentDrinkDateTime, day.constantBACList[i] / 10));
-
-        currentDrinkMinutes = (day.hourList[i]) * 60 + day.minuteList[i];
-        nextDrinkMinutes = (day.hourList[i + 1] * 60) + day.minuteList[i + 1];
-
-        double timeDifferenceHours =
-        (nextDrinkMinutes - currentDrinkMinutes) / 60 < 0
-            ? ((1440 - currentDrinkMinutes) + nextDrinkMinutes) / 60
-            : (nextDrinkMinutes - currentDrinkMinutes) / 60;
-        double bacBeforeNextDrink =
-        (day.constantBACList[i] / 10) - (timeDifferenceHours * 0.15) < 0
-            ? 0.0
-            : (day.constantBACList[i] / 10) - (timeDifferenceHours * 0.15);
-        bacData.add(new TimeSeriesBac(
-            nextDrinkDateTime, bacBeforeNextDrink)); // = 10 * actual bac
+    List<int> justDrinksIndices = new List<int>();
+    for (int j = 0; j < day.typeList.length; j++){
+      if (day.typeList[j] == 1) {
+        justDrinksIndices.add(j);
       }
     }
 
-    DateTime currentTime = DateTime.now();
-    int lastDrink = day.typeList.lastIndexOf(1);
-    if (lastDrink != -1) {
-      DateTime lastDrinkDateTime = day.hourList[lastDrink] < 6
-          ? DateTime(
-          getYear(day.getDate()),
-          getMonth(day.getDate()),
-          getDay(day.getDate()),
-          day.hourList[lastDrink],
-          day.minuteList[lastDrink],
-          0)
-          .add(Duration(days: 1))
-          : DateTime(
-          getYear(day.getDate()),
-          getMonth(day.getDate()),
-          getDay(day.getDate()),
-          day.hourList[lastDrink],
-          day.minuteList[lastDrink],
-          0);
+    int currentDrinkMinutes, nextDrinkMinutes;
+    int i = 0;
+    while (i < justDrinksIndices.length){
+        String date = day.getDate();
+        int year = getYear(date);
+        int month = getMonth(date);
+        int dayNum = getDay(date);
 
-      int lastDrinkMinutes =
-          (day.hourList[lastDrink]) * 60 + day.minuteList[lastDrink];
+        DateTime currentDrinkDateTime = DateTime(year, month, dayNum, day.hourList[justDrinksIndices[i]],
+            day.minuteList[justDrinksIndices[i]], 0);
+
+        currentDrinkDateTime = day.hourList[justDrinksIndices[i]] < globals.resetTime ?
+            currentDrinkDateTime.add(Duration(days: 1))
+            : currentDrinkDateTime;
+
+
+        bacData.add(new TimeSeriesBac(
+            currentDrinkDateTime, day.constantBACList[justDrinksIndices[i]] / 10));
+
+        currentDrinkMinutes = (day.hourList[justDrinksIndices[i]]) * 60 + day.minuteList[justDrinksIndices[i]];
+
+        if (i + 1 == justDrinksIndices.length){
+          break;
+        }
+        DateTime nextDrinkDateTime = DateTime(year, month, dayNum, day.hourList[justDrinksIndices[i + 1]],
+            day.minuteList[justDrinksIndices[i + 1]], 0);
+
+        nextDrinkDateTime = day.hourList[justDrinksIndices[i]] < globals.resetTime ?
+        nextDrinkDateTime.add(Duration(days: 1))
+            : nextDrinkDateTime;
+
+        currentDrinkMinutes = (day.hourList[justDrinksIndices[i]]) * 60 + day.minuteList[justDrinksIndices[i]];
+        nextDrinkMinutes = (day.hourList[justDrinksIndices[i + 1]] * 60) + day.minuteList[justDrinksIndices[i + 1]];
+
+        double timeDifferenceHours =
+            currentDrinkMinutes > nextDrinkMinutes
+            ? ((1440 - currentDrinkMinutes) + nextDrinkMinutes) / 60
+            : (nextDrinkMinutes - currentDrinkMinutes) / 60;
+
+        double bacBeforeNextDrink = (day.constantBACList[justDrinksIndices[i]] / 10) - (timeDifferenceHours * 0.15);
+        bacBeforeNextDrink = bacBeforeNextDrink < 0 ? 0.0 : bacBeforeNextDrink;
+
+        bacData.add(new TimeSeriesBac(
+            nextDrinkDateTime, bacBeforeNextDrink));
+
+        i++;
+    }
+
+      DateTime currentTime = DateTime.now();
       int currentTimeMinutes = (currentTime.hour) * 60 + currentTime.minute;
+
       double currentTimeDifference =
-      (currentTimeMinutes - lastDrinkMinutes) / 60 < 0
+      (currentTimeMinutes - currentDrinkMinutes) / 60 < 0
           ? ((1440 - currentTimeMinutes) + currentDrinkMinutes) / 60
-          : (currentTimeMinutes - lastDrinkMinutes) / 60;
+          : (currentTimeMinutes - currentDrinkMinutes) / 60;
 
-      bacData.add(new TimeSeriesBac(
-          lastDrinkDateTime, day.constantBACList[lastDrink] / 10));
-
-      double currentBAC = (day.constantBACList[lastDrink] / 10) -
-          (currentTimeDifference * 0.15) < 0
-          ? 0.0
-          : (day.constantBACList[lastDrink] / 10) -
-          (currentTimeDifference * 0.15);
+      double currentBAC = (day.constantBACList[justDrinksIndices[i]] / 10) - (currentTimeDifference * 0.15);
+      currentBAC = currentBAC < 0 ? 0.0 : currentBAC;
 
       bacData.add(new TimeSeriesBac(currentTime, currentBAC));
-    }
+
 
     return [
       new charts.Series<TimeSeriesBac, DateTime>(
@@ -682,7 +660,7 @@ DateTime stringToDateTime(String date, int hour, int minutes) {
   return dateTime;
 }
 
-Widget generateTable(database.Day day) {
+Widget generateTable(Day day) {
   List rows = List<Row>();
   for (int i = 0; day.getHours().length > i; i++) {
     rows.add(new Row(

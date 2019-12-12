@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:Florish/globals.dart' as globals;
-import 'package:Florish/helpers/database_helpers.dart';
+import 'package:Florish/database_helper.dart';
 import 'dart:async';
-import 'package:Florish/alerts.dart';
-import 'package:Florish/homeScreen/homeScreenLayout.dart';
-import 'package:Florish/functions/speedAlert.dart';
-import 'package:Florish/homeScreen/homeScreen.dart';
+import 'package:Florish/functions/personal_info_alert.dart';
+import 'package:Florish/home/home_screen_widgets.dart';
+import 'package:Florish/functions/speed_alert.dart';
+import 'package:Florish/home/home_screen_layout.dart';
 
 
-import '../helpers/notifications.dart';
+import 'package:Florish/models/notification.dart';
 
 class DrinkButton extends StatefulWidget {
   final ValueChanged<String> parentActionUpdates;
@@ -40,7 +40,7 @@ class _DrinkButtonState extends State<DrinkButton> {
           globals.today.totalDrinks++;
           drinkString = globals.today.totalDrinks.toString();
           drinkButtonTap();
-          widget.parentActionUpdates('assets/images/plants/drink0water0.png');
+          widget.parentActionUpdates('assets/plants/drink0water0.png');
           globals.today.addConstantBAC((globals.bac * 100).round());
           globals.today.lastBAC = globals.bac;
           settingsAlert(context);
@@ -61,7 +61,7 @@ class _DrinkButtonState extends State<DrinkButton> {
                 ],
                 borderRadius: BorderRadius.circular(1000),
               ),
-              child: Image.asset('assets/images/soloCupButton.png',
+              child: Image.asset('assets/soloCupButton.png',
                   width: MediaQuery.of(context).size.width / 5)),
           Text(
             drinkString,

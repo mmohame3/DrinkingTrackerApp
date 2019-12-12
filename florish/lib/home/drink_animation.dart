@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:Florish/homeScreen/homeScreen.dart' as home;
+import 'package:Florish/home/home_screen_layout.dart' as home;
 
 Widget drinkAnimation(){
   var soloCupPosition = home.drinkRisePositionAnimation.value * 400;

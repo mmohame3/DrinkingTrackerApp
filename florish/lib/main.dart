@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:Florish/homeScreen/homeScreen.dart';
+import 'package:Florish/home/home_screen_layout.dart';
 
 
 void main() => runApp(MyApp());

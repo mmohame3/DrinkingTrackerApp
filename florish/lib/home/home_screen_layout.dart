@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:Florish/globals.dart' as globals;
-import 'package:Florish/helpers/database_helpers.dart';
-import 'package:Florish/pages/history.dart';
-import 'package:Florish/pages/drinkInformation.dart';
-import 'package:Florish/pages/PersonalInformation.dart';
-import 'package:Florish/popups.dart';
-import 'package:Florish/homeScreen/homeScreenLayout.dart';
-import 'package:Florish/homeScreen/waterAnimation.dart';
-import 'package:Florish/homeScreen/drinkAnimation.dart';
+import 'package:Florish/database_helper.dart';
+import 'package:Florish/pages/history_page.dart';
+import 'package:Florish/pages/drink_information_page.dart';
+import 'package:Florish/pages/settings_page.dart';
+import 'package:Florish/functions/day_ended_popup.dart';
 
-final int resetTime = 6; //resets counters on this hour
-final double maxBAC = 0.12;
-final int numberOfDrinkPlants = 9;
-final int numberOfWaterPlants = 9;
-final double bacDropPerHour = .015;
+import 'package:Florish/home/home_screen_widgets.dart';
+import 'package:Florish/home/water_animation.dart';
+import 'package:Florish/home/drink_animation.dart';
+
 AnimationController drinkRiseAnimationController, waterRiseAnimationController;
 Animation drinkRisePositionAnimation, waterRisePositionAnimation;
 
@@ -80,7 +76,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
           padding:
               EdgeInsets.only(bottom: MediaQuery.of(context).size.width / 3),
           child: Image.asset(
-            'assets/images/plantSetting.png',
+            'assets/plantSetting.png',
           ),
         ),
         new Plant(),
@@ -107,7 +103,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
         centerTitle: true,
         actions: <Widget>[
           IconButton(
-            icon: Image.asset('assets/images/drinkInfoIcon.png', width: 22),
+            icon: Image.asset('assets/drinkInfoIcon.png', width: 22),
 //              icon: Icon(Icons.info_outline, color: Colors.white),
               onPressed: () {
                 Navigator.push(
