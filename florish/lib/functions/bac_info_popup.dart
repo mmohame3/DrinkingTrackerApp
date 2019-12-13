@@ -81,7 +81,7 @@ Widget bacPopUpBody(BuildContext context) {
                               CupertinoButton(
                                 onPressed: _launchBacInfoURL,
                                 color: Color(0xFFA8C935),
-                                child: Text('More Information About BAC',
+                                child: Text('More BAC Information',
                                     style: TextStyle(color: Colors.white)),
                               )
                             ]))),
