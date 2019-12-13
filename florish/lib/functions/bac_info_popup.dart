@@ -4,6 +4,7 @@ import 'package:Florish/globals.dart' as globals;
 import 'package:Florish/pages/drink_information_page.dart';
 import 'package:Florish/pages/history_page.dart';
 import 'package:Florish/models/popup_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 List<TimeSeriesBac> bacChartData = List<TimeSeriesBac>();
 
@@ -78,20 +79,23 @@ Widget bacPopUpBody(BuildContext context) {
                                           height: 1.3,
                                           color: Colors.black))),
                               CupertinoButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  Navigator.push(
-                                      context,
-                                      new MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              new StandardDrinkPage()));
-                                },
+                                onPressed: _launchBacInfoURL,
                                 color: Color(0xFFA8C935),
-                                child: Text('More Information',
+                                child: Text('More Information About BAC',
                                     style: TextStyle(color: Colors.white)),
                               )
                             ]))),
                   ]))));
+}
+
+_launchBacInfoURL() async {
+  const url =
+      'https://www.teamdui.com/bac-widmarks-formula/';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
 }
 
 

@@ -41,7 +41,7 @@ class _DrinkButtonState extends State<DrinkButton> {
           drinkString = globals.today.totalDrinks.toString();
           drinkButtonTap();
           widget.parentActionUpdates('assets/plants/drink0water0.png');
-          globals.today.addConstantBAC((globals.bac * 100).round());
+          globals.today.addConstantBAC((globals.bac * 1000).round());
           globals.today.lastBAC = globals.bac;
           settingsAlert(context);
         });
@@ -82,7 +82,7 @@ class _DrinkButtonState extends State<DrinkButton> {
     drinkRiseAnimationController.forward(from: 0.0);
 
     DateTime now = DateTime.now().toUtc().add(
-        Duration(seconds:30),
+        Duration(hours:1),
       );
       singleNotification(
         now,

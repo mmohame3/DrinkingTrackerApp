@@ -112,7 +112,7 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                               padding: EdgeInsets.all(20),
                               child: Column(children: [
                                 Text(
-                                    "Below is a link to Macalester resources to help "
+                                    "Below is a link to for resources to help "
                                     "with alcohol abuse and how to get help.",
                                     style: TextStyle(
                                         fontSize: 16,
@@ -125,7 +125,7 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
                                       onPressed: _launchURL,
                                       color: Color(0xFFA8C935),
                                       child: Text(
-                                          'Macalester Alcohol Resources',
+                                          'Alcohol Resources',
                                           style:
                                               TextStyle(color: Colors.white)),
                                     )),
@@ -155,7 +155,7 @@ class _StandardDrinkPageState extends State<StandardDrinkPage> {
 
   _launchURL() async {
     const url =
-        'https://www.macalester.edu/healthandwellness/wellness-initiatives/alcoholtobacco/';
+        'https://alcoholaddictioncenter.org/alcoholism-resources/';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
