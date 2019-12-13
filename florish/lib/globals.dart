@@ -1,11 +1,13 @@
 library globals;
 import 'package:Florish/models/day_model.dart';
+/// Global variables used across the app
+
 
 Day today;
 double bac = 0.00;
 String imageName = 'assets/plants/drink0water0.png';
 
-final int resetTime = 6; //resets counters on this hour
+final int resetTime = 6;
 final double maxBAC = 0.15;
 final int numberOfDrinkPlants = 9;
 final int numberOfWaterPlants = 9;

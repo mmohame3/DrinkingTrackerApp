@@ -559,11 +559,21 @@ String minutesStringToString(String minutes) {
   return minuteString;
 }
 
-String twentyFourToTwelveHourString(int hour) {
+//String twentyFourToTwelveHourString(int hour) {
+//  if (hour > 12) {
+//    hour -= 12;
+//  }
+//  return '$hour';
+//}
+
+String timeString(int minutes, int hour) {
+  String ampm = 'am';
+  if (hour == 12) ampm = 'pm';
   if (hour > 12) {
     hour -= 12;
+    ampm = 'pm';
   }
-  return '$hour';
+  return '$hour:' + minutesIntToString(minutes) + " " + ampm;
 }
 
 int bacToPlant(double bac) {
@@ -666,9 +676,7 @@ Widget generateTable(Day day) {
     rows.add(new Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text(twentyFourToTwelveHourString(day.getHours()[i]) +
-            ':' +
-            minutesIntToString(day.getMinutes()[i])),
+        Text(timeString(day.getMinutes()[i], day.getHours()[i])),
         Container(
             padding: EdgeInsets.all(5),
             child: Image.asset(typeToImageName(day.getTypes()[i]), height: 20))
@@ -678,3 +686,4 @@ Widget generateTable(Day day) {
 
   return ListView(children: rows);
 }
+

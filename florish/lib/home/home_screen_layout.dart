@@ -35,6 +35,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
 
     super.initState();
 
+    /// Controls the animation when the drink button is pressed
     drinkRiseAnimationController = new AnimationController(duration: new Duration(milliseconds: 1500), vsync: this);
     drinkRisePositionAnimation = new CurvedAnimation(parent: drinkRiseAnimationController,
         curve: Interval(0.0, 1.0, curve: Curves.slowMiddle));
@@ -46,6 +47,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
       setState(() {});
     });
 
+    /// Controls the animation when the water button is pressed
     waterRiseAnimationController = new AnimationController(duration: new Duration(milliseconds: 1500), vsync: this);
     waterRisePositionAnimation = new CurvedAnimation(parent: waterRiseAnimationController,
         curve: Curves.slowMiddle);
@@ -61,6 +63,8 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    /// Sets up the home screen by getting the day and
+    /// [showDayEndPopup] if [globals.dayEnded
     WidgetsBinding.instance.addPostFrameCallback((_)  {
       determineDay();
       if (globals.dayEnded) {
@@ -104,7 +108,6 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
         actions: <Widget>[
           IconButton(
             icon: Image.asset('assets/drinkInfoIcon.png', width: 22),
-//              icon: Icon(Icons.info_outline, color: Colors.white),
               onPressed: () {
                 Navigator.push(
                     context,

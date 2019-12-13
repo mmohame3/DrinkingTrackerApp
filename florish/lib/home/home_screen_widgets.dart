@@ -11,7 +11,7 @@ import 'package:Florish/home/drink_button.dart';
 import 'package:Florish/home/water_button.dart';
 import 'package:Florish/models/day_model.dart';
 
-
+/// Contains the widgets on the home page below the app bar
 class Plant extends StatefulWidget {
   @override
   _PlantState createState() => new _PlantState();
@@ -26,15 +26,6 @@ class _PlantState extends State<Plant> {
     initializeNotifications();
   }
 
-  getInputInformation() async {
-    var _inputInformation = await getInputInformation();
-    _inputInformation.forEach((input) {
-      globals.selectedFeet = input['feet'];
-      globals.selectedInches = input['inch'];
-      globals.selectedWeight = input['weight'];
-      globals.selectedSex = input['gender'];
-    });
-  }
 
 // Sets up the plant and BAC
   _PlantState() {
@@ -44,8 +35,8 @@ class _PlantState extends State<Plant> {
     }));
   }
 
-  // builds the "column" (almost our entire app)
-  // with: bac counter, bac picture, plant image, and buttons
+  // builds the column with: bac counter, bac picture,
+  // plant image, and buttons
   @override
   Widget build(context) {
     return TimerBuilder.periodic(Duration(seconds: 5), builder: (context) {
@@ -144,8 +135,12 @@ class _PlantState extends State<Plant> {
 
 // Helper functions re: calculating bac and work with Day objects
 
-// sets the bac global to the new bac and updates the max bac
-// sets the plant's image name to a new path
+
+/// Updates the plant image and bac
+///
+/// Changes [globals.bac] and [globals.imageName] based
+/// on the output of [_bacMath]. Sets today's maxBAC
+/// and watersAtMaxBAC if needed.
 updateImageAndBAC(String path) {
   globals.bac = _bacMath(_dbListToTimeList());
   globals.imageName =
@@ -156,8 +151,11 @@ updateImageAndBAC(String path) {
   }
 }
 
-// takes in a list of DateTime objects and calculates the bac
-_bacMath(drinkTimeList) {
+/// Calculates the current BAC
+///
+/// Based on [drinkTimeList], the [globals.selectedSex],
+/// and [globals.selectedWeight], returns the current BAC.
+double _bacMath(drinkTimeList) {
   DateTime currentTime = DateTime.now();
 
   double r = 0.615;
@@ -167,21 +165,37 @@ _bacMath(drinkTimeList) {
     r = 0.55;
   }
 
+  /// The amount the user's BAC will rise with every drink
   double oneDrink = (14 / (globals.selectedWeight * 453.592 * r) * 100);
+
+  /// The user's BAC if no time had passed since any of the drinks.
+  /// This amount will be decremented based on the time since each drink.
   double fullBAC = globals.today.totalDrinks * oneDrink;
+
   int i = 0;
   double rolloverBAC = 0.0;
   double toSubtract;
+
+  /// For each drink, [fullBAC] is subtracted from based on
+  /// how long ago that drink was had.
   if (globals.today.totalDrinks > 0) {
     for (i = 0; i < globals.today.totalDrinks - 1; i++) {
       int timeDiff = drinkTimeList[i + 1].difference(drinkTimeList[i]).inSeconds;
 
-      //rollover = amount of bac from drink[i] not digested
+      /// [toSubtract] is the amount of BAC digested between when drink[i] and drink[i + 1] were had.
+      /// if it is greater than the amount of BAC added by drink[i] and the amount of "rollover" BAC
+      /// undigested from past drinks, then [toSubtract] is that sum instead.
       toSubtract = (timeDiff / 3600) * globals.bacDropPerHour <= oneDrink + rolloverBAC ? (timeDiff / 3600) * globals.bacDropPerHour : oneDrink + rolloverBAC;
+
+      /// [rolloverBAC] is the amount of bac from drink[i] not digested between
+      /// when drink[i] and drink[i + 1] were had.
       rolloverBAC = rolloverBAC + (oneDrink - toSubtract);
 
       fullBAC = fullBAC - toSubtract;
     }
+
+    /// Does similar calculations as above with the difference between
+    /// the last drink and the current time.
     double timeSinceLastDrinkHours = (currentTime.difference(drinkTimeList.last).inSeconds / 3600);
 
     fullBAC = timeSinceLastDrinkHours * globals.bacDropPerHour <= oneDrink + rolloverBAC ?
@@ -189,6 +203,17 @@ _bacMath(drinkTimeList) {
 
   }
 
+  double totalBAC = fullBAC + getYesterBAC();
+
+  return totalBAC;
+}
+
+/// Returns the amount of BAC from yesterday's drinks
+///
+/// Uses [getYesterInfo] and [currentTime] to calculate how
+/// much BAC from yesterday would be left undigested.
+double getYesterBAC(){
+  DateTime currentTime = DateTime.now();
   double yesterBAC, drinkToNoonTime;
 
   getYesterInfo().then((list) {
@@ -199,20 +224,31 @@ _bacMath(drinkTimeList) {
   yesterBAC ??= 0.0;
   drinkToNoonTime ??= 0.0;
 
-  DateTime noon = new DateTime(currentTime.year, currentTime.month, currentTime.day, globals.resetTime);
-  noon = currentTime.hour < globals.resetTime ? noon.subtract(Duration(days: 1)) : noon;
+  /// A DateTime object at [globals.resetTime] that,
+  /// if it's currently before the resetTime, reflects
+  /// the fact that the resetTime for [globals.today]
+  /// was actually yesterday
+  DateTime resetDateTime = new DateTime(currentTime.year, currentTime.month, currentTime.day, globals.resetTime);
+  resetDateTime = currentTime.hour < globals.resetTime ? resetDateTime.subtract(Duration(days: 1)) : resetDateTime;
 
-  int afterNoonDiff = currentTime.difference(noon).inSeconds;
+  int afterNoonDiff = currentTime.difference(resetDateTime).inSeconds;
   double beforeNoonDiff = drinkToNoonTime * 60;
 
   double totalYesterBAC = (yesterBAC - (((afterNoonDiff + beforeNoonDiff) / 3600) * globals.bacDropPerHour));
   totalYesterBAC = totalYesterBAC <= 0 ? 0 : totalYesterBAC;
 
-  double totalBAC = fullBAC + totalYesterBAC;
-
-  return totalBAC;
+  return totalYesterBAC;
 }
 
+/// Gets a list of information about yesterday's drinking
+///
+/// The list contains:
+/// 0. yesterday's total waters
+/// 1. yesterday's hydratio (the overall waters per hour)
+/// 2. yesterday's total drinks (alcohol)
+/// 3. the last BAC recorded yesterday
+/// 4. the time (in minutes) between the last drink and the reset
+/// or all 0s if there was no data yesterday
 Future<List<double>> getYesterInfo() async {
   DateTime time = DateTime.now();
   Duration dayLength = Duration(days: 1);
@@ -224,24 +260,38 @@ Future<List<double>> getYesterInfo() async {
 
   List<Map> yesterdayResult = await db.rawQuery('SELECT * FROM days WHERE day=?', [yesterDate]);
 
-  double w, yhr, d, ybac;
+  double yesterdayWaters, yesterdayHydratio, yesterdayDrinks, yesterdayLastBAC;
 
   if (yesterdayResult.isEmpty || yesterdayResult == null) {
     return [0.0, 0.0, 0.0, 0.0, 0.0];
   }
   else {
     Day yesterday = Day.fromMap(yesterdayResult[0]);
-    w = yesterday.totalWaters.toDouble();
-    yhr = yesterday.hydratio;
-    d = yesterday.totalDrinks.toDouble();
-    ybac = yesterday.lastBAC;
-    return [w, yhr, d, ybac, 0];
+    yesterdayWaters = yesterday.totalWaters.toDouble();
+    yesterdayHydratio = yesterday.hydratio;
+    yesterdayDrinks = yesterday.totalDrinks.toDouble();
+    yesterdayLastBAC = yesterday.lastBAC;
+
+    int lastDrinkIndex = yesterday.typeList.lastIndexOf(1);
+    int midnightToLastDrink = yesterday.hourList[lastDrinkIndex] * 60 + yesterday.minuteList[lastDrinkIndex];
+    int resetTimeMinutes = globals.resetTime * 60;
+    int midnight = 1440;
+
+
+
+    int lastDrinkToReset = resetTimeMinutes - midnightToLastDrink;
+    lastDrinkToReset = lastDrinkIndex < 0 ? resetTimeMinutes + (midnight - midnightToLastDrink)
+        : lastDrinkToReset;
+    return [yesterdayWaters, yesterdayHydratio, yesterdayDrinks, yesterdayLastBAC, lastDrinkToReset.toDouble()];
   }
 }
 
-// turns today's hours and minute lists to a list of DateTimes
-// (for the ones that correspond to drinks not waters)
-_dbListToTimeList() {
+
+/// Returns a list of DateTime objects for just the drinks
+/// in the database.
+///
+///
+List<DateTime>_dbListToTimeList() {
   List hours = globals.today.hourList;
   List minutes = globals.today.minuteList;
   List types = globals.today.typeList;
@@ -250,18 +300,19 @@ _dbListToTimeList() {
   DateTime newTime;
   List<DateTime> timeList = [];
   for (i = 0; i < types.length; i++) {
-    // if the drink type is alcohol, the corresponding info
-    // is added to the new list of DateTimes
-
+    /// If the drinkType is 1, it corresponds to a drink
     if (types[i] == 1) {
-      // year and month are hard set bc issues arise because
-      // of our noon-to-noon system for resetting drinks
-      if (currentTime.hour < 12 && hours[i] >= 12) {
+      /// If the current time is before the reset and the drink in question isn't,
+      /// then the newTime is based on yesterday. If this isn't the case, the newTime
+      /// is based on the current time.
+      if (currentTime.hour < globals.resetTime && hours[i] >= globals.resetTime) {
         newTime = currentTime.subtract(Duration(days: 1));
       }
       else {
         newTime = currentTime;
       }
+      /// [newTime] is adjusted to reflect the hour and minute of drink[i]
+      /// then added to the list.
       newTime = new DateTime(newTime.year, newTime.month, newTime.day, hours[i], minutes[i]);
       timeList.add(newTime);
     }
@@ -270,8 +321,9 @@ _dbListToTimeList() {
 }
 
 
-//takes a DateTime and makes it into the string format
-// we use as a database key
+/// Converts a DateTime [date] to a string
+///
+/// These strings are used as ids in our database
 String dateTimeToString(DateTime date) {
   String y = date.year.toString();
   String m = date.month.toString();
@@ -279,10 +331,13 @@ String dateTimeToString(DateTime date) {
   return m + "/" + d + "/" + y;
 }
 
-// if today's date isn't in the db, adds it
-// if it IS in the database, creates a new day from the data there,
-// i think this won't result in copies of the same day since in database_helpers
-// if there are two of the same day it just replaces the old one
+
+
+/// Returns the current [day_model.Day] based on the current time.
+///
+/// If there is no data for today in the database,
+/// a new [day_model.Day] is formed with all zeroes.
+/// Else, today's data is retrieved from [database_helper.Database]
 Future<Day> determineDay() async {
   DateTime time = DateTime.now();
   DateTime yesterday = time.subtract(Duration(days: 1));
@@ -300,6 +355,7 @@ Future<Day> determineDay() async {
   double yesterHyd;
 
   if (result == null || result.isEmpty) {
+    /// Set so that [showDayEndedPopup] will be called
     globals.dayEnded = true;
     getYesterInfo().then((list) {
       yesterHyd = list[1];
@@ -331,6 +387,7 @@ Future<Day> determineDay() async {
     day.minuteList ??= new List<int>();
     day.typeList ??= new List<int>();
     day.constantBACList ??= new List<int>();
+
     day.hourList = new List<int>.from(day.hourList);
     day.minuteList = new List<int>.from(day.minuteList);
     day.typeList = new List<int>.from(day.typeList);
@@ -340,8 +397,9 @@ Future<Day> determineDay() async {
   }
 }
 
-// sets the global variables for yesterday's drinks and waters
-// if the day has "ended" as indicated by determine day
+/// Sets [globals.yesterWater] and [globals.yesterDrink]
+/// based on yesterday's data so that [day_ended_popup.dart]
+/// can show it.
 Future<void> getDayEndedPopupInfo() async {
     List yesterList = await getYesterInfo();
     globals.yesterWater = yesterList[0].toInt();
@@ -350,6 +408,14 @@ Future<void> getDayEndedPopupInfo() async {
 
 // turns the BAC to a plant stage
 // where 5 is the number of plant stages we have and .12 is our "max" BAC
+
+/// Turns the current [bac] into a plant stage.
+///
+/// Converts [bac] into a percentage of [globals.maxBAC]
+/// and multiplies it by [globals.numberOfDrinkPlants] to
+/// get the corresponding plant number.
+/// If this plant number is greater than the number of
+/// drink plant stages we have, it's capped.
 int bacToPlant(double bac) {
   int plantNum = (globals.numberOfDrinkPlants * (bac / globals.maxBAC)).round();
   plantNum = plantNum > globals.numberOfDrinkPlants - 1 ? globals.numberOfDrinkPlants - 1 : plantNum;
