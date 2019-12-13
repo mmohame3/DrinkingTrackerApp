@@ -465,7 +465,9 @@ class BacChart extends StatelessWidget {
       DateTime currentDrinkDateTime;
       int currentDrinkMinutes, nextDrinkMinutes;
       int i = 0;
+
       while (i < justDrinksIndices.length) {
+        print(day.constantBACList);
         String date = day.getDate();
         int year = getYear(date);
         int month = getMonth(date);
@@ -482,7 +484,7 @@ class BacChart extends StatelessWidget {
 
         bacData.add(new TimeSeriesBac(
             currentDrinkDateTime,
-            day.constantBACList[justDrinksIndices[i]] / 10));
+            day.constantBACList[i] / 100));
 
         currentDrinkMinutes = (day.hourList[justDrinksIndices[i]]) * 60 +
             day.minuteList[justDrinksIndices[i]];
@@ -509,8 +511,8 @@ class BacChart extends StatelessWidget {
             ? ((1440 - currentDrinkMinutes) + nextDrinkMinutes) / 60
             : (nextDrinkMinutes - currentDrinkMinutes) / 60;
 
-        double bacBeforeNextDrink = (day.constantBACList[justDrinksIndices[i]] /
-            10) - (timeDifferenceHours * 0.15);
+        double bacBeforeNextDrink = (day.constantBACList[i] /
+            100) - (timeDifferenceHours * 0.15);
         bacBeforeNextDrink = bacBeforeNextDrink < 0 ? 0.0 : bacBeforeNextDrink;
 
         bacData.add(new TimeSeriesBac(
@@ -527,11 +529,11 @@ class BacChart extends StatelessWidget {
           ? ((1440 - currentTimeMinutes) + currentDrinkMinutes) / 60
           : (currentTimeMinutes - currentDrinkMinutes) / 60;
 
-      double currentBAC = (day.constantBACList[justDrinksIndices[i]] / 10) -
+      double currentBAC = (day.constantBACList[i] / 100) -
           (currentTimeDifference * 0.15);
 
       if (currentBAC < 0){
-        int minutesForBacToFallToZero = (day.constantBACList[justDrinksIndices[i]] / 0.15).round();
+        int minutesForBacToFallToZero = (day.constantBACList[i] / 0.15).round();
         DateTime xInterceptBAC = currentDrinkDateTime.add(Duration(minutes: minutesForBacToFallToZero));
 
         bacData.add(new TimeSeriesBac(xInterceptBAC, 0));

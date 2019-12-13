@@ -77,7 +77,6 @@ class _WaterButtonState extends State<WaterButton> {
     globals.today.addHour(DateTime.now().hour);
     globals.today.addMinute(DateTime.now().minute);
     globals.today.addType(0);
-    globals.today.addConstantBAC(0);
     speedAlert(context);
     await dbHelper.updateDay(globals.today);
   }
