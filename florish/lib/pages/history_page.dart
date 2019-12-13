@@ -461,54 +461,63 @@ class BacChart extends StatelessWidget {
         justDrinksIndices.add(j);
       }
     }
-
-    int currentDrinkMinutes, nextDrinkMinutes;
-    int i = 0;
-    while (i < justDrinksIndices.length){
+    if (justDrinksIndices.length > 0) {
+      DateTime currentDrinkDateTime;
+      int currentDrinkMinutes, nextDrinkMinutes;
+      int i = 0;
+      while (i < justDrinksIndices.length) {
         String date = day.getDate();
         int year = getYear(date);
         int month = getMonth(date);
         int dayNum = getDay(date);
 
-        DateTime currentDrinkDateTime = DateTime(year, month, dayNum, day.hourList[justDrinksIndices[i]],
+        currentDrinkDateTime = DateTime(
+            year, month, dayNum, day.hourList[justDrinksIndices[i]],
             day.minuteList[justDrinksIndices[i]], 0);
 
-        currentDrinkDateTime = day.hourList[justDrinksIndices[i]] < globals.resetTime ?
-            currentDrinkDateTime.add(Duration(days: 1))
+        currentDrinkDateTime =
+        day.hourList[justDrinksIndices[i]] < globals.resetTime ?
+        currentDrinkDateTime.add(Duration(days: 1))
             : currentDrinkDateTime;
 
-
         bacData.add(new TimeSeriesBac(
-            currentDrinkDateTime, day.constantBACList[justDrinksIndices[i]] / 10));
+            currentDrinkDateTime,
+            day.constantBACList[justDrinksIndices[i]] / 10));
 
-        currentDrinkMinutes = (day.hourList[justDrinksIndices[i]]) * 60 + day.minuteList[justDrinksIndices[i]];
+        currentDrinkMinutes = (day.hourList[justDrinksIndices[i]]) * 60 +
+            day.minuteList[justDrinksIndices[i]];
 
-        if (i + 1 == justDrinksIndices.length){
+        if (i + 1 == justDrinksIndices.length) {
           break;
         }
-        DateTime nextDrinkDateTime = DateTime(year, month, dayNum, day.hourList[justDrinksIndices[i + 1]],
+        DateTime nextDrinkDateTime = DateTime(
+            year, month, dayNum, day.hourList[justDrinksIndices[i + 1]],
             day.minuteList[justDrinksIndices[i + 1]], 0);
 
-        nextDrinkDateTime = day.hourList[justDrinksIndices[i]] < globals.resetTime ?
+        nextDrinkDateTime =
+        day.hourList[justDrinksIndices[i]] < globals.resetTime ?
         nextDrinkDateTime.add(Duration(days: 1))
             : nextDrinkDateTime;
 
-        currentDrinkMinutes = (day.hourList[justDrinksIndices[i]]) * 60 + day.minuteList[justDrinksIndices[i]];
-        nextDrinkMinutes = (day.hourList[justDrinksIndices[i + 1]] * 60) + day.minuteList[justDrinksIndices[i + 1]];
+        currentDrinkMinutes = (day.hourList[justDrinksIndices[i]]) * 60 +
+            day.minuteList[justDrinksIndices[i]];
+        nextDrinkMinutes = (day.hourList[justDrinksIndices[i + 1]] * 60) +
+            day.minuteList[justDrinksIndices[i + 1]];
 
         double timeDifferenceHours =
-            currentDrinkMinutes > nextDrinkMinutes
+        currentDrinkMinutes > nextDrinkMinutes
             ? ((1440 - currentDrinkMinutes) + nextDrinkMinutes) / 60
             : (nextDrinkMinutes - currentDrinkMinutes) / 60;
 
-        double bacBeforeNextDrink = (day.constantBACList[justDrinksIndices[i]] / 10) - (timeDifferenceHours * 0.15);
+        double bacBeforeNextDrink = (day.constantBACList[justDrinksIndices[i]] /
+            10) - (timeDifferenceHours * 0.15);
         bacBeforeNextDrink = bacBeforeNextDrink < 0 ? 0.0 : bacBeforeNextDrink;
 
         bacData.add(new TimeSeriesBac(
             nextDrinkDateTime, bacBeforeNextDrink));
 
         i++;
-    }
+      }
 
       DateTime currentTime = DateTime.now();
       int currentTimeMinutes = (currentTime.hour) * 60 + currentTime.minute;
@@ -518,11 +527,19 @@ class BacChart extends StatelessWidget {
           ? ((1440 - currentTimeMinutes) + currentDrinkMinutes) / 60
           : (currentTimeMinutes - currentDrinkMinutes) / 60;
 
-      double currentBAC = (day.constantBACList[justDrinksIndices[i]] / 10) - (currentTimeDifference * 0.15);
-      currentBAC = currentBAC < 0 ? 0.0 : currentBAC;
+      double currentBAC = (day.constantBACList[justDrinksIndices[i]] / 10) -
+          (currentTimeDifference * 0.15);
+
+      if (currentBAC < 0){
+        int minutesForBacToFallToZero = (day.constantBACList[justDrinksIndices[i]] / 0.15).round();
+        DateTime xInterceptBAC = currentDrinkDateTime.add(Duration(minutes: minutesForBacToFallToZero));
+
+        bacData.add(new TimeSeriesBac(xInterceptBAC, 0));
+        currentBAC = 0;
+      }
 
       bacData.add(new TimeSeriesBac(currentTime, currentBAC));
-
+    }
 
     return [
       new charts.Series<TimeSeriesBac, DateTime>(

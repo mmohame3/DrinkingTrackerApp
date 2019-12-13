@@ -261,6 +261,7 @@ Future<List<double>> getYesterInfo() async {
   List<Map> yesterdayResult = await db.rawQuery('SELECT * FROM days WHERE day=?', [yesterDate]);
 
   double yesterdayWaters, yesterdayHydratio, yesterdayDrinks, yesterdayLastBAC;
+  int lastDrinkToReset;
 
   if (yesterdayResult.isEmpty || yesterdayResult == null) {
     return [0.0, 0.0, 0.0, 0.0, 0.0];
@@ -272,16 +273,24 @@ Future<List<double>> getYesterInfo() async {
     yesterdayDrinks = yesterday.totalDrinks.toDouble();
     yesterdayLastBAC = yesterday.lastBAC;
 
-    int lastDrinkIndex = yesterday.typeList.lastIndexOf(1);
-    int midnightToLastDrink = yesterday.hourList[lastDrinkIndex] * 60 + yesterday.minuteList[lastDrinkIndex];
-    int resetTimeMinutes = globals.resetTime * 60;
-    int midnight = 1440;
+    if (yesterday.typeList != null) {
+      if (yesterday.typeList.contains(1)) {
+        int lastDrinkIndex = yesterday.typeList.lastIndexOf(1);
+        int midnightToLastDrink = yesterday.hourList[lastDrinkIndex] * 60 +
+            yesterday.minuteList[lastDrinkIndex];
+        int resetTimeMinutes = globals.resetTime * 60;
+        int midnight = 1440;
 
 
-
-    int lastDrinkToReset = resetTimeMinutes - midnightToLastDrink;
-    lastDrinkToReset = lastDrinkIndex < 0 ? resetTimeMinutes + (midnight - midnightToLastDrink)
-        : lastDrinkToReset;
+        lastDrinkToReset = resetTimeMinutes - midnightToLastDrink;
+        lastDrinkToReset =
+        lastDrinkIndex < 0 ? resetTimeMinutes + (midnight - midnightToLastDrink)
+            : lastDrinkToReset;
+      }
+    }
+    else {
+      lastDrinkToReset = 0;
+    }
     return [yesterdayWaters, yesterdayHydratio, yesterdayDrinks, yesterdayLastBAC, lastDrinkToReset.toDouble()];
   }
 }
