@@ -518,9 +518,8 @@ class BacChart extends StatelessWidget {
 
       /// if [day] is a past day, the [currentTime] is set to the [globals.resetTime]
       /// and the [timeDifference] is the time between the last drink and the reset.
-      if (currentTime.day != getDay(day.getDate()) &&
-          currentTime.hour >= globals.resetTime &&
-          currentTime.month != getMonth(day.getDate())){
+      if (currentTime.hour >= globals.resetTime &&
+          mainPage.dateTimeToString(currentTime) != day.getDate()){
         lastTimeDifferenceHours = getResetTimeDifference(currentDrinkMinutes) / 60;
         currentTime = new DateTime(year, month, dayNum, globals.resetTime, 0, 0).add(Duration(days: 1));
       }
