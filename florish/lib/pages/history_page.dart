@@ -492,16 +492,14 @@ class BacChart extends StatelessWidget {
         /// the next to calculate how far the BAC dropped over that
         /// period of time.
         double timeDifferenceHours = getCurrentAndNextTimeDiff(i, justDrinksIndices);
-        if (timeDifferenceHours > (day.constantBACList[i]/100) - (timeDifferenceHours * 0.15)){
+        if (getNextDrinkDateTime(i, justDrinksIndices, year, month, dayNum).isAfter(getTimeWhenBacHitZero(i, currentDrinkDateTime))){
           /// add point where bac first fell to 0
           DateTime whenBacHitZero = getTimeWhenBacHitZero(i, currentDrinkDateTime);
           bacData.add(new TimeSeriesBac(whenBacHitZero, 0));
         }
 
         DateTime nextDrinkDateTime = getNextDrinkDateTime(i, justDrinksIndices, year, month, dayNum);
-
-        double bacBeforeNextDrink = (day.constantBACList[i] /
-            100) - (timeDifferenceHours * 0.15);
+        double bacBeforeNextDrink = (day.constantBACList[i] / 100) - (timeDifferenceHours * 0.15);
         bacBeforeNextDrink = bacBeforeNextDrink < 0 ? 0.0 : bacBeforeNextDrink;
 
         /// The dropped BAC is added to the TimeSeries before the
@@ -598,7 +596,7 @@ class BacChart extends StatelessWidget {
 
     /// adjusts [nextDrinkDateTime] based on [globals.resetTime]
     nextDrinkDateTime =
-    day.hourList[justDrinksIndices[i]] < globals.resetTime ?
+    day.hourList[justDrinksIndices[i + 1]] < globals.resetTime ?
     nextDrinkDateTime.add(Duration(days: 1))
         : nextDrinkDateTime;
 
