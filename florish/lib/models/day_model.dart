@@ -9,7 +9,6 @@ final String columnMaxBAC = 'maxBAC';
 final String columnMBWater = 'wateratmaxBAC';
 final String columnDrinkCount = "totaldrinkcount";
 final String columnWaterCount = "totalwatercount";
-final String columnSession = "sessionlist";
 final String columnHydratio = "hydratio";
 final String columnYesterHydratio = "yesterhydratio";
 final String columnLastBAC = "lastBAC";
@@ -24,7 +23,6 @@ class Day {
   int waterAtMaxBAC;
   int totalDrinks;
   int totalWaters;
-  List<int> sessionList;
   double hydratio;
   double yesterHydratio;
   double lastBAC;

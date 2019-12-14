@@ -260,9 +260,7 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget dataReturn() {
-    Container container;
-    if (day.typeList.length > 0) {
-      container = Container(
+    return Container(
           padding: EdgeInsets.only(top: 10),
           child: Column(children: [
             Row(
@@ -282,8 +280,12 @@ class _HistoryPageState extends State<HistoryPage> {
                           'assets/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
                           width: 7 * MediaQuery.of(context).size.width / 24,
                         )),
-                    Text('Total drinks: ${day.totalDrinks}'),
-                    Text('Total water: ${day.totalWaters}')
+                    Row(children: <Widget> [
+                      Text('${day.totalDrinks} ', style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('${drinkPlural(day)}  |  '),
+                      Text('${day.totalWaters} ', style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('${waterPlural(day)}')
+                      ])
                   ]),
                   SingleChildScrollView(
                       child: ConstrainedBox(
@@ -294,32 +296,16 @@ class _HistoryPageState extends State<HistoryPage> {
                           child: generateTable(day)))
                 ])
           ]));
-    } else {
-      container = Container(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
-          child: Text(
-            'No data for this day',
-            style: TextStyle(color: Colors.grey[600]),
-          ));
-    }
-    return container;
   }
 
   Widget graphReturn() {
-    Container container;
-    if (day.typeList.length > 0) {
-      container = Container(
+    return Container(
           height: MediaQuery.of(context).size.height / 2,
-          child: BacChart(day: day));
-    } else {
-      container = Container(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
-          child: Text(
-            'No data for this day',
-            style: TextStyle(color: Colors.grey[600]),
-          ));
-    }
-    return container;
+//          child: Column(children: <Widget> [
+//            Text('Your BAC over Time'),
+            child: BacChart(day: day)
+//        ])
+    );
   }
 
   Widget historyWidgetReturn() {
@@ -458,6 +444,8 @@ class BacChart extends StatelessWidget {
   /// returns the TimeSeries with these values.
   List<charts.Series<TimeSeriesBac, DateTime>> _createData() {
     List<TimeSeriesBac> bacData = new List<TimeSeriesBac>();
+    List<TimeSeriesBac> drinkData = new List<TimeSeriesBac>();
+
     /// Gets the list of indices of the values in the database
     /// corresponding to drinks (not waters).
     List<int> justDrinksIndices = getDrinkIndices();
@@ -651,13 +639,27 @@ class BacChart extends StatelessWidget {
   }
 }
 
-
-
 class TimeSeriesBac {
   final DateTime time;
   final double bac;
 
   TimeSeriesBac(this.time, this.bac);
+}
+
+String drinkPlural(Day day) {
+  if (day.totalDrinks > 1) {
+    return 'drinks';
+  } else if (day.totalDrinks == 1) {
+    return 'drink';
+  }
+}
+
+String waterPlural(Day day) {
+  if (day.totalWaters > 1) {
+    return 'waters';
+  } else if (day.totalWaters == 1) {
+    return 'water';
+  }
 }
 
 String minutesIntToString(int minutes) {

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:Florish/globals.dart' as globals;
-import 'package:Florish/pages/drink_information_page.dart';
 import 'package:Florish/pages/history_page.dart';
 import 'package:Florish/models/popup_model.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -56,6 +55,17 @@ Widget bacPopUpBody(BuildContext context) {
                     Container(
                         padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
                         child: Text(
+                          'YOUR BAC OVER TIME',
+                          style: TextStyle(letterSpacing: 1, height: 1.5),
+                        )),
+                    Container(
+                        color: Colors.white,
+                        alignment: Alignment.topCenter,
+                        child: BacChart(day: globals.today),
+                    ),
+                    Container(
+                        padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
+                        child: Text(
                           'WHAT IS BAC?',
                           style: TextStyle(letterSpacing: 1, height: 1.5),
                         )),
@@ -89,15 +99,13 @@ Widget bacPopUpBody(BuildContext context) {
 }
 
 _launchBacInfoURL() async {
-  const url =
-      'https://www.teamdui.com/bac-widmarks-formula/';
+  const url = 'https://www.teamdui.com/bac-widmarks-formula/';
   if (await canLaunch(url)) {
     await launch(url);
   } else {
     throw 'Could not launch $url';
   }
 }
-
 
 Widget bacText(BuildContext context) {
   double bacLater = (globals.bac - .08) / .015;
@@ -158,10 +166,6 @@ Widget bacText(BuildContext context) {
                                     '  •    ${bacLater.toStringAsFixed(1)} hours to fall to .08%\n'),
                           ]))
                     ]),
-                    SizedBox(
-                            height: MediaQuery.of(context).size.height / 5,
-                            child: BacChart(day: globals.today)
-                        )
                   ]))),
     ]);
   }
@@ -173,7 +177,7 @@ String _getBacInfo(double bac) {
   String effects;
   if (bac < .02) {
     effects =
-    "Relaxed with few obvious effects other than a slight intensification of mood";
+        "Relaxed with few obvious effects other than a slight intensification of mood";
   }
 
   if ((bac >= 0.020) && (bac < 0.04)) {
@@ -182,37 +186,36 @@ String _getBacInfo(double bac) {
 
   if ((bac >= .04) && (bac < 0.06)) {
     effects =
-    "You still have balance but you are starting to forget the manners people expect of you. Impaired judgement and explosions of joy describe your current state.";
+        "You still have balance but you are starting to forget the manners people expect of you. Impaired judgement and explosions of joy describe your current state.";
   }
 
   if ((bac >= .06) && (bac < 0.1)) {
     effects =
-    "Oh oh! You might be tumbling now. Slurring words, slowed reactions, and out of pocket actions describe your current state. Find a sober friend!";
+        "Oh oh! You might be tumbling now. Slurring words, slowed reactions, and out of pocket actions describe your current state. Find a sober friend!";
   }
 
   if ((bac >= .1) && (bac < 0.13)) {
     effects =
-    "Seek support! You have lost balance, clear speech, and sense of judgment.";
+        "Seek support! You have lost balance, clear speech, and sense of judgment.";
   }
 
   if ((bac >= .13) && (bac < 0.16)) {
     effects =
-    "You are impaired in all physical and mental functions. Depression begins to set in at this stage, find support.";
+        "You are impaired in all physical and mental functions. Depression begins to set in at this stage, find support.";
   }
 
   if ((bac >= .16) && (bac < 0.2)) {
     effects =
-    " So called sloppy drunk stage, nausea initiates, and negative feelings begin at this stage. Seek help.";
+        "So called sloppy drunk stage, nausea initiates, and negative feelings begin at this stage. Seek help.";
   }
 
   if ((bac >= .2) && (bac < 0.25)) {
     effects =
-    "Mental confusion, blackout level, memory impairment. User needs support as soon as possible.";
+        "Mental confusion, blackout level, memory impairment. User needs support as soon as possible.";
   }
 
   if ((bac >= .25) && (bac < 0.4)) {
-    effects =
-    "Alcohol poisoning stage, take user to hospital! Notifcations sent to emergency contacts.";
+    effects = "Alcohol poisoning stage, take user to hospital!";
   }
 
   if (bac >= .4) {
@@ -220,4 +223,16 @@ String _getBacInfo(double bac) {
   }
 
   return effects;
+}
+
+Widget bacGraph(BuildContext context) {
+  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Container(
+        padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
+        child: Text(
+          'YOUR BAC OVER TIME',
+          style: TextStyle(letterSpacing: 1, height: 1.5),
+        )),
+    Container()
+  ]);
 }
