@@ -514,7 +514,9 @@ class BacChart extends StatelessWidget {
 
       /// if [day] is a past day, the [currentTime] is set to the [globals.resetTime]
       /// and the [timeDifference] is the time between the last drink and the reset.
-      if (currentTime.day != getDay(day.getDate()) && currentTime.hour >= globals.resetTime){
+      if (currentTime.day != getDay(day.getDate()) &&
+          currentTime.hour >= globals.resetTime &&
+          currentTime.month != getMonth(day.getDate())){
         lastTimeDifferenceHours = getResetTimeDifference(currentDrinkMinutes) / 60;
         currentTime = new DateTime(year, month, dayNum, globals.resetTime, 0, 0).add(Duration(days: 1));
       }
@@ -532,7 +534,8 @@ class BacChart extends StatelessWidget {
       /// at the time when it first fell to zero.
       if (currentBAC < 0){
         /// given the slope (0.15) and the last coordinate we get [minutesForBacToFallToZero]
-        int minutesForBacToFallToZero = (day.constantBACList[i]  / 0.15).round();
+        double hoursForBacToFallToZero = ((day.constantBACList[i] / 100) / 0.15);
+        int minutesForBacToFallToZero = (hoursForBacToFallToZero * 60).round();
         DateTime xInterceptBAC = currentDrinkDateTime.add(Duration(minutes: minutesForBacToFallToZero));
 
         bacData.add(new TimeSeriesBac(xInterceptBAC, 0));
@@ -624,6 +627,7 @@ class BacChart extends StatelessWidget {
   /// in minutes.
   int getResetTimeDifference(int currentDrinkMinutes){
     int resetTimeInMinutes = globals.resetTime * 60;
+
     int timeBetweenLastDrinkAndReset;
     if (currentDrinkMinutes > resetTimeInMinutes) {
       timeBetweenLastDrinkAndReset = resetTimeInMinutes + (1440 - currentDrinkMinutes);
@@ -642,12 +646,15 @@ class BacChart extends StatelessWidget {
     DateTime currentTime = DateTime.now();
     int currentTimeMinutes = (currentTime.hour) * 60 + currentTime.minute;
 
-    int currentTimeDifference =
-    (currentTimeMinutes - currentDrinkMinutes)  < 0
-        ? ((1440 - currentDrinkMinutes) + currentTimeMinutes)
-        : (currentTimeMinutes - currentDrinkMinutes);
+    int timeBetweenLastDrinkAndNow;
+    if (currentDrinkMinutes > currentTimeMinutes) {
+      timeBetweenLastDrinkAndNow = currentTimeMinutes + (1440 - currentDrinkMinutes);
+    }
+    else {
+      timeBetweenLastDrinkAndNow = currentTimeMinutes - currentDrinkMinutes;
+    }
 
-    return currentTimeDifference;
+    return timeBetweenLastDrinkAndNow;
   }
 }
 
