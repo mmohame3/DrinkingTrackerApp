@@ -480,10 +480,14 @@ class BacChart extends StatelessWidget {
         /// the next to calculate how far the BAC dropped over that
         /// period of time.
         double timeDifferenceHours = getCurrentAndNextTimeDiff(i, justDrinksIndices);
-        DateTime nextDrinkDateTime = getNextDrinkDateTime(i, justDrinksIndices, year, month, dayNum);
+        if (getNextDrinkDateTime(i, justDrinksIndices, year, month, dayNum).isAfter(getTimeWhenBacHitZero(i, currentDrinkDateTime))){
+          /// add point where bac first fell to 0
+          DateTime whenBacHitZero = getTimeWhenBacHitZero(i, currentDrinkDateTime);
+          bacData.add(new TimeSeriesBac(whenBacHitZero, 0));
+        }
 
-        double bacBeforeNextDrink = (day.constantBACList[i] /
-            100) - (timeDifferenceHours * 0.15);
+        DateTime nextDrinkDateTime = getNextDrinkDateTime(i, justDrinksIndices, year, month, dayNum);
+        double bacBeforeNextDrink = (day.constantBACList[i] / 100) - (timeDifferenceHours * 0.15);
         bacBeforeNextDrink = bacBeforeNextDrink < 0 ? 0.0 : bacBeforeNextDrink;
 
         /// The dropped BAC is added to the TimeSeries before the
@@ -502,7 +506,8 @@ class BacChart extends StatelessWidget {
 
       /// if [day] is a past day, the [currentTime] is set to the [globals.resetTime]
       /// and the [timeDifference] is the time between the last drink and the reset.
-      if (currentTime.day != getDay(day.getDate()) && currentTime.hour >= globals.resetTime){
+      if (currentTime.hour >= globals.resetTime &&
+          mainPage.dateTimeToString(currentTime) != day.getDate()){
         lastTimeDifferenceHours = getResetTimeDifference(currentDrinkMinutes) / 60;
         currentTime = new DateTime(year, month, dayNum, globals.resetTime, 0, 0).add(Duration(days: 1));
       }
@@ -520,10 +525,8 @@ class BacChart extends StatelessWidget {
       /// at the time when it first fell to zero.
       if (currentBAC < 0){
         /// given the slope (0.15) and the last coordinate we get [minutesForBacToFallToZero]
-        int minutesForBacToFallToZero = (day.constantBACList[i]  / 0.15).round();
-        DateTime xInterceptBAC = currentDrinkDateTime.add(Duration(minutes: minutesForBacToFallToZero));
-
-        bacData.add(new TimeSeriesBac(xInterceptBAC, 0));
+        DateTime whenBacHitZero = getTimeWhenBacHitZero(i, currentDrinkDateTime);
+        bacData.add(new TimeSeriesBac(whenBacHitZero, 0));
         currentBAC = 0;
       }
 
@@ -541,6 +544,20 @@ class BacChart extends StatelessWidget {
     ];
   }
 
+  /// Calculate the DateTime when BAC would fall to zero
+  /// after a particular drink at [drinkListIndex] and
+  /// [currentDrinkDateTime].
+  ///
+  /// The [hoursForBacToFallToZero] calculation is from
+  /// slope = (y1-y2)/(x1-x2) where slope = -.15,
+  /// y1 = bac, x1 = [currentDrinkDateTime], and y2 = 0
+  DateTime getTimeWhenBacHitZero(int drinkListIndex, DateTime currentDrinkDateTime){
+    double hoursForBacToFallToZero = ((day.constantBACList[drinkListIndex] / 100) / 0.15);
+    int minutesForBacToFallToZero = (hoursForBacToFallToZero * 60).round();
+    DateTime xInterceptBAC = currentDrinkDateTime.add(Duration(minutes: minutesForBacToFallToZero));
+
+    return xInterceptBAC;
+  }
   /// Returns the DateTime corresponding to the drink at
   /// position [drinkListIndex] in [justDrinksIndices]
   DateTime getCurrentDrinkDateTime(int drinkListIndex, List<int> justDrinksIndices, int year, int month, int dayNum){
@@ -566,7 +583,7 @@ class BacChart extends StatelessWidget {
 
     /// adjusts [nextDrinkDateTime] based on [globals.resetTime]
     nextDrinkDateTime =
-    day.hourList[justDrinksIndices[i]] < globals.resetTime ?
+    day.hourList[justDrinksIndices[i + 1]] < globals.resetTime ?
     nextDrinkDateTime.add(Duration(days: 1))
         : nextDrinkDateTime;
 
@@ -612,6 +629,7 @@ class BacChart extends StatelessWidget {
   /// in minutes.
   int getResetTimeDifference(int currentDrinkMinutes){
     int resetTimeInMinutes = globals.resetTime * 60;
+
     int timeBetweenLastDrinkAndReset;
     if (currentDrinkMinutes > resetTimeInMinutes) {
       timeBetweenLastDrinkAndReset = resetTimeInMinutes + (1440 - currentDrinkMinutes);
@@ -630,12 +648,15 @@ class BacChart extends StatelessWidget {
     DateTime currentTime = DateTime.now();
     int currentTimeMinutes = (currentTime.hour) * 60 + currentTime.minute;
 
-    int currentTimeDifference =
-    (currentTimeMinutes - currentDrinkMinutes)  < 0
-        ? ((1440 - currentDrinkMinutes) + currentTimeMinutes)
-        : (currentTimeMinutes - currentDrinkMinutes);
+    int timeBetweenLastDrinkAndNow;
+    if (currentDrinkMinutes > currentTimeMinutes) {
+      timeBetweenLastDrinkAndNow = currentTimeMinutes + (1440 - currentDrinkMinutes);
+    }
+    else {
+      timeBetweenLastDrinkAndNow = currentTimeMinutes - currentDrinkMinutes;
+    }
 
-    return currentTimeDifference;
+    return timeBetweenLastDrinkAndNow;
   }
 }
 
