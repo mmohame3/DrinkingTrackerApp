@@ -492,6 +492,12 @@ class BacChart extends StatelessWidget {
         /// the next to calculate how far the BAC dropped over that
         /// period of time.
         double timeDifferenceHours = getCurrentAndNextTimeDiff(i, justDrinksIndices);
+        if (timeDifferenceHours > (day.constantBACList[i]/100) - (timeDifferenceHours * 0.15)){
+          /// add point where bac first fell to 0
+          DateTime whenBacHitZero = getTimeWhenBacHitZero(i, currentDrinkDateTime);
+          bacData.add(new TimeSeriesBac(whenBacHitZero, 0));
+        }
+
         DateTime nextDrinkDateTime = getNextDrinkDateTime(i, justDrinksIndices, year, month, dayNum);
 
         double bacBeforeNextDrink = (day.constantBACList[i] /
@@ -534,11 +540,8 @@ class BacChart extends StatelessWidget {
       /// at the time when it first fell to zero.
       if (currentBAC < 0){
         /// given the slope (0.15) and the last coordinate we get [minutesForBacToFallToZero]
-        double hoursForBacToFallToZero = ((day.constantBACList[i] / 100) / 0.15);
-        int minutesForBacToFallToZero = (hoursForBacToFallToZero * 60).round();
-        DateTime xInterceptBAC = currentDrinkDateTime.add(Duration(minutes: minutesForBacToFallToZero));
-
-        bacData.add(new TimeSeriesBac(xInterceptBAC, 0));
+        DateTime whenBacHitZero = getTimeWhenBacHitZero(i, currentDrinkDateTime);
+        bacData.add(new TimeSeriesBac(whenBacHitZero, 0));
         currentBAC = 0;
       }
 
@@ -556,6 +559,20 @@ class BacChart extends StatelessWidget {
     ];
   }
 
+  /// Calculate the DateTime when BAC would fall to zero
+  /// after a particular drink at [drinkListIndex] and
+  /// [currentDrinkDateTime].
+  ///
+  /// The [hoursForBacToFallToZero] calculation is from
+  /// slope = (y1-y2)/(x1-x2) where slope = -.15,
+  /// y1 = bac, x1 = [currentDrinkDateTime], and y2 = 0
+  DateTime getTimeWhenBacHitZero(int drinkListIndex, DateTime currentDrinkDateTime){
+    double hoursForBacToFallToZero = ((day.constantBACList[drinkListIndex] / 100) / 0.15);
+    int minutesForBacToFallToZero = (hoursForBacToFallToZero * 60).round();
+    DateTime xInterceptBAC = currentDrinkDateTime.add(Duration(minutes: minutesForBacToFallToZero));
+
+    return xInterceptBAC;
+  }
   /// Returns the DateTime corresponding to the drink at
   /// position [drinkListIndex] in [justDrinksIndices]
   DateTime getCurrentDrinkDateTime(int drinkListIndex, List<int> justDrinksIndices, int year, int month, int dayNum){
