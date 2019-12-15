@@ -67,10 +67,15 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
     /// [showDayEndPopup] if [globals.dayEnded
     WidgetsBinding.instance.addPostFrameCallback((_)  {
       determineDay();
-      if (globals.dayEnded) {
-        getDayEndedPopupInfo();
-        showDayEndPopup(context);
-      }
+      getYesterInfo().then((infoList) => setState(() {
+        if (globals.dayEnded) {
+          showDayEndPopup(context);
+        }
+      }));
+//      if (globals.dayEnded ) {
+//        getDayEndedPopupInfo();
+//        showDayEndPopup(context);
+//      }
       getInputInformation();
     });
     Widget plant = Stack(

@@ -23,7 +23,8 @@ Future<void> speedAlert(BuildContext context) async {
         barrierDismissible: true,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
-            title: Text("You've had more than three drinks/waters in the last minute"),
+            title: Text("Reminder that Florish's calculations are most accurate "
+                "if you log your drinking as you go"),
             content: Container(
                 padding: EdgeInsets.only(left: 20, right: 20, top: 15)),
             actions: <Widget>[

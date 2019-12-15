@@ -24,6 +24,9 @@ int heightInches = 0;
 bool dayEnded = false;
 int yesterDrink = 0;
 int yesterWater = 0;
+double yesterLastBAC = 0.0;
+int yesterLastDrinkToResetMinutes = 0;
+double yesterHydratio = 0.0;
 
 var weights = [
   '100', '105', '110', '115', '120', '125', '130', '135', '140', '145',
