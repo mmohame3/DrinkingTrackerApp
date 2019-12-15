@@ -197,7 +197,7 @@ String _getBacInfo(double bac) {
 
   if ((bac >= .1) && (bac < 0.13)) {
     effects =
-        "No balance, impaired speech, and lack of judgment. Find a sober friend!";
+        "Loss of balance, impaired speech, and lack of judgment. Find a sober friend!";
   }
 
   if ((bac >= .13) && (bac < 0.16)) {
