@@ -22,15 +22,15 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> {
   _CalendarState() {
     determineDay(DateTime.now()).then((calendarSelectedDay) => setState(() {
-          globals.today = calendarSelectedDay;
-        }));
+      globals.today = calendarSelectedDay;
+    }));
   }
 
   Future<Day> determineDay(DateTime date) async {
     Database db = await database.DatabaseHelper.instance.database;
     String selectedDate = mainPage.dateTimeToString(date);
     List<Map> result =
-        await db.rawQuery('SELECT * FROM days WHERE day=?', [selectedDate]);
+    await db.rawQuery('SELECT * FROM days WHERE day=?', [selectedDate]);
 
     Day day;
     double yesterHyd;
@@ -81,9 +81,9 @@ class _CalendarState extends State<Calendar> {
           borderRadius: BorderRadius.all(Radius.circular(1000))),
       child: Center(
           child: Text(
-        day,
-        style: TextStyle(color: Colors.black),
-      )));
+            day,
+            style: TextStyle(color: Colors.black),
+          )));
 
   static Widget _tipsyIcon(String day) => Container(
       decoration: BoxDecoration(
@@ -91,9 +91,9 @@ class _CalendarState extends State<Calendar> {
           borderRadius: BorderRadius.all(Radius.circular(1000))),
       child: Center(
           child: Text(
-        day,
-        style: TextStyle(color: Colors.black),
-      )));
+            day,
+            style: TextStyle(color: Colors.black),
+          )));
 
   static Widget _drunkIcon(String day) => Container(
       decoration: BoxDecoration(
@@ -101,9 +101,9 @@ class _CalendarState extends State<Calendar> {
           borderRadius: BorderRadius.all(Radius.circular(1000))),
       child: Center(
           child: Text(
-        day,
-        style: TextStyle(color: Colors.black),
-      )));
+            day,
+            style: TextStyle(color: Colors.black),
+          )));
 
   static Widget _veryDrunkIcon(String day) => Container(
       decoration: BoxDecoration(
@@ -111,9 +111,9 @@ class _CalendarState extends State<Calendar> {
           borderRadius: BorderRadius.all(Radius.circular(1000))),
       child: Center(
           child: Text(
-        day,
-        style: TextStyle(color: Colors.black),
-      )));
+            day,
+            style: TextStyle(color: Colors.black),
+          )));
 
   EventList<Event> _markedDateMap = new EventList<Event>(events: {});
   static String noEventText = "No event here";
@@ -261,49 +261,49 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget dataReturn() {
     return Container(
-          padding: EdgeInsets.only(top: 10),
-          child: Column(children: [
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Column(
+        padding: EdgeInsets.only(top: 10),
+        child: Column(children: [
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-                      children: <Widget>[
-                    Container(
-                        padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).size.width / 70),
-                        height: MediaQuery.of(context).size.height / 4,
-                        alignment: Alignment.bottomCenter,
-                        child: Image.asset(
-                          'assets/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
-                          width: 7 * MediaQuery.of(context).size.width / 24,
-                        )),
-                    Row(children: <Widget> [
-                      Text('${day.totalDrinks} ', style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('${drinkPlural(day)}  |  '),
-                      Text('${day.totalWaters} ', style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text('${waterPlural(day)}')
+                    children: <Widget>[
+                      Container(
+                          padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).size.width / 30),
+                          height: MediaQuery.of(context).size.height / 4,
+                          alignment: Alignment.bottomCenter,
+                          child: Image.asset(
+                            'assets/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
+                            width: 7 * MediaQuery.of(context).size.width / 24,
+                          )),
+                      Row(children: <Widget> [
+                        Text('${day.totalDrinks} ', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text('${drinkPlural(day)}  |  '),
+                        Text('${day.totalWaters} ', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text('${waterPlural(day)}')
                       ])
-                  ]),
-                  SingleChildScrollView(
-                      child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxHeight: MediaQuery.of(context).size.height / 4,
-                            maxWidth: MediaQuery.of(context).size.width / 4,
-                          ),
-                          child: generateTable(day)))
-                ])
-          ]));
+                    ]),
+                SingleChildScrollView(
+                    child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height / 4,
+                          maxWidth: MediaQuery.of(context).size.width / 4,
+                        ),
+                        child: generateTable(day)))
+              ])
+        ]));
   }
 
   Widget graphReturn() {
     return Container(
-          height: MediaQuery.of(context).size.height / 2,
+        height: MediaQuery.of(context).size.height / 2,
 //          child: Column(children: <Widget> [
 //            Text('Your BAC over Time'),
-            child: BacChart(day: day)
+        child: BacChart(day: day)
 //        ])
     );
   }
@@ -332,7 +332,7 @@ class _HistoryPageState extends State<HistoryPage> {
           backgroundColor: Color(0xFF97B633),
         ),
         body: Container(
-            // gives calendar space around it
+          // gives calendar space around it
             padding: EdgeInsets.only(
               top: 15,
               left: 15,
@@ -341,7 +341,7 @@ class _HistoryPageState extends State<HistoryPage> {
             color: Color(0xFFF2F2F2),
             child: Column(children: [
               Container(
-                  // white background
+                // white background
                   padding: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width / 20,
                     right: MediaQuery.of(context).size.width / 20,
@@ -393,7 +393,7 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicator> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: map<Widget>(
           widget.widgetList,
-          (index, url) {
+              (index, url) {
             return Container(
               width: 4.0,
               height: 4.0,
@@ -423,6 +423,19 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicator> {
   }
 }
 
+class IconRenderer extends charts.CustomSymbolRenderer {
+  final IconData iconData;
+
+  IconRenderer(this.iconData);
+
+  @override
+  Widget build(BuildContext context, {Color color, Size size, bool enabled}) {
+    return new SizedBox.fromSize(
+        size: size, child: new Icon(iconData, color: color, size: 12.0));
+  }
+}
+
+
 class BacChart extends StatelessWidget {
   final Day day;
   const BacChart({Key key, this.day}) : super(key: key);
@@ -430,13 +443,15 @@ class BacChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new charts.TimeSeriesChart(
-      _createData(),
-      animate: false,
+        _createData(),
+        animate: false,
       defaultRenderer: new charts.LineRendererConfig(includePoints: true),
-        customSeriesRenderers: [
-          new charts.PointRendererConfig(
-              customRendererId: 'customPoint')
-        ]);
+//      customSeriesRenderers: [
+//        new charts.PointRendererConfig(
+          // ID used to link series to this renderer.
+//            customRendererId: 'customPoint')
+//      ],
+    );
   }
 
   /// Builds the list of DateTimes and BACs for the graph.
@@ -444,8 +459,6 @@ class BacChart extends StatelessWidget {
   /// returns the TimeSeries with these values.
   List<charts.Series<TimeSeriesBac, DateTime>> _createData() {
     List<TimeSeriesBac> bacData = new List<TimeSeriesBac>();
-    List<TimeSeriesBac> drinkData = new List<TimeSeriesBac>();
-
     /// Gets the list of indices of the values in the database
     /// corresponding to drinks (not waters).
     List<int> justDrinksIndices = getDrinkIndices();
@@ -480,14 +493,10 @@ class BacChart extends StatelessWidget {
         /// the next to calculate how far the BAC dropped over that
         /// period of time.
         double timeDifferenceHours = getCurrentAndNextTimeDiff(i, justDrinksIndices);
-        if (getNextDrinkDateTime(i, justDrinksIndices, year, month, dayNum).isAfter(getTimeWhenBacHitZero(i, currentDrinkDateTime))){
-          /// add point where bac first fell to 0
-          DateTime whenBacHitZero = getTimeWhenBacHitZero(i, currentDrinkDateTime);
-          bacData.add(new TimeSeriesBac(whenBacHitZero, 0));
-        }
-
         DateTime nextDrinkDateTime = getNextDrinkDateTime(i, justDrinksIndices, year, month, dayNum);
-        double bacBeforeNextDrink = (day.constantBACList[i] / 100) - (timeDifferenceHours * 0.15);
+
+        double bacBeforeNextDrink = (day.constantBACList[i] /
+            100) - (timeDifferenceHours * 0.15);
         bacBeforeNextDrink = bacBeforeNextDrink < 0 ? 0.0 : bacBeforeNextDrink;
 
         /// The dropped BAC is added to the TimeSeries before the
@@ -506,8 +515,7 @@ class BacChart extends StatelessWidget {
 
       /// if [day] is a past day, the [currentTime] is set to the [globals.resetTime]
       /// and the [timeDifference] is the time between the last drink and the reset.
-      if (currentTime.hour >= globals.resetTime &&
-          mainPage.dateTimeToString(currentTime) != day.getDate()){
+      if (currentTime.day != getDay(day.getDate()) && currentTime.hour >= globals.resetTime){
         lastTimeDifferenceHours = getResetTimeDifference(currentDrinkMinutes) / 60;
         currentTime = new DateTime(year, month, dayNum, globals.resetTime, 0, 0).add(Duration(days: 1));
       }
@@ -525,8 +533,10 @@ class BacChart extends StatelessWidget {
       /// at the time when it first fell to zero.
       if (currentBAC < 0){
         /// given the slope (0.15) and the last coordinate we get [minutesForBacToFallToZero]
-        DateTime whenBacHitZero = getTimeWhenBacHitZero(i, currentDrinkDateTime);
-        bacData.add(new TimeSeriesBac(whenBacHitZero, 0));
+        int minutesForBacToFallToZero = (day.constantBACList[i]  / 0.15).round();
+        DateTime xInterceptBAC = currentDrinkDateTime.add(Duration(minutes: minutesForBacToFallToZero));
+
+        bacData.add(new TimeSeriesBac(xInterceptBAC, 0));
         currentBAC = 0;
       }
 
@@ -540,24 +550,11 @@ class BacChart extends StatelessWidget {
         domainFn: (TimeSeriesBac bac, _) => bac.time,
         measureFn: (TimeSeriesBac bac, _) => bac.bac,
         data: bacData,
-      ),
+      )
+//        ..setAttribute(charts.rendererIdKey, 'customPoint'),
     ];
   }
 
-  /// Calculate the DateTime when BAC would fall to zero
-  /// after a particular drink at [drinkListIndex] and
-  /// [currentDrinkDateTime].
-  ///
-  /// The [hoursForBacToFallToZero] calculation is from
-  /// slope = (y1-y2)/(x1-x2) where slope = -.15,
-  /// y1 = bac, x1 = [currentDrinkDateTime], and y2 = 0
-  DateTime getTimeWhenBacHitZero(int drinkListIndex, DateTime currentDrinkDateTime){
-    double hoursForBacToFallToZero = ((day.constantBACList[drinkListIndex] / 100) / 0.15);
-    int minutesForBacToFallToZero = (hoursForBacToFallToZero * 60).round();
-    DateTime xInterceptBAC = currentDrinkDateTime.add(Duration(minutes: minutesForBacToFallToZero));
-
-    return xInterceptBAC;
-  }
   /// Returns the DateTime corresponding to the drink at
   /// position [drinkListIndex] in [justDrinksIndices]
   DateTime getCurrentDrinkDateTime(int drinkListIndex, List<int> justDrinksIndices, int year, int month, int dayNum){
@@ -583,7 +580,7 @@ class BacChart extends StatelessWidget {
 
     /// adjusts [nextDrinkDateTime] based on [globals.resetTime]
     nextDrinkDateTime =
-    day.hourList[justDrinksIndices[i + 1]] < globals.resetTime ?
+    day.hourList[justDrinksIndices[i]] < globals.resetTime ?
     nextDrinkDateTime.add(Duration(days: 1))
         : nextDrinkDateTime;
 
@@ -629,7 +626,6 @@ class BacChart extends StatelessWidget {
   /// in minutes.
   int getResetTimeDifference(int currentDrinkMinutes){
     int resetTimeInMinutes = globals.resetTime * 60;
-
     int timeBetweenLastDrinkAndReset;
     if (currentDrinkMinutes > resetTimeInMinutes) {
       timeBetweenLastDrinkAndReset = resetTimeInMinutes + (1440 - currentDrinkMinutes);
@@ -648,15 +644,12 @@ class BacChart extends StatelessWidget {
     DateTime currentTime = DateTime.now();
     int currentTimeMinutes = (currentTime.hour) * 60 + currentTime.minute;
 
-    int timeBetweenLastDrinkAndNow;
-    if (currentDrinkMinutes > currentTimeMinutes) {
-      timeBetweenLastDrinkAndNow = currentTimeMinutes + (1440 - currentDrinkMinutes);
-    }
-    else {
-      timeBetweenLastDrinkAndNow = currentTimeMinutes - currentDrinkMinutes;
-    }
+    int currentTimeDifference =
+    (currentTimeMinutes - currentDrinkMinutes)  < 0
+        ? ((1440 - currentDrinkMinutes) + currentTimeMinutes)
+        : (currentTimeMinutes - currentDrinkMinutes);
 
-    return timeBetweenLastDrinkAndNow;
+    return currentTimeDifference;
   }
 }
 
@@ -668,19 +661,23 @@ class TimeSeriesBac {
 }
 
 String drinkPlural(Day day) {
+  String string;
   if (day.totalDrinks > 1) {
-    return 'drinks';
+    string = 'drinks';
   } else if (day.totalDrinks == 1) {
-    return 'drink';
+    string = 'drink';
   }
+  return string;
 }
 
 String waterPlural(Day day) {
+  String string;
   if (day.totalWaters > 1) {
-    return 'waters';
+    string = 'waters';
   } else if (day.totalWaters == 1) {
-    return 'water';
+    string = 'water';
   }
+  return string;
 }
 
 String minutesIntToString(int minutes) {
@@ -720,7 +717,7 @@ int bacToPlant(double bac) {
 
 String typeToImageName(int type) {
   String path =
-      type == 1 ? 'assets/soloCup.png' : 'assets/waterDrop.png';
+  type == 1 ? 'assets/soloCup.png' : 'assets/waterDrop.png';
   return path;
 }
 
@@ -821,4 +818,3 @@ Widget generateTable(Day day) {
 
   return ListView(children: rows);
 }
-

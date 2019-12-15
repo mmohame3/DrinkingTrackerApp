@@ -42,7 +42,7 @@ Widget bacPopUpBody(BuildContext context) {
 //  double bacToZero = globals.bac/.05;
 //  bacLater = bacLater < 0 ? 0 : bacLater;
   return Container(
-      color: Color(0xFFE6E7E8),
+      color: Color(0xFFF2F2F2),
       child: SingleChildScrollView(
           child: ConstrainedBox(
               constraints: BoxConstraints(
@@ -61,6 +61,7 @@ Widget bacPopUpBody(BuildContext context) {
                     Container(
                         color: Colors.white,
                         alignment: Alignment.topCenter,
+                        height: 7*MediaQuery.of(context).size.height / 24,
                         child: BacChart(day: globals.today),
                     ),
                     Container(
