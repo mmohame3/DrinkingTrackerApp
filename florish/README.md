@@ -2,8 +2,7 @@
 Florish
 
 - Florish is a cross-platform mobile app. Florish provides an avenue for increased
-  awareness of drinking levels in any scenario. Florish is catered towards college students,
-  who often binge drink and lose track of their Alcohol intake levels.
+  awareness of drinking levels through an interactive plant icon that reacts to user inputs. Florish is catered towards   college students, who often binge drink and lose track of their Alcohol intake levels.
 
 App Demo
 
