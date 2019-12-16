@@ -25,12 +25,12 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
   @override
   void initState() {
     //uncomment to reset today's data to 0
-    DateTime time = DateTime.now();
-    if (time.hour < globals.resetTime){
-      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
-    }
-
-    dbHelper.deleteDay(dateTimeToString(time));
+//    DateTime time = DateTime.now();
+//    if (time.hour < globals.resetTime){
+//      time = new DateTime(time.year, time.month, time.day - 1, time.hour, time.minute, time.second, time.millisecond, time.microsecond);
+//    }
+//
+//    dbHelper.deleteDay(dateTimeToString(time));
 //    dbHelper.resetDay(dateTimeToString(time));
 
     super.initState();
