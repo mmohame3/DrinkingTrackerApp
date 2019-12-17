@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:Florish/globals.dart' as globals;
 import 'package:Florish/database_helper.dart';
-import 'package:Florish/pages/history_page.dart';
+import 'package:Florish/pages/calendar_page.dart';
 import 'package:Florish/pages/drink_information_page.dart';
 import 'package:Florish/pages/settings_page.dart';
 import 'package:Florish/functions/day_ended_popup.dart';
@@ -64,7 +64,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     /// Sets up the home screen by getting the day and
-    /// [showDayEndPopup] if [globals.dayEnded
+    /// [showDayEndPopup] if [globals.dayEnded].
     WidgetsBinding.instance.addPostFrameCallback((_)  {
       determineDay();
       getYesterInfo().then((infoList) => setState(() {
@@ -72,10 +72,6 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
           showDayEndPopup(context);
         }
       }));
-//      if (globals.dayEnded ) {
-//        getDayEndedPopupInfo();
-//        showDayEndPopup(context);
-//      }
       getInputInformation();
     });
     Widget plant = Stack(
@@ -100,7 +96,7 @@ class _AppHomeScreenState extends State<AppHomeScreen> with TickerProviderStateM
               Navigator.push(
                   context,
                   new MaterialPageRoute(
-                      builder: (BuildContext context) => new HistoryPage()));
+                      builder: (BuildContext context) => new CalendarPage()));
             }),
         title: Text(
           "FLORISH",

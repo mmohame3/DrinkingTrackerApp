@@ -84,8 +84,6 @@ class Day {
         'lastBAC: $lastBAC}';
   }
 
-  // NOTE: this many getters and setters CANNOT be efficient in a
-  // database but this is how we're doing it right now.
   String getDate() {
     return this.date;
   }

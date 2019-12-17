@@ -391,6 +391,6 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
     inputModel.weight = globals.selectedWeight;
     inputModel.sex = globals.selectedSex;
 
-    var result = await _databaseHelper.saveInputInformation(inputModel.toMap());
+    await _databaseHelper.saveInputInformation(inputModel.toMap());
   }
 }

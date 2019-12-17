@@ -22,15 +22,15 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> {
   _CalendarState() {
     determineDay(DateTime.now()).then((calendarSelectedDay) => setState(() {
-      globals.today = calendarSelectedDay;
-    }));
+          globals.today = calendarSelectedDay;
+        }));
   }
 
   Future<Day> determineDay(DateTime date) async {
     Database db = await database.DatabaseHelper.instance.database;
     String selectedDate = mainPage.dateTimeToString(date);
     List<Map> result =
-    await db.rawQuery('SELECT * FROM days WHERE day=?', [selectedDate]);
+        await db.rawQuery('SELECT * FROM days WHERE day=?', [selectedDate]);
 
     Day day;
     double yesterHyd;
@@ -81,9 +81,9 @@ class _CalendarState extends State<Calendar> {
           borderRadius: BorderRadius.all(Radius.circular(1000))),
       child: Center(
           child: Text(
-            day,
-            style: TextStyle(color: Colors.black),
-          )));
+        day,
+        style: TextStyle(color: Colors.black),
+      )));
 
   static Widget _tipsyIcon(String day) => Container(
       decoration: BoxDecoration(
@@ -91,9 +91,9 @@ class _CalendarState extends State<Calendar> {
           borderRadius: BorderRadius.all(Radius.circular(1000))),
       child: Center(
           child: Text(
-            day,
-            style: TextStyle(color: Colors.black),
-          )));
+        day,
+        style: TextStyle(color: Colors.black),
+      )));
 
   static Widget _drunkIcon(String day) => Container(
       decoration: BoxDecoration(
@@ -101,9 +101,9 @@ class _CalendarState extends State<Calendar> {
           borderRadius: BorderRadius.all(Radius.circular(1000))),
       child: Center(
           child: Text(
-            day,
-            style: TextStyle(color: Colors.black),
-          )));
+        day,
+        style: TextStyle(color: Colors.black),
+      )));
 
   static Widget _veryDrunkIcon(String day) => Container(
       decoration: BoxDecoration(
@@ -111,9 +111,9 @@ class _CalendarState extends State<Calendar> {
           borderRadius: BorderRadius.all(Radius.circular(1000))),
       child: Center(
           child: Text(
-            day,
-            style: TextStyle(color: Colors.black),
-          )));
+        day,
+        style: TextStyle(color: Colors.black),
+      )));
 
   EventList<Event> _markedDateMap = new EventList<Event>(events: {});
   static String noEventText = "No event here";
@@ -241,12 +241,12 @@ class _CalendarState extends State<Calendar> {
   }
 }
 
-class HistoryPage extends StatefulWidget {
+class CalendarPage extends StatefulWidget {
   @override
-  _HistoryPageState createState() => new _HistoryPageState();
+  _CalendarPageState createState() => new _CalendarPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class _CalendarPageState extends State<CalendarPage> {
   Day day = globals.today;
   double maxBACOnDay = 0;
   int waterOnDay = 0;
@@ -269,7 +269,6 @@ class _HistoryPageState extends State<HistoryPage> {
               children: <Widget>[
                 Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
                     children: <Widget>[
                       Container(
                           padding: EdgeInsets.only(
@@ -280,10 +279,12 @@ class _HistoryPageState extends State<HistoryPage> {
                             'assets/plants/drink${bacToPlant(day.getMaxBac())}water${day.getWaterAtMax()}.png',
                             width: 7 * MediaQuery.of(context).size.width / 24,
                           )),
-                      Row(children: <Widget> [
-                        Text('${day.totalDrinks} ', style: TextStyle(fontWeight: FontWeight.bold)),
+                      Row(children: <Widget>[
+                        Text('${day.totalDrinks} ',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                         Text('${drinkPlural(day)}  |  '),
-                        Text('${day.totalWaters} ', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text('${day.totalWaters} ',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                         Text('${waterPlural(day)}')
                       ])
                     ]),
@@ -305,7 +306,7 @@ class _HistoryPageState extends State<HistoryPage> {
 //            Text('Your BAC over Time'),
         child: BacChart(day: day)
 //        ])
-    );
+        );
   }
 
   Widget historyWidgetReturn() {
@@ -332,7 +333,7 @@ class _HistoryPageState extends State<HistoryPage> {
           backgroundColor: Color(0xFF97B633),
         ),
         body: Container(
-          // gives calendar space around it
+            // gives calendar space around it
             padding: EdgeInsets.only(
               top: 15,
               left: 15,
@@ -341,7 +342,7 @@ class _HistoryPageState extends State<HistoryPage> {
             color: Color(0xFFF2F2F2),
             child: Column(children: [
               Container(
-                // white background
+                  // white background
                   padding: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width / 20,
                     right: MediaQuery.of(context).size.width / 20,
@@ -393,7 +394,7 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicator> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: map<Widget>(
           widget.widgetList,
-              (index, url) {
+          (index, url) {
             return Container(
               width: 4.0,
               height: 4.0,
@@ -423,19 +424,6 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicator> {
   }
 }
 
-class IconRenderer extends charts.CustomSymbolRenderer {
-  final IconData iconData;
-
-  IconRenderer(this.iconData);
-
-  @override
-  Widget build(BuildContext context, {Color color, Size size, bool enabled}) {
-    return new SizedBox.fromSize(
-        size: size, child: new Icon(iconData, color: color, size: 12.0));
-  }
-}
-
-
 class BacChart extends StatelessWidget {
   final Day day;
   const BacChart({Key key, this.day}) : super(key: key);
@@ -443,14 +431,9 @@ class BacChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new charts.TimeSeriesChart(
-        _createData(),
-        animate: false,
-      defaultRenderer: new charts.LineRendererConfig(includePoints: true),
-//      customSeriesRenderers: [
-//        new charts.PointRendererConfig(
-          // ID used to link series to this renderer.
-//            customRendererId: 'customPoint')
-//      ],
+      _createData(),
+      animate: false,
+      defaultRenderer: charts.LineRendererConfig(includePoints: true),
     );
   }
 
@@ -459,6 +442,7 @@ class BacChart extends StatelessWidget {
   /// returns the TimeSeries with these values.
   List<charts.Series<TimeSeriesBac, DateTime>> _createData() {
     List<TimeSeriesBac> bacData = new List<TimeSeriesBac>();
+
     /// Gets the list of indices of the values in the database
     /// corresponding to drinks (not waters).
     List<int> justDrinksIndices = getDrinkIndices();
@@ -474,12 +458,11 @@ class BacChart extends StatelessWidget {
       int dayNum = getDay(date);
 
       while (i < justDrinksIndices.length) {
-
-        currentDrinkDateTime = getCurrentDrinkDateTime(i, justDrinksIndices, year, month, dayNum);
+        currentDrinkDateTime =
+            getCurrentDrinkDateTime(i, justDrinksIndices, year, month, dayNum);
 
         bacData.add(new TimeSeriesBac(
-            currentDrinkDateTime,
-            day.constantBACList[i] / 100));
+            currentDrinkDateTime, day.constantBACList[i] / 100));
 
         currentDrinkMinutes = (day.hourList[justDrinksIndices[i]]) * 60 +
             day.minuteList[justDrinksIndices[i]];
@@ -492,17 +475,18 @@ class BacChart extends StatelessWidget {
         /// Uses the time difference between the current drink and
         /// the next to calculate how far the BAC dropped over that
         /// period of time.
-        double timeDifferenceHours = getCurrentAndNextTimeDiff(i, justDrinksIndices);
-        DateTime nextDrinkDateTime = getNextDrinkDateTime(i, justDrinksIndices, year, month, dayNum);
+        double timeDifferenceHours =
+            getCurrentAndNextTimeDiff(i, justDrinksIndices);
+        DateTime nextDrinkDateTime =
+            getNextDrinkDateTime(i, justDrinksIndices, year, month, dayNum);
 
-        double bacBeforeNextDrink = (day.constantBACList[i] /
-            100) - (timeDifferenceHours * 0.15);
+        double bacBeforeNextDrink =
+            (day.constantBACList[i] / 100) - (timeDifferenceHours * 0.15);
         bacBeforeNextDrink = bacBeforeNextDrink < 0 ? 0.0 : bacBeforeNextDrink;
 
         /// The dropped BAC is added to the TimeSeries before the
         /// next drink (at the DateTime of the next drink)
-        bacData.add(new TimeSeriesBac(
-            nextDrinkDateTime, bacBeforeNextDrink));
+        bacData.add(new TimeSeriesBac(nextDrinkDateTime, bacBeforeNextDrink));
 
         i++;
       }
@@ -515,26 +499,31 @@ class BacChart extends StatelessWidget {
 
       /// if [day] is a past day, the [currentTime] is set to the [globals.resetTime]
       /// and the [timeDifference] is the time between the last drink and the reset.
-      if (currentTime.day != getDay(day.getDate()) && currentTime.hour >= globals.resetTime){
-        lastTimeDifferenceHours = getResetTimeDifference(currentDrinkMinutes) / 60;
-        currentTime = new DateTime(year, month, dayNum, globals.resetTime, 0, 0).add(Duration(days: 1));
+      if (currentTime.day != getDay(day.getDate()) &&
+          currentTime.hour >= globals.resetTime) {
+        lastTimeDifferenceHours =
+            getResetTimeDifference(currentDrinkMinutes) / 60;
+        currentTime = new DateTime(year, month, dayNum, globals.resetTime, 0, 0)
+            .add(Duration(days: 1));
       }
 
       /// if [day] is still the current day (in reality), then [timeDifference]
       /// is set to the time between the last drink and now.
       else {
-        lastTimeDifferenceHours = getCurrentTimeDifference(currentDrinkMinutes) / 60;
+        lastTimeDifferenceHours =
+            getCurrentTimeDifference(currentDrinkMinutes) / 60;
       }
 
-      double currentBAC = (day.constantBACList[i] / 100) -
-          (lastTimeDifferenceHours * 0.15);
+      double currentBAC =
+          (day.constantBACList[i] / 100) - (lastTimeDifferenceHours * 0.15);
 
       /// if the [currentBAC] has fallen to zero, then another point is added
       /// at the time when it first fell to zero.
-      if (currentBAC < 0){
+      if (currentBAC < 0) {
         /// given the slope (0.15) and the last coordinate we get [minutesForBacToFallToZero]
-        int minutesForBacToFallToZero = (day.constantBACList[i]  / 0.15).round();
-        DateTime xInterceptBAC = currentDrinkDateTime.add(Duration(minutes: minutesForBacToFallToZero));
+        int minutesForBacToFallToZero = (day.constantBACList[i] / 0.15).round();
+        DateTime xInterceptBAC = currentDrinkDateTime
+            .add(Duration(minutes: minutesForBacToFallToZero));
 
         bacData.add(new TimeSeriesBac(xInterceptBAC, 0));
         currentBAC = 0;
@@ -551,37 +540,45 @@ class BacChart extends StatelessWidget {
         measureFn: (TimeSeriesBac bac, _) => bac.bac,
         data: bacData,
       )
-//        ..setAttribute(charts.rendererIdKey, 'customPoint'),
     ];
   }
 
   /// Returns the DateTime corresponding to the drink at
   /// position [drinkListIndex] in [justDrinksIndices]
-  DateTime getCurrentDrinkDateTime(int drinkListIndex, List<int> justDrinksIndices, int year, int month, int dayNum){
+  DateTime getCurrentDrinkDateTime(int drinkListIndex,
+      List<int> justDrinksIndices, int year, int month, int dayNum) {
     DateTime currentDrinkDateTime = DateTime(
-        year, month, dayNum, day.hourList[justDrinksIndices[drinkListIndex]],
-        day.minuteList[justDrinksIndices[drinkListIndex]], 0);
+        year,
+        month,
+        dayNum,
+        day.hourList[justDrinksIndices[drinkListIndex]],
+        day.minuteList[justDrinksIndices[drinkListIndex]],
+        0);
 
     /// adjusts [currentDrinkDateTime] based on [globals.resetTime]
     currentDrinkDateTime =
-    day.hourList[justDrinksIndices[drinkListIndex]] < globals.resetTime ?
-    currentDrinkDateTime.add(Duration(days: 1))
-        : currentDrinkDateTime;
+        day.hourList[justDrinksIndices[drinkListIndex]] < globals.resetTime
+            ? currentDrinkDateTime.add(Duration(days: 1))
+            : currentDrinkDateTime;
 
     return currentDrinkDateTime;
   }
 
   /// Returns the DateTime corresponding to the drink at
   /// position [i] + 1 in [justDrinksIndices]
-  DateTime getNextDrinkDateTime(int i, List<int> justDrinksIndices, int year, int month, int dayNum) {
+  DateTime getNextDrinkDateTime(
+      int i, List<int> justDrinksIndices, int year, int month, int dayNum) {
     DateTime nextDrinkDateTime = DateTime(
-        year, month, dayNum, day.hourList[justDrinksIndices[i + 1]],
-        day.minuteList[justDrinksIndices[i + 1]], 0);
+        year,
+        month,
+        dayNum,
+        day.hourList[justDrinksIndices[i + 1]],
+        day.minuteList[justDrinksIndices[i + 1]],
+        0);
 
     /// adjusts [nextDrinkDateTime] based on [globals.resetTime]
-    nextDrinkDateTime =
-    day.hourList[justDrinksIndices[i]] < globals.resetTime ?
-    nextDrinkDateTime.add(Duration(days: 1))
+    nextDrinkDateTime = day.hourList[justDrinksIndices[i]] < globals.resetTime
+        ? nextDrinkDateTime.add(Duration(days: 1))
         : nextDrinkDateTime;
 
     return nextDrinkDateTime;
@@ -589,7 +586,7 @@ class BacChart extends StatelessWidget {
 
   /// Returns the difference between the drink at position [i]
   /// and that at [i] + 1 in hours.
-  getCurrentAndNextTimeDiff(int i, List<int> justDrinksIndices){
+  getCurrentAndNextTimeDiff(int i, List<int> justDrinksIndices) {
     int currentDrinkMinutes = (day.hourList[justDrinksIndices[i]]) * 60 +
         day.minuteList[justDrinksIndices[i]];
     int nextDrinkMinutes = (day.hourList[justDrinksIndices[i + 1]] * 60) +
@@ -598,22 +595,20 @@ class BacChart extends StatelessWidget {
     /// If [currentDrinkMinutes] > [nextDrinkMinutes] then the
     /// "next drink" occurred after midnight and [timeDifferenceHours]
     /// is adjusted based on that.
-    double timeDifferenceHours =
-    currentDrinkMinutes > nextDrinkMinutes
+    double timeDifferenceHours = currentDrinkMinutes > nextDrinkMinutes
         ? ((1440 - currentDrinkMinutes) + nextDrinkMinutes) / 60
         : (nextDrinkMinutes - currentDrinkMinutes) / 60;
 
     return timeDifferenceHours;
   }
 
-
   /// Gets the list of indices corresponding to drinks
   ///
   /// These indices correspond to just the day's drinks
   /// across [day.typeList], [day.hourList], and [day.minuteList]
-  List<int> getDrinkIndices(){
+  List<int> getDrinkIndices() {
     List<int> justDrinksIndices = new List<int>();
-    for (int j = 0; j < day.typeList.length; j++){
+    for (int j = 0; j < day.typeList.length; j++) {
       if (day.typeList[j] == 1) {
         justDrinksIndices.add(j);
       }
@@ -624,13 +619,13 @@ class BacChart extends StatelessWidget {
   /// The time difference between [currentDrinkMinutes] and
   /// the day's [globals.resetTime] is calculated and returned
   /// in minutes.
-  int getResetTimeDifference(int currentDrinkMinutes){
+  int getResetTimeDifference(int currentDrinkMinutes) {
     int resetTimeInMinutes = globals.resetTime * 60;
     int timeBetweenLastDrinkAndReset;
     if (currentDrinkMinutes > resetTimeInMinutes) {
-      timeBetweenLastDrinkAndReset = resetTimeInMinutes + (1440 - currentDrinkMinutes);
-    }
-    else {
+      timeBetweenLastDrinkAndReset =
+          resetTimeInMinutes + (1440 - currentDrinkMinutes);
+    } else {
       timeBetweenLastDrinkAndReset = resetTimeInMinutes - currentDrinkMinutes;
     }
 
@@ -640,12 +635,11 @@ class BacChart extends StatelessWidget {
   /// The time difference between [currentDrinkMinutes] and
   /// the day's the current time is calculated and returned
   /// in minutes.
-  int getCurrentTimeDifference(int currentDrinkMinutes){
+  int getCurrentTimeDifference(int currentDrinkMinutes) {
     DateTime currentTime = DateTime.now();
     int currentTimeMinutes = (currentTime.hour) * 60 + currentTime.minute;
 
-    int currentTimeDifference =
-    (currentTimeMinutes - currentDrinkMinutes)  < 0
+    int currentTimeDifference = (currentTimeMinutes - currentDrinkMinutes) < 0
         ? ((1440 - currentDrinkMinutes) + currentTimeMinutes)
         : (currentTimeMinutes - currentDrinkMinutes);
 
@@ -696,7 +690,6 @@ String minutesStringToString(String minutes) {
   return minuteString;
 }
 
-
 String timeString(int minutes, int hour) {
   String ampm = 'am';
   if (hour == 12) ampm = 'pm';
@@ -716,8 +709,7 @@ int bacToPlant(double bac) {
 }
 
 String typeToImageName(int type) {
-  String path =
-  type == 1 ? 'assets/soloCup.png' : 'assets/waterDrop.png';
+  String path = type == 1 ? 'assets/soloCup.png' : 'assets/waterDrop.png';
   return path;
 }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:Florish/globals.dart' as globals;
-import 'package:Florish/pages/history_page.dart';
+import 'package:Florish/pages/calendar_page.dart';
 import 'package:Florish/models/popup_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -52,18 +52,6 @@ Widget bacPopUpBody(BuildContext context) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     bacText(context),
-                    Container(
-                        padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
-                        child: Text(
-                          'YOUR BAC OVER TIME',
-                          style: TextStyle(letterSpacing: 1, height: 1.5),
-                        )),
-                    Container(
-                        color: Colors.white,
-                        alignment: Alignment.topCenter,
-                        height: 7*MediaQuery.of(context).size.height / 24,
-                        child: BacChart(day: globals.today),
-                    ),
                     Container(
                         padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
                         child: Text(
@@ -168,6 +156,18 @@ Widget bacText(BuildContext context) {
                           ]))
                     ]),
                   ]))),
+      Container(
+          padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
+          child: Text(
+            'YOUR BAC OVER TIME',
+            style: TextStyle(letterSpacing: 1, height: 1.5),
+          )),
+      Container(
+        color: Colors.white,
+        alignment: Alignment.topCenter,
+        height: 7*MediaQuery.of(context).size.height / 24,
+        child: BacChart(day: globals.today),
+      ),
     ]);
   }
   return container;
@@ -224,16 +224,4 @@ String _getBacInfo(double bac) {
   }
 
   return effects;
-}
-
-Widget bacGraph(BuildContext context) {
-  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    Container(
-        padding: EdgeInsets.only(top: 15, left: 20, bottom: 5),
-        child: Text(
-          'YOUR BAC OVER TIME',
-          style: TextStyle(letterSpacing: 1, height: 1.5),
-        )),
-    Container()
-  ]);
 }

@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:Florish/globals.dart' as globals;
-import 'package:Florish/pages/drink_information_page.dart';
-import 'package:Florish/pages/history_page.dart';
+import 'package:Florish/pages/calendar_page.dart';
 import 'package:Florish/models/popup_model.dart';
 
 showDayEndPopup(BuildContext context) {
@@ -48,7 +47,7 @@ Widget dayEndPopUpBody(BuildContext context) {
                 child: Column(children: [
                   Text(
                       'Yesterday you had ${globals.yesterDrink} drinks and ${globals.yesterWater} waters. '
-                          '\n\nCheck out your History to see more about your past drinking habits.\n',
+                          '\n\nCheck out your Calendar to see more about your past drinking habits.\n',
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           height: 1.3,
@@ -60,11 +59,11 @@ Widget dayEndPopUpBody(BuildContext context) {
                           context,
                           new MaterialPageRoute(
                               builder: (BuildContext context) =>
-                              new HistoryPage()));
+                              new CalendarPage()));
                     },
                     color: Color(0xFFA8C935),
                     child:
-                    Text('History', style: TextStyle(color: Colors.white)),
+                    Text('Calendar', style: TextStyle(color: Colors.white)),
                   )
                 ]))),
       ]));
