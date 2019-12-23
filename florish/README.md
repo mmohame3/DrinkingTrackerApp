@@ -10,11 +10,22 @@ App Demo
 
 Installation
 
-- prerequisites
+- Mac OS X to smartphone
+    - Download Flutter framework for more information https://flutter.dev/docs/get-started/install
+    - Download a text editor, IntelliJ and Android Studio recommended for more information on text editors visit https://www.jetbrains.com/idea/ or https://developer.android.com
+    - Setup Dart plug in for help setting up the plug in visit https://flutter.dev/docs/get-started/editor
+    - Clone from github at https://github.com/mmohame3/FLORISH.git
+    - Download Xcode for simulator operations at https://developer.apple.com/xcode/
+    - Run the "runner" to download onto mobile smartphone
 
-- for users
-
-- for developers
+- Windows to smartphone
+    - Download Flutter framework for more information https://flutter.dev/docs/get-started/install
+    - Download a text editor, IntelliJ and Android Studio recommended for more information on text editors visit https://www.jetbrains.com/idea/ or https://developer.android.com
+    - Setup Dart plug in for help setting up the plug in visit https://flutter.dev/docs/get-started/editor
+    - Clone from github at https://github.com/mmohame3/FLORISH.git
+    - "Enable Developer options and USB debugging on your device."
+    - "In the terminal, run the flutter devices command to verify that Flutter recognizes your connected Android device"
+        - For more information on installation to smartphone from Windows visit https://kobiton.com/topics/develop-deploy-and-test-flutter-apps/
 
 Features
 
@@ -41,8 +52,14 @@ Usage/how to use
 
 Built with
 
-- Flutter/dart
+- Flutter: information on the Flutter framework can be found https://flutter.dev
+- Dart programming language: information on Dart can be found at https://dart.dev
+
 
 Authors
+- Aberdeen Morrow
+- Adeline Steward-Nolam
+- Gabriel Ramos
+- Mohammed Abdi Mohammed
 
 
