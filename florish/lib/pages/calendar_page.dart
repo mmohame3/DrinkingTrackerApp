@@ -499,13 +499,16 @@ class BacChart extends StatelessWidget {
 
       /// if [day] is a past day, the [currentTime] is set to the [globals.resetTime]
       /// and the [timeDifference] is the time between the last drink and the reset.
-      if (currentTime.day != getDay(day.getDate()) &&
-          currentTime.hour >= globals.resetTime) {
-        lastTimeDifferenceHours =
-            getResetTimeDifference(currentDrinkMinutes) / 60;
-        currentTime = new DateTime(year, month, dayNum, globals.resetTime, 0, 0)
-            .add(Duration(days: 1));
+      ///
+      /// currentTime (real time) vs day = Day object
+      /// if the currentTime is on a different day = either far in future/past
+      DateTime selectedDayResetDateTime = stringToDateTime(day.getDate(), 6, 0).add(Duration(days: 1));
+
+      if (currentTime.isAfter(selectedDayResetDateTime)) {
+        lastTimeDifferenceHours = getResetTimeDifference(currentDrinkMinutes) / 60;
+        currentTime = new DateTime(year, month, dayNum, globals.resetTime, 0, 0).add(Duration(days: 1));
       }
+
 
       /// if [day] is still the current day (in reality), then [timeDifference]
       /// is set to the time between the last drink and now.
@@ -656,7 +659,7 @@ class TimeSeriesBac {
 
 String drinkPlural(Day day) {
   String string;
-  if (day.totalDrinks > 1) {
+  if (day.totalDrinks > 1 || day.totalDrinks == 0) {
     string = 'drinks';
   } else if (day.totalDrinks == 1) {
     string = 'drink';
@@ -666,7 +669,7 @@ String drinkPlural(Day day) {
 
 String waterPlural(Day day) {
   String string;
-  if (day.totalWaters > 1) {
+  if (day.totalWaters > 1 || day.totalWaters == 0) {
     string = 'waters';
   } else if (day.totalWaters == 1) {
     string = 'water';
@@ -702,9 +705,9 @@ String timeString(int minutes, int hour) {
 }
 
 int bacToPlant(double bac) {
-  bac = bac >= 0.12 ? 0.12 : bac; // sets BAC equal to 0.12 if >= 0.12
-  int plantNum = (5 * (bac / .12)).floor();
-  plantNum = plantNum > 4 ? 4 : plantNum;
+  bac = bac >= globals.maxBAC ? globals.maxBAC : bac;
+  int plantNum = (globals.numberOfDrinkPlants * (bac / globals.maxBAC)).floor();
+  plantNum = plantNum > globals.numberOfDrinkPlants - 1 ? globals.numberOfDrinkPlants - 1 : plantNum;
   return plantNum;
 }
 

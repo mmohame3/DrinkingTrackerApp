@@ -182,45 +182,45 @@ String _getBacInfo(double bac) {
   }
 
   if ((bac >= 0.020) && (bac < 0.04)) {
-    effects = "You still have balance! Relaxed is the vibe you are in.";
+    effects = "In a relaxed vibe. You still have balance!";
   }
 
   if ((bac >= .04) && (bac < 0.06)) {
     effects =
-        "You still have balance but you are starting to forget the manners people expect of you. Impaired judgement and explosions of joy describe your current state.";
+        "Incredibly loose as if you are starting to forget the manners people expect of you. Impaired judgement and explosions of joy describe your current state.";
   }
 
   if ((bac >= .06) && (bac < 0.1)) {
     effects =
-        "Oh oh! You might be tumbling now. Slurring words, slowed reactions, and out of pocket actions describe your current state. Find a sober friend!";
+        "Tumbling and loss of balance. Slurring words, slowed reactions, and out of pocket actions describe your current state. Find a sober friend!";
   }
 
   if ((bac >= .1) && (bac < 0.13)) {
     effects =
-        "Seek support! You have lost balance, clear speech, and sense of judgment.";
+        "Loss of balance, impaired speech, and lack of judgment. Find a sober friend!";
   }
 
   if ((bac >= .13) && (bac < 0.16)) {
     effects =
-        "You are impaired in all physical and mental functions. Depression begins to set in at this stage, find support.";
+        "Impairement in all physical and mental functions. Depression begins to set in at this stage, find support.";
   }
 
   if ((bac >= .16) && (bac < 0.2)) {
     effects =
-        "So called sloppy drunk stage, nausea initiates, and negative feelings begin at this stage. Seek help.";
+        "Nausea and negative feelings, the so called sloppy drunk stage. Seek help.";
   }
 
   if ((bac >= .2) && (bac < 0.25)) {
     effects =
-        "Mental confusion, blackout level, memory impairment. User needs support as soon as possible.";
+        "Mental confusion, blackout level, memory impairment. Support is needed as soon as possible.";
   }
 
   if ((bac >= .25) && (bac < 0.4)) {
-    effects = "Alcohol poisoning stage, take user to hospital!";
+    effects = "Alcohol poisoning, emergency help needed!";
   }
 
   if (bac >= .4) {
-    effects = "Deadly level, emergency attention demanded";
+    effects = "Deadly level, emergency attention demanded.";
   }
 
   return effects;

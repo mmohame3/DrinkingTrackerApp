@@ -86,8 +86,8 @@ class _DrinkButtonState extends State<DrinkButton> {
       );
       singleNotification(
         now,
-        "Notification",
-        "This is a notification",
+        "Log Your Drinks",
+        "Remember to log your drinks as accurately as possible!",
         98123871,
       );
 

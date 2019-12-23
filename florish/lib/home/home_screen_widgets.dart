@@ -223,6 +223,8 @@ double getYesterBAC() {
   DateTime resetDateTime = new DateTime(currentTime.year, currentTime.month, currentTime.day, globals.resetTime);
   resetDateTime = currentTime.hour < globals.resetTime ? resetDateTime.subtract(Duration(days: 1)) : resetDateTime;
 
+  globals.yesterDrink ??= 0;
+  globals.yesterLastDrinkToResetMinutes ??= 0;
   int afterNoonDiff = currentTime.difference(resetDateTime).inSeconds;
   double beforeNoonDiff = globals.yesterLastDrinkToResetMinutes * 60.0;
 
@@ -291,6 +293,11 @@ Future<List<double>> getYesterInfo() async {
     globals.yesterLastBAC = yesterdayLastBAC;
     globals.yesterLastDrinkToResetMinutes = lastDrinkToReset;
     globals.yesterHydratio = yesterdayHydratio;
+    globals.yesterDrink ??= 0;
+    globals.yesterWater ??= 0;
+    globals.yesterLastBAC ??= 0.0;
+    globals.yesterLastDrinkToResetMinutes ??= 0;
+    globals.yesterHydratio ??= 0.0;
     return [yesterdayWaters.toDouble(), yesterdayHydratio, yesterdayDrinks.toDouble(), yesterdayLastBAC, lastDrinkToReset.toDouble()];
   }
 }
