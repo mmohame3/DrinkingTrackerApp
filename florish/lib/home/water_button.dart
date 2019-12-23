@@ -13,11 +13,12 @@ class WaterButton extends StatefulWidget {
   _WaterButtonState createState() => new _WaterButtonState();
 }
 
+
 class _WaterButtonState extends State<WaterButton> {
   final dbHelper = DatabaseHelper.instance;
   String waterString = "";
 
-  // determines the day and sets variables before building
+  /// determines the day and sets variables before building
   _WaterButtonState() {
     determineDay().then((day) {
       globals.today = day;
@@ -28,8 +29,8 @@ class _WaterButtonState extends State<WaterButton> {
   @override
   Widget build(context) {
     return GestureDetector(
-      // when tapped: updates today's count, updates waterString,
-      // updates the plant image, and calls waterButtonTap()
+      /// when tapped: updates today's count, updates waterString,
+      /// updates the plant image, and calls waterButtonTap()
       onTap: () {
         setState(() {
           globals.today.totalWaters++;
@@ -70,8 +71,8 @@ class _WaterButtonState extends State<WaterButton> {
     );
   }
 
-  // updates today's time and type lists,
-  // updates the database itself,
+  /// updates today's time and type lists,
+  /// updates the database itself,
   void waterButtonTap() async {
     waterRiseAnimationController.forward(from: 0.0);
     globals.today.addHour(DateTime.now().hour);

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-
+/// Generates a popup that displays a widget [child]. Also takes values for
+/// [top], [bottom], [left], and [right], the distance from the popup to the
+/// edges of the screen
 class PopupLayout extends ModalRoute {
   final Widget child;
   double top;

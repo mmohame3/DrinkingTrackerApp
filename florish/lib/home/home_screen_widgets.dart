@@ -27,7 +27,7 @@ class _PlantState extends State<Plant> {
   }
 
 
-// Sets up the plant and BAC
+/// Sets up the plant and BAC
   _PlantState() {
     determineDay().then((day) => setState(() {
       globals.today = day;
@@ -36,8 +36,8 @@ class _PlantState extends State<Plant> {
     }));
   }
 
-  // builds the column with: bac counter, bac picture,
-  // plant image, and buttons
+  /// builds the column with: bac counter, bac picture,
+  /// plant image, and buttons
   @override
   Widget build(context) {
     return TimerBuilder.periodic(Duration(seconds: 5), builder: (context) {
@@ -413,10 +413,6 @@ Future<Day> determineDay() async {
   }
 }
 
-
-// turns the BAC to a plant stage
-// where 5 is the number of plant stages we have and .12 is our "max" BAC
-
 /// Turns the current [bac] into a plant stage.
 ///
 /// Converts [bac] into a percentage of [globals.maxBAC]
@@ -431,7 +427,7 @@ int bacToPlant(double bac) {
   return plantNum;
 }
 
-// turns the water count to a plant stage
+/// turns the water count to a plant stage
 int waterToPlant() {
   DateTime current = DateTime.now();
   int plantNumWater;

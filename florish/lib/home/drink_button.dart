@@ -22,7 +22,7 @@ class _DrinkButtonState extends State<DrinkButton> {
   final dbHelper = DatabaseHelper.instance;
   String drinkString = "";
 
-  // determines the day and sets variables before building
+  /// determines the day and sets variables before building
   _DrinkButtonState() {
     determineDay().then((day) => setState(() {
           globals.today = day;
@@ -33,8 +33,8 @@ class _DrinkButtonState extends State<DrinkButton> {
   @override
   Widget build(context) {
     return GestureDetector(
-      // when tapped: updates today's counts, updates the drinkString,
-      // updates BAC, updates the plant image, and calls drinkButtonTap
+      /// when tapped: updates today's counts, updates the drinkString,
+      /// updates BAC, updates the plant image, and calls drinkButtonTap
       onTap: () {
         setState(() {
           globals.today.totalDrinks++;
@@ -76,8 +76,8 @@ class _DrinkButtonState extends State<DrinkButton> {
     );
   }
 
-// Updates today's time and type lists,
-  // updates the database itself
+  /// Updates today's time and type lists,
+  /// updates the database itself
   Future<void> drinkButtonTap() async {
     drinkRiseAnimationController.forward(from: 0.0);
 

@@ -334,6 +334,8 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
             )));
   }
 
+  /// Increments the drink count by one and adds the drink to the current
+  /// Day object
   void drinkInc(DateTime currentTime) async {
     globals.today.addHour(currentTime.hour);
     globals.today.addMinute(currentTime.minute);
@@ -342,6 +344,8 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
     await dbHelper.updateDay(globals.today);
   }
 
+  /// Increments the water count by one and adds the water to the current
+  /// Day object
   void waterInc() async {
     globals.today.addHour(DateTime.now().hour);
     globals.today.addMinute(DateTime.now().minute);
@@ -350,6 +354,8 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
     await dbHelper.updateDay(globals.today);
   }
 
+  /// Decrements the drink count by one, re-calculates BAC, and removes the
+  /// drink entry from the current Day object
   void drinkDec(DateTime currentTime) async {
     double r = 0.615;
     if (globals.selectedSex == 'Male') {
@@ -372,6 +378,8 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
     await dbHelper.updateDay(globals.today);
   }
 
+  /// Decrements the water count by one and removes the water entry
+  /// from the current Day object
   void waterDec() async {
     if (globals.today.totalWaters >= 0) {
       int i = globals.today.typeList.lastIndexOf(0);
@@ -384,6 +392,7 @@ class PersonalInfoPageState extends State<PersonalInfoPage> {
     await dbHelper.updateDay(globals.today);
   }
 
+  /// Saves the input information to a database as an [InputModel] object
   save() async {
     var inputModel = InputModel();
     inputModel.feet = globals.selectedFeet;
